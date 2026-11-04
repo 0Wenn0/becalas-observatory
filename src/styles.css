@@ -164,8 +164,16 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .breath-control { display: grid; gap: 16px; justify-items: start; min-width: 260px; }
 .breath-guide { display: flex; gap: 18px; align-items: center; }
 .breath-guide ol { margin: 0; padding-left: 20px; max-width: 34ch; }
-.breath-orb { flex: none; width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #E4D8FB, var(--lilac)); animation: breathe 8s ease-in-out infinite; }
-@keyframes breathe { 0%, 100% { transform: scale(.7); } 50% { transform: scale(1.15); } }
+.planet-button { display: flex; align-items: center; gap: 14px; min-height: 48px; padding: 6px 18px 6px 6px; border: 2px solid transparent; border-radius: 99px; background: transparent; color: var(--ink); font-size: 16px; font-weight: 700; cursor: pointer; }
+.planet-button:hover { background: rgba(255, 255, 255, .35); }
+.planet-icon { width: 120px; height: 120px; flex: none; transition: transform .3s ease; filter: drop-shadow(0 6px 14px rgba(78, 53, 146, .35)); }
+.planet-button:hover .planet-icon { transform: rotate(-8deg) scale(1.05); }
+.planet-button.is-breathing .planet-icon { animation: breathe 8s ease-in-out infinite; }
+.planet-sparkle { transform-origin: 100px 24px; animation: twinkle 2.4s ease-in-out infinite; }
+.planet-label { text-decoration: underline; text-underline-offset: 4px; }
+@keyframes breathe { 0%, 100% { transform: scale(.82); } 50% { transform: scale(1.12); } }
+@keyframes twinkle { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1); } }
+.breath-hint { margin: 0; color: #2E3644; font-size: 15px; }
 
 /* SMART */
 .smart-section { display: grid; grid-template-columns: minmax(240px, .7fr) minmax(0, 1.3fr); gap: clamp(32px, 6vw, 88px); padding: 84px 0; }

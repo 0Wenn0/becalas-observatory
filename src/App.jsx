@@ -8,10 +8,9 @@ const sessions = [
   {
     id: 'metas',
     number: '01',
-    date: '2026-11-07',
-    dateLabel: 'Sáb 7 de noviembre · 17:00',
-    dateShort: 'sáb 7 nov · 17:00',
-    confirmed: true,
+    // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
+    dateLabel: 'Por definir',
+    done: false,
     name: 'Conocernos y soñar en grande',
     plain: 'Sesión 1 · Definir metas',
     objective: 'Nos presentamos, nos reímos un poco y aterrizamos 2 o 3 metas que de verdad te emocionen (con pasos pequeñitos).',
@@ -22,10 +21,9 @@ const sessions = [
   {
     id: 'trayectoria',
     number: '02',
-    date: '2026-11-14',
-    dateLabel: 'Sáb 14 de noviembre · 17:00',
-    dateShort: 'sáb 14 nov · 17:00',
-    confirmed: false,
+    // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
+    dateLabel: 'Por definir',
+    done: false,
     name: 'El mapa de tu camino',
     plain: 'Sesión 2 · Trayectoria académica',
     objective: 'Miramos hacia atrás para ver todo lo que ya recorriste, y hacia adelante para sacarle jugo a la uni.',
@@ -36,10 +34,9 @@ const sessions = [
   {
     id: 'empleo',
     number: '03',
-    date: '2026-11-21',
-    dateLabel: 'Sáb 21 de noviembre · 17:00',
-    dateShort: 'sáb 21 nov · 17:00',
-    confirmed: false,
+    // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
+    dateLabel: 'Por definir',
+    done: false,
     name: 'Despegue al mundo laboral 🚀',
     plain: 'Sesión 3 · Primer empleo',
     objective: 'CV, LinkedIn, entrevistas y cómo no tomarte el “no” como algo personal.',
@@ -174,10 +171,6 @@ async function copyText(text) {
   try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 }
 
-function todayISO() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
 
 function SectionHeading({ id, label, title, intro, dark }) {
   return (
@@ -234,7 +227,6 @@ function MissionTabs() {
   async function onCopy(event) {
     const ok = await copyText(prompts[active].text);
     setCopied(ok ? '¡Listo, copiado! Ahora pégalo en tu IA favorita ✨' : 'No pude copiarlo automáticamente: selecciona el texto y cópialo.');
-    if (ok) sparkleAt(event.currentTarget);
     window.setTimeout(() => setCopied(''), 3200);
   }
 
@@ -277,7 +269,6 @@ function CometButton() {
   function launch(event) {
     if (pool.current.length === 0) pool.current = [...icebreakers].sort(() => Math.random() - 0.5);
     setQuestion(pool.current.pop());
-    sparkleAt(event.currentTarget);
   }
 
   return (
@@ -289,12 +280,11 @@ function CometButton() {
 }
 
 function SessionProgress() {
-  const today = todayISO();
   return (
     <ol className="progress-constellation" aria-label="Avance de nuestras sesiones">
       {sessions.map((session, index) => {
-        const done = today > session.date;
-        const isToday = today === session.date;
+        const { done } = session;
+        const isToday = false;
         return (
           <li key={session.id} className={`progress-star ${done ? 'is-done' : ''} ${isToday ? 'is-today' : ''}`}>
             <span className="star-dot" aria-hidden="true">{done ? '★' : '☆'}</span>
@@ -304,6 +294,26 @@ function SessionProgress() {
         );
       })}
     </ol>
+  );
+}
+
+function PlanetIcon() {
+  return (
+    <svg className="planet-icon" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="planet-body" cx="35%" cy="30%" r="75%">
+          <stop offset="0%" stopColor="#E4D8FB" />
+          <stop offset="55%" stopColor="#8A5CF0" />
+          <stop offset="100%" stopColor="#4E3592" />
+        </radialGradient>
+      </defs>
+      <ellipse className="planet-ring-back" cx="60" cy="62" rx="54" ry="15" fill="none" stroke="#C9B4F7" strokeWidth="5" transform="rotate(-18 60 62)" />
+      <circle cx="60" cy="60" r="32" fill="url(#planet-body)" />
+      <circle cx="49" cy="50" r="5" fill="#fff" opacity=".35" />
+      <circle cx="70" cy="70" r="3.5" fill="#4E3592" opacity=".45" />
+      <path d="M8 66 A54 15 0 0 0 112 58" fill="none" stroke="#C9B4F7" strokeWidth="5" strokeLinecap="round" transform="rotate(-18 60 62)" />
+      <path className="planet-sparkle" d="M100 16 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#fff" />
+    </svg>
   );
 }
 
@@ -321,8 +331,8 @@ function Microsite() {
   const celebrated = useRef(false);
   const previewRef = useRef(null);
 
-  const today = todayISO();
-  const nextSession = sessions.find((s) => s.date >= today) ?? sessions[sessions.length - 1];
+  const nextSession = sessions.find((session) => !session.done) ?? sessions[sessions.length - 1];
+  const nextDefined = nextSession.dateLabel !== 'Por definir';
 
   useEffect(() => { saveLocal('becalas-smart', smart); }, [smart]);
 
@@ -356,7 +366,6 @@ function Microsite() {
 
   async function copySmart(event) {
     const ok = await copyText(smartSentence);
-    if (ok) sparkleAt(event.currentTarget);
     flash(setSmartCopied, ok ? '¡Copiada! Tráela a la sesión ✨' : 'Selecciona el texto y cópialo manualmente.');
   }
 
@@ -374,7 +383,6 @@ function Microsite() {
     const next = { ...log, [activeLogSession]: currentLog };
     setLog(next);
     saveLocal('becalas-log', next);
-    sparkleAt(event.currentTarget);
     flash(setSavedMessage, '¡Guardado en tu celular! 🔒');
   }
 
@@ -415,8 +423,8 @@ function Microsite() {
             <p className="hero-lede">Aquí está todo lo de nuestras mentorías: cuándo nos vemos, tu primera misión y herramientas para jugar con tus ideas.</p>
             <blockquote className="hero-quote">No necesitas tener todo resuelto para empezar a construir la trayectoria que deseas. La curiosidad, la constancia y las ganas de aprender abren caminos que hoy ni imaginas.</blockquote>
             <div className="hero-actions">
-              <a className="button button-primary" href="#mision" onClick={(e) => sparkleAt(e.currentTarget)}>Ver mi primera misión</a>
-              <a className="button button-ghost" href="#proxima">Próxima sesión: {nextSession.dateShort}</a>
+              <a className="button button-primary" href="#mision">Ver mi primera misión</a>
+              <a className="button button-ghost" href="#proxima">Próxima sesión: {nextDefined ? nextSession.dateLabel : 'por definir'}</a>
             </div>
           </div>
         </section>
@@ -426,9 +434,10 @@ function Microsite() {
           <div className="section-wrap next-grid">
             <div>
               <p className="section-label">Próxima sesión</p>
-              <h2 id="next-title">{nextSession.dateLabel}</h2>
-              <p className="next-sub">{nextSession.plain} · {nextSession.name}. {nextSession.confirmed ? 'Por videollamada: el enlace llega por el grupo de WhatsApp.' : 'Fecha por confirmar en el grupo.'}</p>
-              <p className="next-sub">Duración: 1 hora · En grupo, las 3 juntas con Wen.</p>
+              <h2 id="next-title">{nextDefined ? nextSession.dateLabel : 'Fecha por definir 🗓️'}</h2>
+              <p className="next-sub">{nextSession.plain} · {nextSession.name}.</p>
+              <p className="next-sub">{nextDefined ? 'Por videollamada: el enlace llega por el grupo de WhatsApp.' : 'La acordamos juntas en el grupo de WhatsApp. En cuanto la tengamos, aparece aquí.'}</p>
+              <p className="next-sub">Duración: 1 hora · En grupo, con Wen.</p>
             </div>
             <SessionProgress />
           </div>
@@ -463,7 +472,7 @@ function Microsite() {
         {/* SESIONES */}
         <section className="route-section" id="sesiones" aria-labelledby="sessions-title">
           <div className="section-wrap">
-            <SectionHeading id="sessions-title" label="Sesiones" title="Tres noches de observación" intro="Nuestras 3 sesiones de noviembre: nos vemos tres sábados para platicar, probar cosas y armar planes." />
+            <SectionHeading id="sessions-title" label="Sesiones" title="Tres noches de observación" intro="Nuestras 3 sesiones de noviembre: nos vemos para platicar, probar cosas y armar planes. Las fechas las acordamos juntas." />
             <div className="session-list">
               {sessions.map((session) => {
                 const expanded = openSession === session.id;
@@ -473,7 +482,7 @@ function Microsite() {
                       <button className="session-trigger" type="button" aria-expanded={expanded} aria-controls={`session-${session.id}`} onClick={() => setOpenSession(expanded ? '' : session.id)}>
                         <span className="session-number" aria-hidden="true">{session.number}</span>
                         <span className="session-title-group">
-                          <span className="session-eyebrow">{session.plain} · {session.dateLabel}{session.confirmed ? '' : ' (por confirmar)'}</span>
+                          <span className="session-eyebrow">{session.plain} · {session.dateLabel === 'Por definir' ? 'Fecha por definir' : session.dateLabel}</span>
                           <span className="session-title">{session.name}</span>
                         </span>
                         <span className="session-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
@@ -511,9 +520,11 @@ function Microsite() {
             <p>Un minuto para llegar de verdad. Puedes cerrar los ojos o mirar un punto fijo. No hay una forma correcta de sentirse.</p>
           </div>
           <div className="breath-control">
-            <button className="button button-dark" type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>{breathing ? 'Cerrar la guía' : 'Abrir la guía'}</button>
+            <button className={`planet-button ${breathing ? 'is-breathing' : ''}`} type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>
+              <PlanetIcon />
+              <span className="planet-label">{breathing ? 'Cerrar la guía' : 'Toca el planeta para empezar'}</span>
+            </button>
             <div className="breath-guide" id="breath-guide" hidden={!breathing}>
-              <div className="breath-orb" aria-hidden="true" />
               <ol>
                 <li>Ponte cómoda, con la espalda derecha.</li>
                 <li>Inhala lento por la nariz… y suelta el aire despacito.</li>
@@ -636,10 +647,10 @@ function CaseStudy() {
       <main className="case-page section-wrap" id="case-content">
         <p className="section-label">Caso de diseño UX/UI · Cognitive Observatory · 2026</p>
         <h1>Un observatorio para acompañar una mentoría</h1>
-        <p className="case-lede">Micrositio que diseñé y desarrollé para mi grupo de tres mentoradas del programa BécALAS 2026‑2027: un solo lugar con fechas, la primera misión y herramientas para cada sesión.</p>
+        <p className="case-lede">Micrositio que diseñé y desarrollé para mi grupo de mentoradas del programa BécALAS 2026‑2027: un solo lugar con fechas, la primera misión y herramientas para cada sesión.</p>
 
         <section aria-labelledby="c1"><h2 id="c1">El reto</h2>
-          <p>Tres estudiantes universitarias, tres sesiones en noviembre y toda la comunicación por WhatsApp. Necesitaban saber en segundos cuándo nos vemos, qué hacer antes y dónde encontrar las herramientas, casi siempre desde el celular.</p>
+          <p>Un grupo de estudiantes universitarias, tres sesiones en noviembre y toda la comunicación por WhatsApp. Necesitaban saber en segundos cuándo nos vemos, qué hacer antes y dónde encontrar las herramientas, casi siempre desde el celular.</p>
         </section>
 
         <section aria-labelledby="c2"><h2 id="c2">Usuarias y necesidades</h2>
@@ -675,7 +686,7 @@ function CaseStudy() {
         </section>
 
         <section aria-labelledby="c6"><h2 id="c6">Resultados</h2>
-          <p className="pending">Pendiente: al cierre de las mentorías (21 de noviembre) agregaré la retroalimentación anónima del grupo.</p>
+          <p className="pending">Pendiente: al cierre de las mentorías (finales de noviembre) agregaré la retroalimentación anónima del grupo.</p>
         </section>
 
         <section aria-labelledby="c7"><h2 id="c7">Aprendizajes</h2>
