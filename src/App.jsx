@@ -1,76 +1,161 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Starfield } from './Starfield.jsx';
+import { CometCursor, sparkleAt } from './CometCursor.jsx';
+
+/* ───────── Contenido ───────── */
 
 const sessions = [
   {
     id: 'metas',
     number: '01',
-    name: 'Definición de metas',
-    eyebrow: 'Primera mentoría',
-    length: '1 hora',
-    objective: 'Generar confianza, conocerse y construir un espacio seguro. Cada mentee define metas a corto y mediano plazo, expectativas, fortalezas y áreas de oportunidad.',
-    activities: [
-      ['Respiración o mindfulness', '5 min', 'Unos minutos de respiración profunda o escaneo corporal para llegar con calma. Mantén los ojos cerrados solo si se siente cómodo; también puedes mirar un punto fijo.'],
-      ['Presentación y rompehielos', '15–20 min', 'Elijan una o dos dinámicas: una palabra o frase sobre una anécdota importante, preguntas “¿Quién…?”, imágenes para representar emociones, un quiz digital o una autopresentación.'],
-      ['Metas SMART', '20 min', 'Definan 2 o 3 metas y pasos concretos. Pueden apoyarse en un calendario, una hoja, una matriz o un mapa visual.'],
-      ['Expectativas, fortalezas y áreas de oportunidad', '15–20 min', 'Reconozcan qué esperan del proceso, qué capacidades quieren poner en juego y qué habilidades desean desarrollar. Compartan ejemplos desde la experiencia propia.'],
-    ],
-    questions: ['¿Qué esperamos de esta mentoría y de nosotras mismas?', '¿Qué fortalezas queremos aplicar y con qué valores se conectan?', '¿Qué hábito concreto nos ayudaría a trabajar un área de oportunidad?'],
-    resources: ['Ejercicio de respiración o escaneo corporal del manual', 'Constructor de metas SMART en esta página'],
+    date: '2026-11-07',
+    dateLabel: 'Sáb 7 de noviembre · 17:00',
+    dateShort: 'sáb 7 nov · 17:00',
+    confirmed: true,
+    name: 'Conocernos y soñar en grande',
+    plain: 'Sesión 1 · Definir metas',
+    objective: 'Nos presentamos, nos reímos un poco y aterrizamos 2 o 3 metas que de verdad te emocionen (con pasos pequeñitos).',
+    bullets: ['Un minuto para llegar y respirar', 'Compartimos nuestra Misión 0 ✨', 'Armamos tus metas SMART', 'Tus fortalezas y lo que quieres desarrollar'],
+    bring: ['Tu presentación de la Misión 0 (como haya quedado)', 'Una idea de algo que te gustaría lograr este año'],
+    questions: ['¿Qué esperas de estas mentorías… y de ti?', '¿Qué fortaleza tuya quieres poner a jugar?', '¿Qué hábito pequeño te ayudaría a avanzar?'],
   },
   {
     id: 'trayectoria',
     number: '02',
-    name: 'Trayectoria académica',
-    eyebrow: 'Segunda mentoría',
-    length: '1 hora',
-    objective: 'Reflexionar sobre la trayectoria académica y aprovechar mejor la experiencia universitaria para tomar decisiones informadas sobre opciones educativas, carrera y futuro profesional.',
-    activities: [
-      ['Mapa de trayectorias educativas', '25–30 min', 'Recorran momentos y decisiones desde la infancia hasta la universidad. Identifiquen recuerdos, materias favoritas, personas influyentes y aspiraciones.'],
-      ['Aprovechamiento de la etapa universitaria', '25–30 min', 'Conversen sobre estudio consciente, networking, buscar mentoría y ofrecerla, voluntariado, organización del tiempo y metas académicas realistas.'],
-    ],
-    questions: ['¿Qué recuerdos destacan de cada etapa?', '¿Qué querías ser cuando eras niña?, ¿han cambiado tus aspiraciones?', '¿Te gustaría continuar estudiando?', '¿Qué oportunidades profesionales visualizas relacionadas con tu carrera?'],
-    resources: ['Mapa personal de trayectoria académica', 'Ejemplos y aprendizajes de la experiencia universitaria de la mentora'],
+    date: '2026-11-14',
+    dateLabel: 'Sáb 14 de noviembre · 17:00',
+    dateShort: 'sáb 14 nov · 17:00',
+    confirmed: false,
+    name: 'El mapa de tu camino',
+    plain: 'Sesión 2 · Trayectoria académica',
+    objective: 'Miramos hacia atrás para ver todo lo que ya recorriste, y hacia adelante para sacarle jugo a la uni.',
+    bullets: ['Tu mapa: de la infancia a hoy', 'Estudiar con propósito (y sin morir en el intento)', 'Networking, mentoras y voluntariado'],
+    bring: ['Un recuerdo de la escuela que te marcó', '¿Qué querías ser de niña?'],
+    questions: ['¿Qué querías ser de niña? ¿Sigue ahí ese sueño?', '¿Qué materia o persona cambió tu rumbo?', '¿Te imaginas seguir estudiando?'],
   },
   {
     id: 'empleo',
     number: '03',
-    name: 'Preparación para el primer empleo',
-    eyebrow: 'Tercera mentoría',
-    length: '1 hora',
-    objective: 'Explorar el panorama laboral, reconocer opciones profesionales afines a los intereses de cada mentee y preparar estrategias para enfrentar obstáculos.',
-    activities: [
-      ['Opciones laborales y búsqueda de empleo', '30–40 min', 'Conecten intereses y fortalezas con opciones profesionales; revisen CV y carta de presentación, investigación de empresas, networking y perfiles en plataformas como LinkedIn Jobs o Indeed.'],
-      ['Obstáculos en la vida profesional', '15–20 min', 'Hablen sobre resiliencia, discriminación y estereotipos. Practiquen respaldar logros con hechos, reconocer el mérito propio y pedir ayuda.'],
-      ['Primer empleo y entrevista', '15–20 min', 'Compartan experiencias, preparen respuestas para preguntas frecuentes y conversen sobre constancia, rechazo y estrategias que ayuden a reducir la ansiedad.'],
-    ],
-    questions: ['¿Qué intereses y fortalezas quiero llevar a mi búsqueda?', '¿Tú qué hubieras hecho ante este desafío?', '¿Qué hechos muestran lo que he logrado?', '¿Qué me ayudaría a sentir más confianza en una entrevista?'],
-    resources: ['Recomendaciones para hablar en público incluidas en el manual', 'Video TED de Amy Cuddy citado en el manual'],
+    date: '2026-11-21',
+    dateLabel: 'Sáb 21 de noviembre · 17:00',
+    dateShort: 'sáb 21 nov · 17:00',
+    confirmed: false,
+    name: 'Despegue al mundo laboral 🚀',
+    plain: 'Sesión 3 · Primer empleo',
+    objective: 'CV, LinkedIn, entrevistas y cómo no tomarte el “no” como algo personal.',
+    bullets: ['Tu CV y LinkedIn, con tus logros a la vista', 'Practicamos una entrevista (en modo amable)', 'Resiliencia: el rechazo también enseña'],
+    bring: ['Tu CV (aunque esté en borrador)', 'Una vacante o lugar donde te encantaría trabajar'],
+    questions: ['¿Qué logros tuyos merecen estar en tu CV?', 'Ante este reto… ¿tú qué hubieras hecho?', '¿Qué te daría más confianza en una entrevista?'],
   },
 ];
 
+const prompts = [
+  {
+    id: 'infografia',
+    label: '🖼️ Infografía',
+    text: `Crea una infografía horizontal ilustrada para presentarme en mi grupo de mentoría de mujeres universitarias.
+
+Estilo: [ej. ilustración acogedora, colores pastel / estética espacial / acuarela / pizarrón con gis].
+Título: "¡Hola! Soy [nombre]".
+
+Incluye estas secciones con íconos:
+- Lo que estudio: [carrera, semestre, universidad]
+- Lo que me apasiona: [2-3 temas]
+- Mis superpoderes: [2-3 habilidades o cualidades]
+- También soy: [hobbies, mascotas, música, deporte]
+- Lo que quiero lograr en esta mentoría: [1-2 metas]
+- Una frase que me representa: "[frase]"
+
+Agrega elementos visuales que me representen: [objetos, lugares o símbolos].
+Texto en español, legible y sin errores ortográficos.`,
+  },
+  {
+    id: 'video',
+    label: '🎬 Video corto',
+    text: `Ayúdame a crear un video corto (30-60 segundos) para presentarme en mi grupo de mentoría.
+
+Sobre mí:
+- Nombre: [nombre]
+- Estudio: [carrera y semestre]
+- Me apasiona: [temas]
+- Algo curioso de mí: [dato divertido]
+- Lo que quiero lograr: [meta]
+
+Dame:
+1. Un guion breve, en primera persona, con tono [cálido / divertido / inspirador].
+2. Una división en 4-6 escenas con lo que se ve en cada una y el texto en pantalla.
+3. Sugerencias de música, transiciones y emojis.
+4. Instrucciones paso a paso para editarlo en [CapCut / Canva / la app que tenga].`,
+  },
+  {
+    id: 'comic',
+    label: '📚 Cómic',
+    text: `Quiero presentarme como la protagonista de un cómic de 4 a 6 viñetas.
+
+Personaje: una versión ilustrada de mí, [descripción: cabello, estilo, accesorios], en estilo [anime / Pixar / cómic / pixel art / acuarela]. Mantén al personaje idéntico en todas las viñetas.
+
+Historia:
+- Viñeta 1: Quién soy: [nombre y lo que estudio]
+- Viñeta 2: Lo que me apasiona: [tema], en una escena visual
+- Viñeta 3: Un reto que he superado o estoy enfrentando: [reto]
+- Viñeta 4: Mi superpoder: [habilidad]
+- Viñeta 5: A dónde quiero llegar: [sueño o meta]
+- Viñeta 6: Una frase mía: "[frase]"
+
+Diálogos breves, en español y sin errores.
+Tip: genera una viñeta a la vez y pon los textos tú misma en Canva para que no salgan con errores.`,
+  },
+];
+
+const icebreakers = [
+  '¿Qué querías ser cuando tenías 8 años?',
+  'Si tu carrera fuera una canción, ¿cuál sería?',
+  '¿Qué superpoder elegirías para tu vida profesional?',
+  '¿Cuál es el mejor consejo que te han dado?',
+  '¿Qué tres cosas llevarías a una isla desierta?',
+  '¿Qué tema podrías explicar durante 10 minutos sin preparar nada?',
+  '¿Qué animal serías y por qué?',
+  '¿A qué mujer (real o ficticia) invitarías a cenar?',
+  '¿Qué es algo que aprendiste sola y te enorgullece?',
+  '¿Qué harías si supieras que no puedes fallar?',
+  '¿Cuál ha sido tu mayor “me atreví”?',
+  '¿Qué te hace perder la noción del tiempo?',
+  'Si pudieras dominar una habilidad mañana, ¿cuál sería?',
+  '¿Qué lugar del mundo te gustaría conocer y qué harías ahí?',
+  '¿Qué app, libro o serie le recomendarías a todo el grupo?',
+  '¿Cuál es tu ritual para concentrarte?',
+  '¿Qué pequeño logro de esta semana merece celebrarse?',
+  '¿Qué te gustaría que dijeran de ti en tu primer trabajo?',
+  '¿Qué pregunta te encantaría que te hicieran más seguido?',
+  'Si tu vida fuera una película, ¿cómo se llamaría este capítulo?',
+];
+
 const nodes = [
-  { id: 'intereses', label: 'Intereses', position: 'node-a', prompt: '¿Qué temas o actividades despiertan tu curiosidad y te dan ganas de seguir explorando?' },
-  { id: 'fortalezas', label: 'Fortalezas', position: 'node-b', prompt: '¿Qué capacidades reconoces en ti? ¿Qué suelen destacar de ti las personas cercanas?' },
-  { id: 'experiencias', label: 'Experiencias', position: 'node-c', prompt: '¿Qué momentos, decisiones o aprendizajes han influido en el camino que llevas?' },
-  { id: 'posibilidades', label: 'Posibilidades', position: 'node-d', prompt: '¿Qué paso pequeño te acercaría a una meta académica o profesional que te importa?' },
+  { id: 'intereses', label: 'Intereses', position: 'node-a', prompt: '¿Qué te da curiosidad? ¿De qué podrías platicar horas sin aburrirte?' },
+  { id: 'fortalezas', label: 'Fortalezas', position: 'node-b', prompt: '¿Qué se te da bien? ¿Qué te dicen tus amigas que haces increíble?' },
+  { id: 'experiencias', label: 'Experiencias', position: 'node-c', prompt: '¿Qué momentos o decisiones te trajeron hasta aquí?' },
+  { id: 'posibilidades', label: 'Posibilidades', position: 'node-d', prompt: '¿Qué te gustaría probar, aunque sea un poquito, en los próximos meses?' },
 ];
 
 const agreements = [
-  ['No discriminación', 'Construimos un entorno inclusivo, con cero tolerancia a la discriminación, el acoso y el hostigamiento.'],
-  ['Bienestar', 'La seguridad de las estudiantes guía el espacio. Las interacciones sexuales o violentas, y el consumo o fomento de sustancias, están prohibidos.'],
-  ['Confidencialidad', 'Cuidamos la privacidad de las estudiantes y la información compartida por ellas y por el equipo de BécALAS.'],
-  ['Derivación adecuada', 'Si una necesidad rebasa el alcance de la mentoría, contactamos al equipo de BécALAS para que oriente la derivación.'],
+  ['Aquí cabemos todas', 'Cero discriminación, cero acoso. Cada voz cuenta y se escucha con respeto.'],
+  ['Lo que se dice aquí, aquí se queda', 'Cuidamos lo que cada una comparte. No grabamos sin el acuerdo de todas.'],
+  ['Equivocarse es parte del experimento', 'Preguntar y pedir ayuda no es debilidad: es como se aprende.'],
+  ['Nos echamos porras, no competimos', 'Somos aliadas. Celebramos los logros de cada una, grandes o pequeños.'],
+  ['Si algo pesa, lo hablamos', 'Si algo te supera, dímelo. Buscamos juntas el apoyo adecuado con el equipo del programa.'],
 ];
 
 const initialSmart = { goal: '', measure: '', achievable: '', realistic: '', deadline: '', firstStep: '' };
-const smartLabels = [
-  ['goal', 'Específica', '¿Qué quieres lograr?'],
-  ['measure', 'Medible', '¿Cómo sabrás que avanzaste?'],
-  ['achievable', 'Alcanzable', '¿Qué necesitas para lograrlo?'],
-  ['realistic', 'Realista', '¿Qué no vas a sacrificar?'],
-  ['deadline', 'Con límite de tiempo', '¿Para cuándo?'],
-  ['firstStep', 'Primer paso', '¿Qué puedes hacer esta semana?'],
+const smartFields = [
+  ['goal', 'S · Específica', '¿Qué quieres lograr?', 'Ej. Conseguir mis primeras prácticas en un laboratorio'],
+  ['measure', 'M · Medible', '¿Cómo sabrás que avanzaste?', 'Ej. Enviar 10 solicitudes y tener 2 entrevistas'],
+  ['achievable', 'A · Alcanzable', '¿Qué necesitas para lograrlo?', 'Ej. Actualizar mi CV y mi LinkedIn'],
+  ['realistic', 'R · Realista', '¿Qué no vas a sacrificar?', 'Ej. Mis horas de sueño y mis clases'],
+  ['deadline', 'T · Con fecha', '¿Para cuándo?', 'Ej. 31 de enero de 2027'],
+  ['firstStep', 'Primer pasito 👣', '¿Qué puedes hacer esta semana?', 'Ej. Pedirle a alguien que revise mi CV'],
 ];
+
+/* ───────── Utilidades ───────── */
 
 function readSaved(key, fallback) {
   try {
@@ -81,317 +166,525 @@ function readSaved(key, fallback) {
   }
 }
 
-function SectionHeading({ label, title, intro }) {
+function saveLocal(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* opcional */ }
+}
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
+}
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function SectionHeading({ id, label, title, intro, dark }) {
   return (
-    <header className="section-heading">
+    <header className={`section-heading ${dark ? 'on-dark' : ''}`}>
       <p className="section-label">{label}</p>
-      <h2>{title}</h2>
+      <h2 id={id}>{title}</h2>
       {intro && <p className="section-intro">{intro}</p>}
     </header>
   );
 }
 
-export function App() {
-  const path = window.location.pathname.replace(/\/+$/, '') || '/';
-  return path === '/caso' ? <CaseStudy /> : <Microsite />;
+function BrandLockup({ href, label }) {
+  return (
+    <a className="brand-lockup" href={href} aria-label={label}>
+      <span className="brand-program">Mentorías BécALAS 2026 · Grupo de Wen</span>
+      <span className="brand-primary">un proyecto de Cognitive Observatory</span>
+    </a>
+  );
 }
 
-function CaseStudy() {
+/* ───────── App ───────── */
+
+export function App() {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
   return (
     <>
-      <a className="skip-link" href="#case-content">Saltar al contenido</a>
-      <header className="site-header">
-        <a className="brand-lockup" href="/" aria-label="Volver al micrositio de mentoría">
-          <span className="brand-primary">Cognitive Observatory</span>
-          <span className="brand-divider" aria-hidden="true">/</span>
-          <span className="brand-program">BécALAS Conectadas</span>
-        </a>
-        <a className="case-back-link" href="/">Volver al observatorio</a>
-      </header>
-      <main className="case-page section-wrap" id="case-content">
-        <p className="section-label">Caso de diseño · 2026</p>
-        <h1>Un espacio digital para acompañar la mentoría</h1>
-        <p className="case-lede">Un micrositio para que un grupo de BécALAS encuentre el calendario, las actividades y las herramientas de sus conversaciones de noviembre.</p>
-        <section>
-          <h2>El reto</h2>
-          <p>La experiencia debía unir una estructura sencilla de recorrido con una identidad editorial de observación y conexión. El contenido del manual de mentoría marcó qué información y actividades podían incluirse.</p>
-        </section>
-        <section>
-          <h2>Decisiones de experiencia</h2>
-          <ul>
-            <li>Mostrar primero la próxima sesión y ofrecer una ruta clara a la primera misión.</li>
-            <li>Organizar las tres sesiones en una secuencia expandible, con objetivos, actividades, tiempos sugeridos, preguntas y recursos.</li>
-            <li>Convertir SMART, la constelación y la bitácora en herramientas que cada participante puede explorar a su ritmo.</li>
-            <li>Usar el mapa de conexiones como una ilustración de ideas, con controles accesibles para explorar intereses, fortalezas, experiencias y posibilidades.</li>
-          </ul>
-        </section>
-        <section>
-          <h2>Privacidad y confianza</h2>
-          <p>Las notas de la bitácora se guardan solo en el navegador de quien las escribe. El micrositio no recopila nombres ni datos de las mentoradas y dirige las necesidades de apoyo al equipo de seguimiento de BécALAS.</p>
-        </section>
-        <section>
-          <h2>Una decisión importante</h2>
-          <p>La propuesta visual de Claude aportó una estructura útil. Las actividades y el calendario del sitio se ajustaron al manual y a la información confirmada por la mentora; los recursos no descritos quedan señalados para compartir después.</p>
-        </section>
-      </main>
-      <footer className="site-footer case-footer">
-        <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI Cognitive Observatory.</p>
-        <a href="/">Volver al observatorio</a>
-      </footer>
+      <CometCursor />
+      {path === '/caso' ? <CaseStudy /> : <Microsite />}
     </>
   );
 }
+
+/* ───────── Componentes interactivos ───────── */
+
+function MissionTabs() {
+  const [active, setActive] = useState(0);
+  const [copied, setCopied] = useState('');
+  const tabRefs = useRef([]);
+
+  function onKey(event) {
+    const last = prompts.length - 1;
+    let next = null;
+    if (event.key === 'ArrowRight') next = active === last ? 0 : active + 1;
+    if (event.key === 'ArrowLeft') next = active === 0 ? last : active - 1;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = last;
+    if (next !== null) {
+      event.preventDefault();
+      setActive(next);
+      tabRefs.current[next]?.focus();
+    }
+  }
+
+  async function onCopy(event) {
+    const ok = await copyText(prompts[active].text);
+    setCopied(ok ? '¡Listo, copiado! Ahora pégalo en tu IA favorita ✨' : 'No pude copiarlo automáticamente: selecciona el texto y cópialo.');
+    if (ok) sparkleAt(event.currentTarget);
+    window.setTimeout(() => setCopied(''), 3200);
+  }
+
+  return (
+    <div className="mission-tabs">
+      <div className="tablist" role="tablist" aria-label="Elige un formato para tu presentación">
+        {prompts.map((prompt, index) => (
+          <button
+            key={prompt.id}
+            ref={(el) => { tabRefs.current[index] = el; }}
+            role="tab"
+            id={`tab-${prompt.id}`}
+            aria-selected={active === index}
+            aria-controls={`panel-${prompt.id}`}
+            tabIndex={active === index ? 0 : -1}
+            className="tab"
+            type="button"
+            onClick={() => setActive(index)}
+            onKeyDown={onKey}
+          >
+            {prompt.label}
+          </button>
+        ))}
+      </div>
+      <div className="prompt-panel" role="tabpanel" id={`panel-${prompts[active].id}`} aria-labelledby={`tab-${prompts[active].id}`}>
+        <pre className="prompt-text" tabIndex={0}>{prompts[active].text}</pre>
+        <div className="prompt-actions">
+          <button className="button button-primary" type="button" onClick={onCopy}>Copiar prompt ✨</button>
+          <p className="status-text" role="status" aria-live="polite">{copied}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CometButton() {
+  const [question, setQuestion] = useState('');
+  const pool = useRef([]);
+
+  function launch(event) {
+    if (pool.current.length === 0) pool.current = [...icebreakers].sort(() => Math.random() - 0.5);
+    setQuestion(pool.current.pop());
+    sparkleAt(event.currentTarget);
+  }
+
+  return (
+    <div className="comet-box">
+      <button className="button button-primary" type="button" onClick={launch}>☄️ Lanza un cometa</button>
+      <p className="comet-question" aria-live="polite">{question || 'Aprieta el botón y te cae una pregunta para romper el hielo.'}</p>
+    </div>
+  );
+}
+
+function SessionProgress() {
+  const today = todayISO();
+  return (
+    <ol className="progress-constellation" aria-label="Avance de nuestras sesiones">
+      {sessions.map((session, index) => {
+        const done = today > session.date;
+        const isToday = today === session.date;
+        return (
+          <li key={session.id} className={`progress-star ${done ? 'is-done' : ''} ${isToday ? 'is-today' : ''}`}>
+            <span className="star-dot" aria-hidden="true">{done ? '★' : '☆'}</span>
+            <span className="star-label">Sesión {index + 1}{done ? ' ✓ completada' : isToday ? ' · ¡hoy!' : ''}</span>
+            {index < sessions.length - 1 && <span className="star-line" aria-hidden="true" />}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/* ───────── Página principal ───────── */
 
 function Microsite() {
   const [openSession, setOpenSession] = useState('metas');
   const [activeNode, setActiveNode] = useState('intereses');
   const [breathing, setBreathing] = useState(false);
   const [smart, setSmart] = useState(() => readSaved('becalas-smart', initialSmart));
+  const [smartCopied, setSmartCopied] = useState('');
   const [activeLogSession, setActiveLogSession] = useState('metas');
   const [log, setLog] = useState(() => readSaved('becalas-log', { metas: {}, trayectoria: {}, empleo: {} }));
   const [savedMessage, setSavedMessage] = useState('');
+  const celebrated = useRef(false);
+  const previewRef = useRef(null);
 
+  const today = todayISO();
+  const nextSession = sessions.find((s) => s.date >= today) ?? sessions[sessions.length - 1];
+
+  useEffect(() => { saveLocal('becalas-smart', smart); }, [smart]);
+
+  const smartComplete = ['goal', 'measure', 'achievable', 'realistic', 'deadline'].every((key) => (smart[key] ?? '').trim());
   useEffect(() => {
-    try { localStorage.setItem('becalas-smart', JSON.stringify(smart)); } catch { /* local save is optional */ }
-  }, [smart]);
+    if (smartComplete && !celebrated.current) {
+      celebrated.current = true;
+      if (previewRef.current) sparkleAt(previewRef.current, 18);
+    }
+    if (!smartComplete) celebrated.current = false;
+  }, [smartComplete]);
+
+  const s = Object.fromEntries(Object.entries(smart).map(([k, v]) => [k, (v ?? '').trim()]));
+  const smartSentence = s.goal
+    ? [
+        `🎯 Mi meta: ${s.goal}${s.deadline ? `, a más tardar el ${s.deadline}` : ''}.`,
+        s.measure && `📏 Sabré que avancé cuando: ${s.measure}.`,
+        s.achievable && `🧰 Necesito: ${s.achievable}.`,
+        s.realistic && `⚖️ Sin sacrificar: ${s.realistic}.`,
+        s.firstStep && `👣 Mi primer pasito esta semana: ${s.firstStep}.`,
+      ].filter(Boolean).join('\n')
+    : '';
 
   const currentNode = nodes.find((node) => node.id === activeNode) ?? nodes[0];
   const currentLog = log[activeLogSession] ?? {};
 
+  function flash(setter, message) {
+    setter(message);
+    window.setTimeout(() => setter(''), 3200);
+  }
+
+  async function copySmart(event) {
+    const ok = await copyText(smartSentence);
+    if (ok) sparkleAt(event.currentTarget);
+    flash(setSmartCopied, ok ? '¡Copiada! Tráela a la sesión ✨' : 'Selecciona el texto y cópialo manualmente.');
+  }
+
   function openJournal(sessionId) {
     if (sessionId) setActiveLogSession(sessionId);
     document.getElementById('bitacora')?.scrollIntoView({ behavior: 'smooth' });
-    window.setTimeout(() => document.getElementById('journal-discovery')?.focus(), 450);
-  }
-
-  function saveJournal() {
-    const next = { ...log, [activeLogSession]: currentLog };
-    setLog(next);
-    try { localStorage.setItem('becalas-log', JSON.stringify(next)); } catch { /* local save is optional */ }
-    setSavedMessage('Tu reflexión quedó guardada en este navegador.');
-    window.setTimeout(() => setSavedMessage(''), 3600);
+    window.setTimeout(() => document.getElementById('journal-discovery')?.focus({ preventScroll: true }), 450);
   }
 
   function updateCurrentLog(field, value) {
     setLog((previous) => ({ ...previous, [activeLogSession]: { ...(previous[activeLogSession] ?? {}), [field]: value } }));
   }
 
+  function saveJournal(event) {
+    const next = { ...log, [activeLogSession]: currentLog };
+    setLog(next);
+    saveLocal('becalas-log', next);
+    sparkleAt(event.currentTarget);
+    flash(setSavedMessage, '¡Guardado en tu celular! 🔒');
+  }
+
   function clearJournal() {
     const next = { ...log, [activeLogSession]: {} };
     setLog(next);
-    try { localStorage.setItem('becalas-log', JSON.stringify(next)); } catch { /* local save is optional */ }
-    setSavedMessage('La reflexión de esta sesión se borró de este navegador.');
-    window.setTimeout(() => setSavedMessage(''), 3600);
+    saveLocal('becalas-log', next);
+    flash(setSavedMessage, 'Listo, borré tus notas de esta sesión.');
+  }
+
+  function clearSmart() {
+    setSmart(initialSmart);
+    flash(setSmartCopied, 'Campos en blanco. ¡A empezar de nuevo!');
   }
 
   return (
     <>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
       <header className="site-header">
-        <a className="brand-lockup" href="#inicio" aria-label="Cognitive Observatory y BécALAS Conectadas, inicio">
-          <span className="brand-primary">Cognitive Observatory</span>
-          <span className="brand-divider" aria-hidden="true">/</span>
-          <span className="brand-program">BécALAS Conectadas</span>
-        </a>
+        <BrandLockup href="#inicio" label="Mentorías BécALAS 2026, grupo de Wen. Ir al inicio" />
         <nav className="main-nav" aria-label="Navegación principal">
           <a href="#proxima">Próxima sesión</a>
           <a href="#mision">Mi misión</a>
-          <a href="#recorrido">Sesiones</a>
-          <a href="#instrumentos">Mis herramientas</a>
+          <a href="#sesiones">Sesiones</a>
+          <a href="#herramientas">Mis herramientas</a>
           <a href="#recursos">Recursos</a>
-          <a href="#contacto">Apoyo</a>
+          <a href="#apoyo">Apoyo</a>
         </nav>
       </header>
 
       <main id="contenido">
+        {/* HERO */}
         <section className="hero" id="inicio" aria-labelledby="hero-title">
+          <Starfield />
           <div className="hero-copy">
             <p className="kicker">Observatorio de mentoría · BécALAS 2026</p>
-            <h1 id="hero-title">¡Exploremos juntas!</h1>
-            <p className="hero-lede">Este es nuestro espacio para las mentorías de noviembre: aquí encuentras las fechas, tu primera misión y herramientas para cada sesión.</p>
-            <p className="hero-quote">“No necesitas tener todo resuelto para empezar a construir la trayectoria que deseas. La curiosidad, la constancia y las ganas de aprender abren caminos que hoy ni imaginas.”</p>
-            <div className="hero-actions"><a className="button button-primary" href="#mision">Ver mi primera misión</a><a className="button button-outline" href="#proxima">Próxima sesión: sáb 7 nov · 17:00</a></div>
+            <h1 id="hero-title">¡Exploremos juntas! <span aria-hidden="true">🔭</span></h1>
+            <p className="hero-lede">Aquí está todo lo de nuestras mentorías: cuándo nos vemos, tu primera misión y herramientas para jugar con tus ideas.</p>
+            <blockquote className="hero-quote">No necesitas tener todo resuelto para empezar a construir la trayectoria que deseas. La curiosidad, la constancia y las ganas de aprender abren caminos que hoy ni imaginas.</blockquote>
+            <div className="hero-actions">
+              <a className="button button-primary" href="#mision" onClick={(e) => sparkleAt(e.currentTarget)}>Ver mi primera misión</a>
+              <a className="button button-ghost" href="#proxima">Próxima sesión: {nextSession.dateShort}</a>
+            </div>
           </div>
-          <figure className="hero-art" aria-hidden="true">
-            <img src="/observatory-map.png" alt="" />
-          </figure>
         </section>
 
+        {/* PRÓXIMA SESIÓN */}
+        <section className="next-session" id="proxima" aria-labelledby="next-title">
+          <div className="section-wrap next-grid">
+            <div>
+              <p className="section-label">Próxima sesión</p>
+              <h2 id="next-title">{nextSession.dateLabel}</h2>
+              <p className="next-sub">{nextSession.plain} · {nextSession.name}. {nextSession.confirmed ? 'Por videollamada: el enlace llega por el grupo de WhatsApp.' : 'Fecha por confirmar en el grupo.'}</p>
+              <p className="next-sub">Duración: 1 hora · En grupo, las 3 juntas con Wen.</p>
+            </div>
+            <SessionProgress />
+          </div>
+        </section>
+
+        {/* WEN */}
         <section className="guide-section section-wrap" aria-labelledby="guide-title">
-          <SectionHeading label="Tu guía en este observatorio" title="Hola, soy Wen 👋" />
-          <p className="guide-bio">Soy psicóloga con formación en neuropsicología y trabajo en la intersección entre inteligencia artificial, ciencia de datos, tecnología y educación. Me apasiona usar la tecnología para resolver problemas reales y encontrar conexiones entre disciplinas que parecen no tener nada que ver. Soy una eterna aprendiz, amante de la ciencia, el arte, el deporte y las buenas conversaciones. 🪐<br /><br />Este espacio es suyo: un lugar para preguntar, experimentar, equivocarse y reconocer todo lo que son capaces de construir. Yo también vengo a aprender de ustedes.</p>
-          <ul className="guide-tags" aria-label="Áreas de interés"><li>Neurociencia</li><li>Datos</li><li>IA</li><li>Educación</li></ul>
-        </section>
-
-        <section className="next-session section-wrap" id="proxima">
-          <p className="section-label">Próxima sesión</p><h2>Sábado 7 de noviembre · 17:00</h2>
-          <p>Nos encontramos para iniciar la mentoría y conocernos. La plataforma y el enlace se comparten por el grupo.</p>
-        </section>
-
-        <section className="mission-section section-wrap" id="mision">
-          <SectionHeading label="Tu primera misión" title="Llega con curiosidad" intro="La primera sesión es flexible y la construimos juntas. Si te sirve, puedes traer algunas ideas; no necesitas preparar una tarea obligatoria." />
-          <ul className="mission-list"><li>Piensa qué esperas de esta mentoría y de ti.</li><li>Reconoce una fortaleza que quieras poner en juego y algo que te gustaría desarrollar.</li><li>Imagina dos o tres metas académicas o profesionales; las podremos trabajar juntas con pasos concretos.</li></ul>
-        </section>
-
-        <section className="purpose section-wrap" id="proposito">
-          <div className="purpose-mark" aria-hidden="true">01</div>
-          <div className="purpose-content">
-            <SectionHeading label="El propósito" title="Un espacio para pensar en compañía" />
-            <div className="purpose-columns">
-              <p>BécALAS fortalece el desarrollo personal, académico y profesional de mujeres universitarias y acompaña la construcción de una red de aprendizaje con perspectiva de género.</p>
-              <p>La mentoría abre un espacio seguro para compartir experiencia, escuchar y orientar. La mentora acompaña a cada mentee a encontrar una ruta propia; sus decisiones siguen siendo suyas.</p>
-            </div>
-            <div className="program-facts" aria-label="Datos del programa">
-              <div><strong>3</strong><span>sesiones grupales</span></div>
-              <div><strong>1 h</strong><span>por sesión</span></div>
-              <div><strong>Nov.</strong><span>una vez por semana</span></div>
-            </div>
-            <div className="expectations">
-              <p>En estas conversaciones puedes:</p>
-              <ul>
-                <li>Preguntar, proponer y explorar con confianza.</li>
-                <li>Reconocer y fortalecer tus habilidades.</li>
-                <li>Ampliar tu red y tus posibilidades junto a otras mujeres.</li>
-              </ul>
-            </div>
+          <div className="guide-avatar" aria-hidden="true">🪐</div>
+          <div>
+            <SectionHeading id="guide-title" label="Tu guía en este observatorio" title="Hola, soy Wen 👋" />
+            <p className="guide-bio">Soy psicóloga con formación en neuropsicología y trabajo donde se cruzan la inteligencia artificial, los datos, la tecnología y la educación. Me encanta usar la tecnología para resolver problemas reales y encontrar conexiones entre cosas que parecen no tener nada que ver. Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones.</p>
+            <p className="guide-bio">Este espacio es suyo: para preguntar, experimentar, equivocarse y descubrir todo lo que son capaces de construir. Yo también vengo a aprender de ustedes.</p>
+            <ul className="guide-tags" aria-label="Lo que me apasiona"><li>Neurociencia</li><li>Datos</li><li>IA</li><li>Educación</li></ul>
           </div>
         </section>
 
-        <section className="route-section" id="recorrido">
+        {/* MISIÓN 0 */}
+        <section className="mission-section" id="mision" aria-labelledby="mission-title">
           <div className="section-wrap">
-          <SectionHeading label="Sesiones" title="Tres noches de observación" intro="Nuestras 3 sesiones de noviembre" />
-            <div className="route-meta"><span>3 encuentros</span><span>Noviembre de 2026</span><span>1 sesión por semana</span></div>
+            <SectionHeading
+              id="mission-title"
+              dark
+              label="Tu primera misión 🔭"
+              title="Misión 0: preséntate con IA"
+              intro="Antes de la sesión 1, elige un formato, copia el prompt, cambia lo que está entre [corchetes] por tus datos y pégalo en ChatGPT, Gemini o la IA que prefieras. No tiene que quedar perfecto: si sale raro, mejor, ¡de eso platicamos! En la sesión compartimos lo que hiciste y qué tuviste que corregirle a la IA."
+            />
+            <MissionTabs />
+            <p className="privacy-tip">🔒 <strong>Cuida tus datos:</strong> no le compartas a la IA tu dirección, teléfono, CURP ni datos de otras personas. Si no quieres usar tu foto, un avatar ilustrado funciona perfecto.</p>
+          </div>
+        </section>
+
+        {/* SESIONES */}
+        <section className="route-section" id="sesiones" aria-labelledby="sessions-title">
+          <div className="section-wrap">
+            <SectionHeading id="sessions-title" label="Sesiones" title="Tres noches de observación" intro="Nuestras 3 sesiones de noviembre: nos vemos tres sábados para platicar, probar cosas y armar planes." />
             <div className="session-list">
               {sessions.map((session) => {
                 const expanded = openSession === session.id;
                 return (
                   <article className={`session ${expanded ? 'is-open' : ''}`} key={session.id}>
-                    <button className="session-trigger" type="button" aria-expanded={expanded} aria-controls={`session-${session.id}`} onClick={() => setOpenSession(expanded ? '' : session.id)}>
-                      <span className="session-number">{session.number}</span>
-                      <span className="session-title-group"><span className="session-eyebrow">{session.eyebrow}</span><span className="session-title">{session.name}</span></span>
-                      <span className="session-duration">{session.length}</span>
-                      <span className="session-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
-                    </button>
-                    {expanded && (
-                      <div className="session-detail" id={`session-${session.id}`}>
-                        <div className="session-summary"><h3>Para qué nos reunimos</h3><p>{session.objective}</p></div>
-                        <div className="session-detail-grid">
-                          <div>
-                            <h3>Actividades sugeridas</h3>
-                            <ol className="activity-list">{session.activities.map(([name, time, description]) => <li key={name}><div className="activity-head"><strong>{name}</strong><span>{time}</span></div><p>{description}</p></li>)}</ol>
-                            <p className="timing-note">Los tiempos de las actividades son sugerencias del manual. Ajusten el contenido al encuentro de una hora.</p>
-                          </div>
-                          <aside className="session-aside">
-                            <h3>Preguntas para conversar</h3>
-                            <ul className="plain-list">{session.questions.map((question) => <li key={question}>{question}</li>)}</ul>
-                            <h3>Para tener a la mano</h3>
-                            <ul className="plain-list resource-list">{session.resources.map((resource) => <li key={resource}>{resource}</li>)}</ul>
-                          </aside>
+                    <h3 className="session-heading">
+                      <button className="session-trigger" type="button" aria-expanded={expanded} aria-controls={`session-${session.id}`} onClick={() => setOpenSession(expanded ? '' : session.id)}>
+                        <span className="session-number" aria-hidden="true">{session.number}</span>
+                        <span className="session-title-group">
+                          <span className="session-eyebrow">{session.plain} · {session.dateLabel}{session.confirmed ? '' : ' (por confirmar)'}</span>
+                          <span className="session-title">{session.name}</span>
+                        </span>
+                        <span className="session-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
+                      </button>
+                    </h3>
+                    <div className="session-detail" id={`session-${session.id}`} hidden={!expanded}>
+                      <p className="session-objective">{session.objective}</p>
+                      <div className="session-detail-grid">
+                        <div>
+                          <h4>En esta sesión vamos a…</h4>
+                          <ul className="plain-list">{session.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
+                          <h4>Trae contigo…</h4>
+                          <ul className="plain-list">{session.bring.map((b) => <li key={b}>{b}</li>)}</ul>
                         </div>
-                        <button className="text-button" type="button" onClick={() => openJournal(session.id)}>Registrar aprendizaje o compromiso <span aria-hidden="true">↘</span></button>
+                        <aside className="session-aside">
+                          <h4>Preguntas para ir pensando</h4>
+                          <ul className="plain-list">{session.questions.map((q) => <li key={q}>{q}</li>)}</ul>
+                        </aside>
                       </div>
-                    )}
+                      <button className="text-button" type="button" onClick={() => openJournal(session.id)}>Anotar en mi bitácora <span aria-hidden="true">↘</span></button>
+                    </div>
                   </article>
                 );
               })}
             </div>
-            <p className="route-footnote">La primera sesión es el sábado 7 de noviembre a las 17:00. Las fechas y la plataforma de las siguientes sesiones se acuerdan en grupo; el manual recomienda concluir idealmente en la semana del 16 al 20.</p>
+            <CometButton />
           </div>
         </section>
 
+        {/* RESPIRA */}
         <section className="breath-section" id="pausa" aria-labelledby="breath-title">
           <div className="breath-copy">
-            <p className="section-label">Una pausa, si te sirve</p>
-            <h2 id="breath-title">Tómate un momento para llegar</h2>
-            <p>La respiración es una sugerencia del manual para abrir la primera sesión. Puedes bajar la mirada, atender a los sonidos o simplemente quedarte en silencio. No hay una forma correcta de sentirse.</p>
+            <p className="section-label">Opcional, sin presión 🌬️</p>
+            <h2 id="breath-title">Antes de despegar, respira</h2>
+            <p>Un minuto para llegar de verdad. Puedes cerrar los ojos o mirar un punto fijo. No hay una forma correcta de sentirse.</p>
           </div>
           <div className="breath-control">
-            {!breathing && <p className="breath-instruction">Empieza cuando te sientas lista.</p>}
-            <button className="button button-dark" type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((value) => !value)}>{breathing ? 'Cerrar la guía' : 'Abrir la guía'}</button>
-            {breathing && <div className="breath-guide" id="breath-guide" aria-live="polite"><p>Colócate en una posición cómoda. Si cerrar los ojos te incomoda, baja la mirada y observa un punto fijo.</p><p>Nota el contacto de tus pies con el piso y el peso de tu cuerpo. Atiende a tu respiración o a los sonidos que te rodean.</p><p>¿Cómo te sientes ahora? No hay una respuesta correcta. Cuando estés lista, vuelve a centrarte en el espacio a tu alrededor.</p></div>}
+            <button className="button button-dark" type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>{breathing ? 'Cerrar la guía' : 'Abrir la guía'}</button>
+            <div className="breath-guide" id="breath-guide" hidden={!breathing}>
+              <div className="breath-orb" aria-hidden="true" />
+              <ol>
+                <li>Ponte cómoda, con la espalda derecha.</li>
+                <li>Inhala lento por la nariz… y suelta el aire despacito.</li>
+                <li>Siente tus pies en el piso y el peso de tu cuerpo.</li>
+                <li>¿Cómo llegas hoy? No tienes que decirlo en voz alta.</li>
+              </ol>
+            </div>
           </div>
         </section>
 
-        <section className="smart-section section-wrap" id="instrumentos">
+        {/* HERRAMIENTAS */}
+        <section className="smart-section section-wrap" id="herramientas" aria-labelledby="smart-title">
           <div className="smart-intro">
-            <p className="section-label">Herramienta de la primera mentoría</p>
-            <h2>Una meta que puedas mirar de cerca</h2>
-            <p>El manual sugiere definir de dos a tres metas. Prueba con una aquí y ajústala en conversación con tu mentora. Se guarda solo en este navegador.</p>
-            <button className="text-button" type="button" onClick={() => setSmart(initialSmart)}>Limpiar los campos <span aria-hidden="true">↺</span></button>
+            <p className="section-label">Mis herramientas · Sesión 1</p>
+            <h2 id="smart-title">Tu meta, pero aterrizada</h2>
+            <p>Escríbela como te salga; abajo se va armando sola. Nadie más la ve: se guarda solo en tu celular o compu.</p>
+            <button className="text-button" type="button" onClick={clearSmart}>Borrar mis respuestas <span aria-hidden="true">↺</span></button>
           </div>
           <div className="smart-builder">
-            <div className="smart-letters" aria-label="Criterios SMART"><span>S · Específica</span><span>M · Medible</span><span>A · Alcanzable</span><span>R · Realista</span><span>T · Con plazo</span></div>
             <div className="smart-fields">
-              {smartLabels.map(([key, title, question]) => <label className="field" key={key}><span>{title}</span><span className="field-prompt">{question}</span><input value={smart[key] ?? ''} onChange={(event) => setSmart((previous) => ({ ...previous, [key]: event.target.value }))} placeholder="Escribe una idea" /></label>)}
+              {smartFields.map(([key, title, question, example]) => (
+                <div className="field" key={key}>
+                  <label htmlFor={`smart-${key}`}>{title}</label>
+                  <span className="field-prompt" id={`smart-${key}-hint`}>{question}</span>
+                  <input id={`smart-${key}`} aria-describedby={`smart-${key}-hint`} value={smart[key] ?? ''} onChange={(e) => setSmart((p) => ({ ...p, [key]: e.target.value }))} placeholder={example} />
+                </div>
+              ))}
             </div>
-            <div className="goal-preview"><span>Tu primer paso</span><p>{smart.firstStep || 'Aquí aparecerá el paso pequeño que quieras intentar esta semana.'}</p></div>
+            <div className={`goal-preview ${smartComplete ? 'is-complete' : ''}`} ref={previewRef}>
+              <span className="goal-preview-label">{smartComplete ? '¡Meta lista! ✨' : 'Tu meta se arma aquí'}</span>
+              <p>{smartSentence || 'Empieza por “¿Qué quieres lograr?” y aquí va apareciendo 👣'}</p>
+            </div>
+            <div className="prompt-actions">
+              <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence}>Copiar mi meta</button>
+              <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
+            </div>
           </div>
         </section>
 
-        <section className="constellation-section" id="mapa">
+        <section className="constellation-section" id="mapa" aria-labelledby="map-title">
           <div className="section-wrap constellation-layout">
             <div className="constellation-copy">
-              <SectionHeading label="Mapa de posibilidades" title="Tu constelación" intro="Mapa de intereses, fortalezas y posibilidades" />
-              <div className="node-selector" role="group" aria-label="Explora una dimensión de tu mapa">
+              <SectionHeading id="map-title" dark label="Mis herramientas" title="Tu constelación ✨" intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar. Toca un punto y contesta en tu cabeza (o en tu bitácora). No hay respuestas correctas, solo pistas." />
+              <div className="node-selector" role="group" aria-label="Elige un punto de tu constelación">
                 {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
               </div>
               <div className="node-prompt" aria-live="polite"><span>{currentNode.label}</span><p>{currentNode.prompt}</p></div>
             </div>
-            <div className="constellation-map" aria-label="Mapa visual de ideas conectadas">
-              <img src="/observatory-map.png" alt="Conexiones de un mapa de pensamiento" />
-              {nodes.map((node) => <button key={node.id} type="button" className={`map-node ${node.position} ${activeNode === node.id ? 'is-active' : ''}`} aria-label={`Explorar ${node.label}`} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}><span>{node.label}</span></button>)}
-              <p className="map-caption">Tu mapa puede cambiar. Empieza por el punto que hoy te llame.</p>
+            <div className="constellation-map" aria-hidden="true">
+              <img src="/observatory-map.png" alt="" />
+              {nodes.map((node) => <span key={node.id} className={`map-node ${node.position} ${activeNode === node.id ? 'is-active' : ''}`}>{node.label}</span>)}
             </div>
           </div>
         </section>
 
-        <section className="resources-section section-wrap" id="recursos">
-          <SectionHeading label="Recursos" title="Instrumentos" intro="Recursos para antes y después de cada sesión" />
-          <div className="resource-rows">
-            <article className="resource-row"><span className="resource-index">A</span><div><h3>Respiración y mindfulness</h3><p>El manual incluye ejercicios de respiración para relajarse, hacer un escaneo corporal y llegar al momento presente. Puedes elegir el que te resulte cómodo.</p></div><a href="#pausa">Ir a la pausa <span aria-hidden="true">↗</span></a></article>
-            <article className="resource-row"><span className="resource-index">B</span><div><h3>Definir metas</h3><p>El manual recomienda metas SMART y propone apoyarse en un calendario, una hoja, una matriz o un mapa visual para seguir los pasos.</p></div><a href="#instrumentos">Abrir herramienta <span aria-hidden="true">↗</span></a></article>
-            <article className="resource-row"><span className="resource-index">C</span><div><h3>Hablar en público</h3><p>El manual reúne recomendaciones para preparar una presentación, practicar, usar apoyos visuales sencillos y respirar antes de hablar.</p></div><a href="https://youtu.be/Ks-_Mh1QhMc?si=Z2_xBWz8gSVyqWf5" target="_blank" rel="noreferrer">Ver charla TED <span aria-hidden="true">↗</span></a></article>
-            <article className="resource-row"><span className="resource-index">D</span><div><h3>Lectura complementaria sobre metas</h3><p>Referencia de Asana incluida en la bibliografía del manual para explorar cómo establecer objetivos a largo plazo.</p></div><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer">Leer en Asana <span aria-hidden="true">↗</span></a></article>
-            <article className="resource-row"><span className="resource-index">E</span><div><h3>Otros materiales de la mentoría</h3><p>Agrega aquí lecturas, hojas de trabajo o herramientas acordadas por el grupo. Este espacio queda listo para recursos que comparta BécALAS.</p></div><span className="resource-status">Por compartir</span></article>
-          </div>
-        </section>
-
-        <section className="journal-section" id="bitacora">
+        {/* BITÁCORA */}
+        <section className="journal-section" id="bitacora" aria-labelledby="journal-title">
           <div className="section-wrap journal-layout">
             <div className="journal-intro">
-              <SectionHeading label="Bitácora" title="Tu bitácora de observación" intro="Notas de cada sesión" />
-              <p className="privacy-note">Tus notas se quedan en este navegador. No se envían a BécALAS ni se sincronizan con otros dispositivos.</p>
+              <SectionHeading id="journal-title" label="Mis herramientas" title="Tu bitácora de exploradora" intro="Después de cada sesión: ¿qué descubriste?, ¿qué te llevas?, ¿qué vas a probar esta semana?" />
+              <p className="privacy-note">🔒 Lo que escribas se queda en tu celular o compu. Ni yo lo veo.</p>
             </div>
             <div className="journal-form">
-              <label className="field"><span>Sesión</span><select value={activeLogSession} onChange={(event) => setActiveLogSession(event.target.value)}>{sessions.map((session) => <option value={session.id} key={session.id}>{session.number} · {session.name}</option>)}</select></label>
-              <label className="field"><span>¿Qué descubrí?</span><textarea id="journal-discovery" value={currentLog.discovery ?? ''} onChange={(event) => updateCurrentLog('discovery', event.target.value)} placeholder="Una idea, fortaleza o posibilidad que hoy pude ver…" rows="3" /></label>
-              <label className="field"><span>¿Qué me llevo de esta conversación?</span><textarea value={currentLog.learning ?? ''} onChange={(event) => updateCurrentLog('learning', event.target.value)} placeholder="Algo que aprendí, una pregunta que sigue conmigo…" rows="3" /></label>
-              <label className="field"><span>¿Qué pequeño paso quiero intentar?</span><textarea value={currentLog.commitment ?? ''} onChange={(event) => updateCurrentLog('commitment', event.target.value)} placeholder="Un paso concreto y posible para los próximos días…" rows="2" /></label>
-              <div className="journal-actions"><button className="button button-dark" type="button" onClick={saveJournal}>Guardar en este navegador</button><button className="quiet-button" type="button" onClick={clearJournal}>Borrar esta sesión</button></div>
-              <p className="save-message" role="status" aria-live="polite">{savedMessage}</p>
+              <div className="field"><label htmlFor="journal-session">Sesión</label><select id="journal-session" value={activeLogSession} onChange={(e) => setActiveLogSession(e.target.value)}>{sessions.map((session) => <option value={session.id} key={session.id}>{session.plain}</option>)}</select></div>
+              <div className="field"><label htmlFor="journal-discovery">¿Qué descubrí?</label><textarea id="journal-discovery" value={currentLog.discovery ?? ''} onChange={(e) => updateCurrentLog('discovery', e.target.value)} placeholder="Una idea, una fortaleza, algo que no había visto…" rows="3" /></div>
+              <div className="field"><label htmlFor="journal-learning">¿Qué me llevo?</label><textarea id="journal-learning" value={currentLog.learning ?? ''} onChange={(e) => updateCurrentLog('learning', e.target.value)} placeholder="Algo que aprendí o una pregunta que sigue dando vueltas…" rows="3" /></div>
+              <div className="field"><label htmlFor="journal-commitment">¿Qué voy a probar esta semana?</label><textarea id="journal-commitment" value={currentLog.commitment ?? ''} onChange={(e) => updateCurrentLog('commitment', e.target.value)} placeholder="Un pasito concreto y posible 👣" rows="2" /></div>
+              <div className="journal-actions"><button className="button button-dark" type="button" onClick={saveJournal}>Guardar mis notas</button><button className="quiet-button" type="button" onClick={clearJournal}>Borrar esta sesión</button></div>
+              <p className="status-text" role="status" aria-live="polite">{savedMessage}</p>
             </div>
           </div>
         </section>
 
-        <section className="agreements-section section-wrap" id="acuerdos">
-          <SectionHeading label="Para cuidar el espacio" title="Nuestros acuerdos" intro="El código de conducta del programa orienta estas conversaciones y el cuidado de todas las personas participantes." />
-          <div className="agreement-list">{agreements.map(([title, text], index) => <article className="agreement" key={title}><span className="agreement-index">0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div>
-          <p className="agreement-note">Si una situación rebasa el alcance de la mentoría, contacta directamente al equipo de BécALAS para recibir orientación.</p>
+        {/* RECURSOS */}
+        <section className="resources-section section-wrap" id="recursos" aria-labelledby="resources-title">
+          <SectionHeading id="resources-title" label="Recursos" title="Instrumentos del observatorio" intro="Cosas útiles para antes y después de cada sesión." />
+          <div className="resource-rows">
+            <article className="resource-row"><span className="resource-index" aria-hidden="true">A</span><div><h3>Respirar antes de empezar</h3><p>Un minuto para bajar revoluciones antes de una sesión, un examen o una entrevista.</p></div><a href="#pausa">Ir a la pausa</a></article>
+            <article className="resource-row"><span className="resource-index" aria-hidden="true">B</span><div><h3>Metas que sí se cumplen</h3><p>Usa la herramienta SMART y pega tu meta donde la veas diario (fondo de pantalla, espejo, agenda).</p></div><a href="#herramientas">Abrir mi meta</a></article>
+            <article className="resource-row"><span className="resource-index" aria-hidden="true">C</span><div><h3>Hablar en público sin temblar (tanto)</h3><p>Charla TED de Amy Cuddy sobre cómo el lenguaje corporal cambia cómo te sientes. Para la sesión 3.</p></div><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer">Ver la charla<span className="sr-only"> (se abre en otra pestaña)</span></a></article>
+            <article className="resource-row"><span className="resource-index" aria-hidden="true">D</span><div><h3>Metas a largo plazo</h3><p>Una guía corta para dividir un objetivo grande en pasos.</p></div><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer">Leer la guía<span className="sr-only"> (se abre en otra pestaña)</span></a></article>
+          </div>
         </section>
 
-        <section className="contact-section" id="contacto">
+        {/* ACUERDOS */}
+        <section className="agreements-section" id="acuerdos" aria-labelledby="agreements-title">
           <div className="section-wrap">
-            <SectionHeading label="Acompañamiento del programa" title="¿Necesitas apoyo?" intro="Si algo te preocupa o te supera, escríbeme por el grupo y buscamos juntas el apoyo adecuado con el programa." />
-            <div className="contact-grid">
-              <article><h3>Equipo de seguimiento BécALAS</h3><a href="mailto:contacto@becalasonline.mx">contacto@becalasonline.mx</a></article>
-            </div>
+            <SectionHeading id="agreements-title" label="Para cuidar el espacio" title="Nuestras reglas del cielo" intro="Lo que hace que este sea un lugar seguro para todas." />
+            <div className="agreement-list">{agreements.map(([title, text], index) => <article className="agreement" key={title}><span className="agreement-index" aria-hidden="true">✦ 0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div>
+          </div>
+        </section>
+
+        {/* APOYO */}
+        <section className="contact-section" id="apoyo" aria-labelledby="support-title">
+          <div className="section-wrap">
+            <SectionHeading id="support-title" label="Apoyo" title="¿Algo te está costando?" intro="Escríbeme por el grupo de WhatsApp y lo vemos juntas. Si hace falta, te ayudo a contactar al equipo del programa." />
+            <p className="contact-line"><strong>Equipo de seguimiento BécALAS:</strong> contacto@becalasonline.mx</p>
           </div>
         </section>
       </main>
 
       <footer className="site-footer">
-        <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI Cognitive Observatory.</p>
-        <a href="/caso">Cómo diseñé este sitio</a>
+        <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI <strong>Cognitive Observatory</strong>.</p>
+        <a href="/caso">Cómo diseñé este sitio →</a>
+      </footer>
+    </>
+  );
+}
+
+/* ───────── Estudio de caso ───────── */
+
+function CaseStudy() {
+  return (
+    <>
+      <a className="skip-link" href="#case-content">Saltar al contenido</a>
+      <header className="site-header">
+        <BrandLockup href="/" label="Volver al micrositio de mentoría" />
+        <nav className="main-nav" aria-label="Navegación"><a href="/">← Volver al observatorio</a></nav>
+      </header>
+      <main className="case-page section-wrap" id="case-content">
+        <p className="section-label">Caso de diseño UX/UI · Cognitive Observatory · 2026</p>
+        <h1>Un observatorio para acompañar una mentoría</h1>
+        <p className="case-lede">Micrositio que diseñé y desarrollé para mi grupo de tres mentoradas del programa BécALAS 2026‑2027: un solo lugar con fechas, la primera misión y herramientas para cada sesión.</p>
+
+        <section aria-labelledby="c1"><h2 id="c1">El reto</h2>
+          <p>Tres estudiantes universitarias, tres sesiones en noviembre y toda la comunicación por WhatsApp. Necesitaban saber en segundos cuándo nos vemos, qué hacer antes y dónde encontrar las herramientas, casi siempre desde el celular.</p>
+        </section>
+
+        <section aria-labelledby="c2"><h2 id="c2">Usuarias y necesidades</h2>
+          <ul>
+            <li>Acceso móvil desde un enlace de WhatsApp.</li>
+            <li>Claridad inmediata: próxima sesión, tarea y propósito del sitio.</li>
+            <li>Un tono cercano y de juego que invite a experimentar sin miedo a equivocarse.</li>
+            <li>Privacidad: nada de datos personales expuestos.</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="c3"><h2 id="c3">Decisiones de diseño</h2>
+          <ul>
+            <li><strong>Prioridades explícitas:</strong> accesibilidad, luego comprensión, y mi marca personal de fondo.</li>
+            <li><strong>Co‑branding:</strong> el sistema visual de Cognitive Observatory (azul noche, marfil, constelaciones) como base, con lavanda como color del proyecto BécALAS.</li>
+            <li><strong>Metáfora del observatorio como juego:</strong> misiones, constelación, bitácora. Cada título poético lleva un subtítulo literal.</li>
+            <li><strong>Misión 0 con IA:</strong> presentarse con una infografía, video o cómic generados con IA, y reflexionar sobre qué hubo que corregir. Alfabetización en IA desde la primera actividad.</li>
+            <li><strong>Interacción con propósito:</strong> “Lanza un cometa” da preguntas rompehielos para usar en vivo; la constelación de avance muestra el progreso de las sesiones.</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="c4"><h2 id="c4">Accesibilidad</h2>
+          <ul>
+            <li>Atkinson Hyperlegible, diseñada por el Braille Institute para baja visión, en todo el texto de interfaz. La serif Cormorant Garamond solo en títulos de 32 px o más.</li>
+            <li>Texto mínimo de 14 px y párrafos de 17–18 px; contraste AA verificado.</li>
+            <li>Pestañas y acordeones operables con teclado, foco visible y enlace para saltar al contenido.</li>
+            <li>Todas las animaciones (cielo, cursor de cometa, destellos) son decorativas y se apagan con “reducir movimiento”.</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="c5"><h2 id="c5">Privacidad</h2>
+          <p>El sitio no muestra nombres ni datos de las mentoradas ni de la coordinación del programa. Las metas y la bitácora se guardan solo en el navegador de cada persona.</p>
+        </section>
+
+        <section aria-labelledby="c6"><h2 id="c6">Resultados</h2>
+          <p className="pending">Pendiente: al cierre de las mentorías (21 de noviembre) agregaré la retroalimentación anónima del grupo.</p>
+        </section>
+
+        <section aria-labelledby="c7"><h2 id="c7">Aprendizajes</h2>
+          <p className="pending">Pendiente.</p>
+        </section>
+      </main>
+      <footer className="site-footer">
+        <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Sitio personal de apoyo, no oficial de BécALAS ni de Bécalos. Parte del portafolio UX/UI <strong>Cognitive Observatory</strong>.</p>
+        <a href="/">Volver al observatorio →</a>
       </footer>
     </>
   );

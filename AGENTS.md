@@ -16,3 +16,8 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Do not display mentee personal data or coordinator personal details.
 - Hero uses the observatory metaphor, supplied copy, lavender quote border and a decorative constellation image hidden from assistive technology.
 
+- Voice: close, playful and experimental (tutear, frases cortas, verbos de juego, normalizar el error). Observatory metaphor only in titles/microcopy; every poetic title has a literal subtitle. Max one emoji per block.
+- Misión 0 (presentarse con IA: infografía, video o cómic, con prompts copiables y tip de privacidad) is a requested feature: keep it.
+- Decorative motion: hero starfield canvas, comet-trail cursor (pointer: fine only) and sparkles. All disabled with prefers-reduced-motion; native cursor is never replaced.
+- Interactive helpers: "Lanza un cometa" icebreakers and a 3-star session progress constellation driven by the session dates.
+- Header lockup: "Mentorías BécALAS 2026 · Grupo de Wen" with "un proyecto de Cognitive Observatory" secondary. Footer states the site is personal, non-official and part of Wen's UX/UI portfolio; /caso holds the case study.
