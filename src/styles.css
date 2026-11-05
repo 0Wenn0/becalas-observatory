@@ -660,3 +660,20 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
 .book .quiet-button { color: var(--plum-muted); border-bottom-color: var(--plum-muted); }
 .book .field input, .book .field textarea, .book .field select { color: var(--plum); border-color: #8A7499; }
 .book .button-dark { color: #F3ECFB; }
+
+/* Reglas del cielo: tarjetas ciruela con grabado de línea fina */
+.book .agreement-tile { background: var(--plum-card); border: 1px solid rgba(205, 184, 238, .18); color: #F3ECFB; box-shadow: 0 10px 24px rgba(47, 28, 66, .18); transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s ease; }
+.book .agreement-tile summary { color: #F3ECFB; }
+.book .agreement-tile .tile-title { font-family: var(--serif); font-size: 22px; font-weight: 600; line-height: 1.15; }
+.book .agreement-tile summary::after { color: var(--ink-lilac); font-weight: 600; }
+.book .agreement-tile p { color: #E6DCF5; }
+.book .agreement-tile .rule-icon { color: #D9B76A; }
+.book .agreement-tile[open] { box-shadow: 0 14px 30px rgba(47, 28, 66, .28); }
+.book .agreement-tile summary:focus-visible { outline: 3px solid #D9B76A; outline-offset: 3px; border-radius: 18px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .book .agreement-tile:hover { transform: translateY(-3px); box-shadow: 0 16px 32px rgba(47, 28, 66, .3); }
+  .book .agreement-tile:hover .rule-icon .tw { animation: tw-pulse 1.4s ease-in-out infinite; }
+  .book .agreement-tile:hover .rule-icon .tw:nth-of-type(2n) { animation-delay: .35s; }
+}
+.rule-icon .tw { transform-box: fill-box; transform-origin: center; fill: currentColor; stroke: none; }
+.book .agreement-grid { align-items: start; }
