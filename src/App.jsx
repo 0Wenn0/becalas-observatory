@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider } from './Chapters.jsx';
+import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 
 /* ───────── Contenido ───────── */
@@ -310,22 +310,7 @@ function BreathingPlanet() {
   }, []);
   return (
     <div className={`breathing-planet is-${phase}`}>
-      <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-        <defs>
-          <radialGradient id="bp-body" cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#E4D8FB" />
-            <stop offset="55%" stopColor="#8A5CF0" />
-            <stop offset="100%" stopColor="#4E3592" />
-          </radialGradient>
-        </defs>
-        <g className="bp-rings">
-          <g className="bp-ring bp-ring-1"><ellipse cx="100" cy="100" rx="62" ry="18" /></g>
-          <g className="bp-ring bp-ring-2"><ellipse cx="100" cy="100" rx="78" ry="24" /></g>
-          <g className="bp-ring bp-ring-3"><ellipse cx="100" cy="100" rx="94" ry="30" /></g>
-        </g>
-        <circle cx="100" cy="100" r="34" fill="url(#bp-body)" />
-        <circle cx="88" cy="89" r="6" fill="#fff" opacity=".35" />
-      </svg>
+      <GoldPlanet idPrefix="bp" animate={!reducedMotion()} />
       <p className="breath-cue">
         {phase === 'inhala' ? 'Inhala… los anillos crecen' : 'Exhala… los anillos se encogen'}
       </p>
@@ -334,23 +319,7 @@ function BreathingPlanet() {
 }
 
 function PlanetIcon() {
-  return (
-    <svg className="planet-icon" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <defs>
-        <radialGradient id="planet-body" cx="35%" cy="30%" r="75%">
-          <stop offset="0%" stopColor="#E4D8FB" />
-          <stop offset="55%" stopColor="#8A5CF0" />
-          <stop offset="100%" stopColor="#4E3592" />
-        </radialGradient>
-      </defs>
-      <ellipse className="planet-ring-back" cx="60" cy="62" rx="54" ry="15" fill="none" stroke="#C9B4F7" strokeWidth="5" transform="rotate(-18 60 62)" />
-      <circle cx="60" cy="60" r="32" fill="url(#planet-body)" />
-      <circle cx="49" cy="50" r="5" fill="#fff" opacity=".35" />
-      <circle cx="70" cy="70" r="3.5" fill="#4E3592" opacity=".45" />
-      <path d="M8 66 A54 15 0 0 0 112 58" fill="none" stroke="#C9B4F7" strokeWidth="5" strokeLinecap="round" transform="rotate(-18 60 62)" />
-      <path className="planet-sparkle" d="M100 16 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#fff" />
-    </svg>
-  );
+  return <GoldPlanet idPrefix="pi" animate={!reducedMotion()} className="planet-icon" />;
 }
 
 
@@ -436,7 +405,7 @@ function SiteHeader({ view }) {
   }, []);
 
   return (
-    <header className={`site-header ${hidden ? 'is-hidden' : ''} ${view === 'inicio' || view === 'mision' ? 'is-book' : ''}`} ref={headerRef} onFocus={() => setHidden(false)}>
+    <header className={`site-header ${hidden ? 'is-hidden' : ''} is-book`} ref={headerRef} onFocus={() => setHidden(false)}>
       <BrandLockup href="#inicio" label="Mentorías BécALAS 2026, grupo de Wen. Ir al inicio" />
       <nav className="main-nav" aria-label="Secciones del sitio">
         {views.map((item) => (
@@ -482,6 +451,27 @@ function ToolTabs({ active, onChange }) {
         </button>
       ))}
     </div>
+  );
+}
+
+function ChapterHero({ id, roman, Art, title, sub }) {
+  return (
+    <header className="chapter-hero" style={{ viewTransitionName: `ch-${id}` }}>
+      <span className="chapter-roman" aria-hidden="true">{roman}</span>
+      <span className="chapter-art"><Art /></span>
+      <p className="book-kicker">Capítulo {roman}</p>
+      <h1 id={`view-${id}-title`} tabIndex={-1}>{title}</h1>
+      {sub && <p className="chapter-sub">{sub}</p>}
+    </header>
+  );
+}
+
+function ChapterNav({ prev, next }) {
+  return (
+    <nav className="chapter-nav" aria-label="Capítulos">
+      <a href={`#${prev[0]}`}>← {prev[1]}</a>
+      <a href={`#${next[0]}`}>{next[1]} →</a>
+    </nav>
   );
 }
 
@@ -691,13 +681,11 @@ function Microsite() {
 
         {/* ═════ SESIONES ═════ */}
         {view === 'sesiones' && (
-          <section className="view route-section" aria-labelledby="view-sesiones-title">
-            <div className="section-wrap">
-              <header className="view-head" style={{ viewTransitionName: 'ch-sesiones' }}>
-                <p className="section-label">Sesiones</p>
-                <h1 id="view-sesiones-title" className="view-title" tabIndex={-1}>Tres noches de observación</h1>
-                <p className="section-intro">Toca una sesión para ver qué haremos y qué traer.</p>
-              </header>
+          <div className="book">
+          <article className="chapter section-wrap" aria-labelledby="view-sesiones-title">
+            <ChapterHero id="sesiones" roman="II" Art={EngravingMoon} title="Tres noches de observación" sub="Toca una sesión para ver qué haremos y qué traer" />
+            <StarDivider />
+            <div className="chapter-body">
               <div className="session-list">
                 {sessions.map((session) => {
                   const expanded = openSession === session.id;
@@ -732,18 +720,20 @@ function Microsite() {
               </div>
               <CometButton />
             </div>
-          </section>
+            <StarDivider />
+            <ChapterNav prev={['mision', 'Tu primera misión']} next={['herramientas', 'Tu kit de exploradora']} />
+          </article>
+          </div>
         )}
 
         {/* ═════ HERRAMIENTAS ═════ */}
         {view === 'herramientas' && (
-          <section className="view tools-view" aria-labelledby="view-herramientas-title">
-            <div className="section-wrap">
-              <header className="view-head" style={{ viewTransitionName: 'ch-herramientas' }}>
-                <p className="section-label">Herramientas</p>
-                <h1 id="view-herramientas-title" className="view-title" tabIndex={-1}>Tu kit de exploradora</h1>
-                <p className="privacy-seal"><span aria-hidden="true">🔒</span> Todo lo que escribas se queda en tu celular. Ni yo lo veo.</p>
-              </header>
+          <div className="book">
+          <article className="chapter chapter-wide section-wrap" aria-labelledby="view-herramientas-title">
+            <ChapterHero id="herramientas" roman="III" Art={EngravingAstrolabe} title="Tu kit de exploradora" sub="Tu meta, tu constelación y tu bitácora" />
+            <StarDivider />
+            <div className="chapter-body">
+              <p className="privacy-seal"><span aria-hidden="true">🔒</span> Todo lo que escribas se queda en tu celular. Ni yo lo veo.</p>
               <ToolTabs active={tool} onChange={setTool} />
 
               <div className="tool-panel" role="tabpanel" id={`toolpanel-${tool}`} aria-labelledby={`tooltab-${tool}`}>
@@ -805,19 +795,22 @@ function Microsite() {
                 )}
               </div>
             </div>
-          </section>
+            <StarDivider />
+            <ChapterNav prev={['sesiones', 'Tres noches de observación']} next={['nosotras', 'Nosotras']} />
+          </article>
+          </div>
         )}
 
         {/* ═════ NOSOTRAS ═════ */}
         {view === 'nosotras' && (
-          <>
-            <section className="view nos-view" aria-labelledby="view-nosotras-title">
-              <div className="section-wrap">
-                <header className="view-head" style={{ viewTransitionName: 'ch-nosotras' }}>
-                  <p className="section-label">Nosotras</p>
-                  <h1 id="view-nosotras-title" className="view-title" tabIndex={-1}>Cómo cuidamos este espacio</h1>
-                </header>
-                <div className="agreement-grid" id="acuerdos">
+          <div className="book">
+          <article className="chapter section-wrap" aria-labelledby="view-nosotras-title">
+            <ChapterHero id="nosotras" roman="IV" Art={EngravingConstellation} title="Nosotras" sub="Cómo nos cuidamos, respirar y pedir apoyo" />
+            <StarDivider />
+            <div className="chapter-body">
+              <section className="chapter-section" id="acuerdos" aria-labelledby="agreements-title">
+                <h2 id="agreements-title" className="block-title">Nuestras reglas del cielo</h2>
+                <div className="agreement-grid">
                   {agreements.map(([icon, title, text]) => (
                     <details className="agreement-tile" key={title}>
                       <summary><span className="tile-icon" aria-hidden="true">{icon}</span><span className="tile-title">{title}</span></summary>
@@ -825,45 +818,46 @@ function Microsite() {
                     </details>
                   ))}
                 </div>
-              </div>
-            </section>
+              </section>
 
-            <section className="breath-section" id="respira" aria-labelledby="breath-title">
-              <div className="breath-copy">
-                <p className="section-label">Opcional, sin presión</p>
-                <h2 id="breath-title">Antes de despegar, respira</h2>
-                <p>Un minuto para llegar de verdad.</p>
-              </div>
-              <div className="breath-control">
-                <button className={`planet-button ${breathing ? 'is-breathing' : ''}`} type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>
-                  <PlanetIcon />
-                  <span className="planet-label">{breathing ? 'Cerrar la guía' : 'Toca el planeta para empezar'}</span>
-                </button>
-                <div className="breath-guide" id="breath-guide" hidden={!breathing}>
-                  {breathing && <BreathingPlanet />}
-                  <p className="breath-tip">Ponte cómoda. Sigue al planeta: inhala cuando los anillos crecen y suelta el aire cuando se encogen.</p>
+              <section className="chapter-section breath-card" id="respira" aria-labelledby="breath-title">
+                <div className="breath-copy">
+                  <p className="book-kicker">Opcional, sin presión</p>
+                  <h2 id="breath-title" className="block-title">Antes de despegar, respira</h2>
+                  <p>Un minuto para llegar de verdad.</p>
                 </div>
-              </div>
-            </section>
+                <div className="breath-control">
+                  <button className={`planet-button ${breathing ? 'is-breathing' : ''}`} type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>
+                    <PlanetIcon />
+                    <span className="planet-label">{breathing ? 'Cerrar la guía' : 'Toca el planeta para empezar'}</span>
+                  </button>
+                  <div className="breath-guide" id="breath-guide" hidden={!breathing}>
+                    {breathing && <BreathingPlanet />}
+                    <p className="breath-tip">Ponte cómoda. Sigue al planeta: inhala cuando los anillos crecen y suelta el aire cuando se encogen.</p>
+                  </div>
+                </div>
+              </section>
 
-            <section className="section-wrap resources-block" id="recursos" aria-labelledby="resources-title">
-              <h2 id="resources-title" className="block-title">Instrumentos</h2>
-              <ul className="resource-tiles">
-                <li><a href="#respira"><span className="tile-icon" aria-hidden="true">🌬️</span><span className="tile-title">Respirar</span><span className="tile-sub">Antes de un examen o entrevista</span></a></li>
-                <li><a href="#meta"><span className="tile-icon" aria-hidden="true">🎯</span><span className="tile-title">Mi meta</span><span className="tile-sub">Pégala donde la veas diario</span></a></li>
-                <li><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🎤</span><span className="tile-title">Hablar en público</span><span className="tile-sub">Charla TED de Amy Cuddy<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
-                <li><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🪜</span><span className="tile-title">Metas grandes</span><span className="tile-sub">Divídelas en pasos<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
-              </ul>
-            </section>
+              <section className="chapter-section" id="recursos" aria-labelledby="resources-title">
+                <h2 id="resources-title" className="block-title">Instrumentos</h2>
+                <ul className="resource-tiles">
+                  <li><a href="#respira"><span className="tile-icon" aria-hidden="true">🌬️</span><span className="tile-title">Respirar</span><span className="tile-sub">Antes de un examen o entrevista</span></a></li>
+                  <li><a href="#meta"><span className="tile-icon" aria-hidden="true">🎯</span><span className="tile-title">Mi meta</span><span className="tile-sub">Pégala donde la veas diario</span></a></li>
+                  <li><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🎤</span><span className="tile-title">Hablar en público</span><span className="tile-sub">Charla TED de Amy Cuddy<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
+                  <li><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🪜</span><span className="tile-title">Metas grandes</span><span className="tile-sub">Divídelas en pasos<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
+                </ul>
+              </section>
 
-            <section className="contact-section" id="apoyo" aria-labelledby="support-title">
-              <div className="section-wrap">
+              <section className="chapter-section support-card" id="apoyo" aria-labelledby="support-title">
                 <h2 id="support-title" className="block-title">¿Algo te está costando?</h2>
-                <p className="section-intro">Escríbeme por el grupo y lo vemos juntas.</p>
+                <p>Escríbeme por el grupo y lo vemos juntas.</p>
                 <p className="contact-line"><strong>Equipo BécALAS:</strong> contacto@becalasonline.mx</p>
-              </div>
-            </section>
-          </>
+              </section>
+            </div>
+            <StarDivider />
+            <ChapterNav prev={['herramientas', 'Tu kit de exploradora']} next={['inicio', 'Volver al índice']} />
+          </article>
+          </div>
         )}
       </main>
 
