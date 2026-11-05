@@ -113,3 +113,47 @@ export function CornerOrnament({ className = '' }) {
 export function StarDivider() {
   return <p className="star-divider" aria-hidden="true">✦ <span>✦</span> ✦</p>;
 }
+
+/*
+ * Planeta de metal: líneas doradas sobre un disco vino, como una pieza de metal grabada.
+ * Las lunas orbitan, el dorado brilla al girar su reflejo y las órbitas crecen al inhalar.
+ */
+export function GoldPlanet({ idPrefix = 'gp', animate = true, className = '' }) {
+  const g = `${idPrefix}-gold`;
+  const w = `${idPrefix}-wine`;
+  return (
+    <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false" className={`gold-planet ${className}`}>
+      <defs>
+        <linearGradient id={g} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#8C6A2A" />
+          <stop offset="35%" stopColor="#E9C977" />
+          <stop offset="50%" stopColor="#FFF1C9" />
+          <stop offset="65%" stopColor="#C99A3E" />
+          <stop offset="100%" stopColor="#8C6A2A" />
+          {animate && <animateTransform attributeName="gradientTransform" type="rotate" from="0 .5 .5" to="360 .5 .5" dur="9s" repeatCount="indefinite" />}
+        </linearGradient>
+        <radialGradient id={w} cx="38%" cy="32%" r="75%">
+          <stop offset="0%" stopColor="#8E2A4B" />
+          <stop offset="60%" stopColor="#5E1530" />
+          <stop offset="100%" stopColor="#3A0B1D" />
+        </radialGradient>
+      </defs>
+      <circle cx="100" cy="100" r="96" fill="#3A0B1D" />
+      <circle cx="100" cy="100" r="92" fill="none" stroke={`url(#${g})`} strokeWidth="2.4" />
+      <g className="gp-orbits" fill="none" stroke={`url(#${g})`}>
+        <circle cx="100" cy="100" r="74" strokeWidth="1.4" strokeDasharray="2 5" />
+        <circle cx="100" cy="100" r="56" strokeWidth="1.6" />
+        <g className="gp-moon gp-moon-1"><circle cx="100" cy="26" r="7" fill="#3A0B1D" strokeWidth="2" /></g>
+        <g className="gp-moon gp-moon-2"><circle cx="156" cy="100" r="5" fill="#3A0B1D" strokeWidth="1.8" /></g>
+        <g className="gp-moon gp-moon-3"><circle cx="48" cy="139" r="3.5" fill={`url(#${g})`} stroke="none" /></g>
+      </g>
+      <g className="gp-body">
+        <ellipse cx="100" cy="102" rx="48" ry="12" fill="none" stroke={`url(#${g})`} strokeWidth="2.6" transform="rotate(-16 100 102)" />
+        <circle cx="100" cy="100" r="28" fill={`url(#${w})`} stroke={`url(#${g})`} strokeWidth="2.6" />
+        <path d="M76 92 Q100 84 124 92 M74 104 Q100 98 126 104" fill="none" stroke={`url(#${g})`} strokeWidth="1.1" strokeOpacity=".7" />
+        <path d="M52 108 A48 12 0 0 0 148 96" fill="none" stroke={`url(#${g})`} strokeWidth="2.6" strokeLinecap="round" transform="rotate(-16 100 102)" />
+      </g>
+      <path className="gp-spark" d="M150 40 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#FFF1C9" />
+    </svg>
+  );
+}

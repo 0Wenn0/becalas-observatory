@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider } from './Chapters.jsx';
+import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 
 /* ───────── Contenido ───────── */
@@ -310,22 +310,7 @@ function BreathingPlanet() {
   }, []);
   return (
     <div className={`breathing-planet is-${phase}`}>
-      <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-        <defs>
-          <radialGradient id="bp-body" cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#E4D8FB" />
-            <stop offset="55%" stopColor="#8A5CF0" />
-            <stop offset="100%" stopColor="#4E3592" />
-          </radialGradient>
-        </defs>
-        <g className="bp-rings">
-          <g className="bp-ring bp-ring-1"><ellipse cx="100" cy="100" rx="62" ry="18" /></g>
-          <g className="bp-ring bp-ring-2"><ellipse cx="100" cy="100" rx="78" ry="24" /></g>
-          <g className="bp-ring bp-ring-3"><ellipse cx="100" cy="100" rx="94" ry="30" /></g>
-        </g>
-        <circle cx="100" cy="100" r="34" fill="url(#bp-body)" />
-        <circle cx="88" cy="89" r="6" fill="#fff" opacity=".35" />
-      </svg>
+      <GoldPlanet idPrefix="bp" animate={!reducedMotion()} />
       <p className="breath-cue">
         {phase === 'inhala' ? 'Inhala… los anillos crecen' : 'Exhala… los anillos se encogen'}
       </p>
@@ -334,23 +319,7 @@ function BreathingPlanet() {
 }
 
 function PlanetIcon() {
-  return (
-    <svg className="planet-icon" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <defs>
-        <radialGradient id="planet-body" cx="35%" cy="30%" r="75%">
-          <stop offset="0%" stopColor="#E4D8FB" />
-          <stop offset="55%" stopColor="#8A5CF0" />
-          <stop offset="100%" stopColor="#4E3592" />
-        </radialGradient>
-      </defs>
-      <ellipse className="planet-ring-back" cx="60" cy="62" rx="54" ry="15" fill="none" stroke="#C9B4F7" strokeWidth="5" transform="rotate(-18 60 62)" />
-      <circle cx="60" cy="60" r="32" fill="url(#planet-body)" />
-      <circle cx="49" cy="50" r="5" fill="#fff" opacity=".35" />
-      <circle cx="70" cy="70" r="3.5" fill="#4E3592" opacity=".45" />
-      <path d="M8 66 A54 15 0 0 0 112 58" fill="none" stroke="#C9B4F7" strokeWidth="5" strokeLinecap="round" transform="rotate(-18 60 62)" />
-      <path className="planet-sparkle" d="M100 16 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#fff" />
-    </svg>
-  );
+  return <GoldPlanet idPrefix="pi" animate={!reducedMotion()} className="planet-icon" />;
 }
 
 

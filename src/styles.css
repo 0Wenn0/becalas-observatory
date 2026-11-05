@@ -634,3 +634,29 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
 .chapter .resource-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 700px) { .breath-card { flex-direction: column; } }
 .chapter-wide .chapter-body { max-width: none; }
+
+/* ═════ Planeta de metal: dorado sobre vino ═════ */
+.gold-planet { display: block; overflow: visible; }
+.gold-planet * { transform-box: view-box; }
+.gp-moon { transform-origin: 100px 100px; }
+.gp-moon-1 { animation: spin 22s linear infinite; }
+.gp-moon-2 { animation: spin 14s linear infinite reverse; }
+.gp-moon-3 { animation: spin 30s linear infinite; }
+.gp-spark { transform-origin: 150px 48px; animation: tw-pulse 2.6s ease-in-out infinite; }
+.planet-icon.gold-planet { width: 112px; height: 112px; filter: drop-shadow(0 8px 16px rgba(58, 11, 29, .35)); }
+.planet-button:hover .planet-icon { transform: rotate(-6deg) scale(1.04); }
+.breathing-planet .gold-planet { width: 190px; height: 190px; flex: none; }
+.breathing-planet .gp-orbits, .breathing-planet .gp-body { transform-origin: 100px 100px; transition: transform 4s ease-in-out, filter 4s ease-in-out; }
+.breathing-planet.is-inhala .gp-orbits { transform: scale(1.24); filter: drop-shadow(0 0 4px rgba(255, 225, 150, .85)); }
+.breathing-planet.is-exhala .gp-orbits { transform: scale(.72); }
+.breathing-planet.is-inhala .gp-body { transform: scale(1.08); }
+.breathing-planet.is-exhala .gp-body { transform: scale(.94); }
+@media (max-width: 700px) { .breathing-planet .gold-planet { width: 150px; height: 150px; } .planet-icon.gold-planet { width: 92px; height: 92px; } }
+@media (prefers-reduced-motion: reduce) { .gp-moon, .gp-spark { animation: none !important; } .breathing-planet .gp-orbits, .breathing-planet .gp-body { transition: none; } }
+
+/* Colores heredados que faltaban en los capítulos */
+.book .prompt-text, .book .comet-box, .book .comet-question, .book .constellation-card, .book .node-tab, .book .node-prompt p { color: #F3ECFB; }
+.book .node-tab.is-selected, .book .node-tab:hover { color: var(--plum-card); }
+.book .quiet-button { color: var(--plum-muted); border-bottom-color: var(--plum-muted); }
+.book .field input, .book .field textarea, .book .field select { color: var(--plum); border-color: #8A7499; }
+.book .button-dark { color: #F3ECFB; }
