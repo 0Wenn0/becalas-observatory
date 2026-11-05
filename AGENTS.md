@@ -25,3 +25,6 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Breathing toggle is a ringed-planet button (brand: observatory), not a generic button.
 - Comet cursor must be clearly visible and round: glowing circular head offset from the pointer tip, continuous circular light trail, and a star burst + ring on every button/link click.
 - Navigation: desktop shows all 6 links; mobile (≤700px) shows Próxima sesión · Mi misión · Sesiones plus a "Más ✦" menu (Esc closes, focus returns). Active section is highlighted (aria-current="location"). On mobile the header hides on scroll down and reappears on scroll up. Footer repeats quick links and a "write me in the group" CTA.
+- Tools pattern: each tool has a translucent "Cómo se usa" panel (numbered steps, privacy note) separated from a white "Tu hoja de trabajo" card that holds the inputs. On dark sections use the `.on-dark` variants.
+- "Lanza un cometa" fires a star burst and a real comet (`launchComet`) that starts very bright and fades as it crosses the screen.
+- Breathing guide: planet with three tilted orbit rings whose dashes flow around (spinning feel) and that grow on "Inhala" and shrink on "Exhala" (4 s each); text cue always visible. Reduced motion keeps rings static.
