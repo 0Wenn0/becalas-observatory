@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Starfield } from './Starfield.jsx';
-import { CometCursor, sparkleAt, launchComet } from './CometCursor.jsx';
+import { flushSync } from 'react-dom';
+import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider } from './Chapters.jsx';
+import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 
 /* ───────── Contenido ───────── */
 
@@ -364,7 +365,7 @@ const views = [
 
 /* Anclas internas → vista que las contiene (y pestaña de herramienta, si aplica). */
 const anchorToView = {
-  inicio: 'inicio', proxima: 'inicio', mision: 'inicio', wen: 'inicio',
+  inicio: 'inicio', proxima: 'inicio', wen: 'inicio', mision: 'mision',
   sesiones: 'sesiones',
   herramientas: 'herramientas', meta: 'herramientas', constelacion: 'herramientas', bitacora: 'herramientas',
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
@@ -374,6 +375,15 @@ const toolTabs = [
   { id: 'constelacion', label: 'Mi constelación' },
   { id: 'bitacora', label: 'Mi bitácora' },
 ];
+
+const chapters = [
+  { id: 'mision', roman: 'I', title: 'Tu primera misión', teaser: 'Preséntate con IA antes de la sesión 1', Art: EngravingTelescope },
+  { id: 'sesiones', roman: 'II', title: 'Tres noches de observación', teaser: 'Qué haremos en cada sesión y qué traer', Art: EngravingMoon },
+  { id: 'herramientas', roman: 'III', title: 'Tu kit de exploradora', teaser: 'Tu meta, tu constelación y tu bitácora', Art: EngravingAstrolabe },
+  { id: 'nosotras', roman: 'IV', title: 'Nosotras', teaser: 'Cómo nos cuidamos, respirar y pedir apoyo', Art: EngravingConstellation },
+];
+
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function readHash() {
   return window.location.hash.replace('#', '');
@@ -400,11 +410,11 @@ function SiteHeader({ view }) {
   }, []);
 
   return (
-    <header className={`site-header ${hidden ? 'is-hidden' : ''}`} ref={headerRef} onFocus={() => setHidden(false)}>
+    <header className={`site-header ${hidden ? 'is-hidden' : ''} ${view === 'inicio' || view === 'mision' ? 'is-book' : ''}`} ref={headerRef} onFocus={() => setHidden(false)}>
       <BrandLockup href="#inicio" label="Mentorías BécALAS 2026, grupo de Wen. Ir al inicio" />
       <nav className="main-nav" aria-label="Secciones del sitio">
         {views.map((item) => (
-          <a key={item.id} href={`#${item.id}`} className={`nav-link ${view === item.id ? 'is-active' : ''}`} aria-current={view === item.id ? 'page' : undefined}>{item.label}</a>
+          <a key={item.id} href={`#${item.id}`} className={`nav-link ${(view === item.id || (item.id === 'inicio' && view === 'mision')) ? 'is-active' : ''}`} aria-current={(view === item.id || (item.id === 'inicio' && view === 'mision')) ? 'page' : undefined}>{item.label}</a>
         ))}
       </nav>
     </header>
@@ -466,6 +476,7 @@ function Microsite() {
   const celebrated = useRef(false);
   const previewRef = useRef(null);
   const firstRender = useRef(true);
+  const viewRef = useRef(view);
 
   // Enrutamiento por #hash: cada vista tiene su enlace para compartir por WhatsApp.
   useEffect(() => {
@@ -473,18 +484,34 @@ function Microsite() {
       const hash = readHash();
       const target = anchorToView[hash];
       if (!target) return;
-      setView(target);
-      if (toolTabs.some((t) => t.id === hash)) setTool(hash);
-      window.requestAnimationFrame(() => {
+      const from = viewRef.current;
+      const closing = target === 'inicio' && from !== 'inicio';
+      const apply = () => {
+        flushSync(() => {
+          setView(target);
+          if (toolTabs.some((t) => t.id === hash)) setTool(hash);
+        });
+        viewRef.current = target;
         const el = document.getElementById(hash);
-        const isView = views.some((v) => v.id === hash);
+        const isView = views.some((v) => v.id === hash) || hash === 'mision';
         if (isView || !el) {
           window.scrollTo({ top: 0 });
           document.getElementById(`view-${target}-title`)?.focus({ preventScroll: true });
         } else {
           el.scrollIntoView();
         }
-      });
+      };
+      // Abrir un capítulo = la tarjeta crece hasta ser la página (explosión); cerrar = regresa a su lugar (implosión).
+      if (document.startViewTransition && !reducedMotion() && from !== target) {
+        document.documentElement.classList.toggle('vt-close', closing);
+        const transition = document.startViewTransition(apply);
+        transition.finished.finally(() => {
+          document.documentElement.classList.remove('vt-close');
+          if (closing) implodeAt(document.querySelector(`[data-chapter="${from}"]`));
+        });
+      } else {
+        apply();
+      }
     }
     window.addEventListener('hashchange', onHash);
     if (firstRender.current && readHash() && anchorToView[readHash()]) onHash();
@@ -561,68 +588,86 @@ function Microsite() {
       <main id="contenido" tabIndex={-1}>
         {/* ═════ INICIO ═════ */}
         {view === 'inicio' && (
-          <>
-            <section className="hero" aria-labelledby="view-inicio-title">
-              <Starfield />
-              <div className="hero-copy">
-                <p className="kicker">Observatorio de mentoría · BécALAS 2026</p>
-                <h1 id="view-inicio-title" tabIndex={-1}>¡Exploremos juntas! <span aria-hidden="true">🔭</span></h1>
-                <p className="hero-lede">Fechas, tu primera misión y herramientas para jugar con tus ideas.</p>
-                <blockquote className="hero-quote">No necesitas tener todo resuelto para empezar a construir la trayectoria que deseas.</blockquote>
-                <div className="hero-actions">
-                  <a className="button button-primary" href="#mision">Ver mi primera misión</a>
-                  <a className="button button-ghost" href="#proxima">Próxima sesión: {nextDefined ? nextSession.dateLabel : 'por definir'}</a>
-                </div>
+          <div className="book">
+            <section className="frontispiece section-wrap" aria-labelledby="view-inicio-title">
+              <div className="frame">
+                <CornerOrnament className="c-tl" /><CornerOrnament className="c-tr" /><CornerOrnament className="c-bl" /><CornerOrnament className="c-br" />
+                <p className="book-kicker">Observatorio de mentoría · BécALAS 2026</p>
+                <h1 id="view-inicio-title" tabIndex={-1}>¡Exploremos juntas!</h1>
+                <StarDivider />
+                <p className="book-lede">Un pequeño libro para nuestras mentorías: cuatro capítulos para mirar el cielo, hacer preguntas y armar caminos.</p>
               </div>
+              <p className="next-note" id="proxima"><span aria-hidden="true">☾</span> <strong>Próxima sesión:</strong> {nextDefined ? nextSession.dateLabel : 'por definir, la acordamos juntas en el grupo'}.</p>
             </section>
 
-            <section className="next-session" id="proxima" aria-labelledby="next-title">
-              <div className="section-wrap next-grid">
-                <div>
-                  <p className="section-label">Próxima sesión</p>
-                  <h2 id="next-title">{nextDefined ? nextSession.dateLabel : <>Fecha por definir <span aria-hidden="true">🗓️</span></>}</h2>
-                  <p className="next-sub">{nextSession.plain}. {nextDefined ? 'El enlace llega por WhatsApp.' : 'La acordamos juntas en el grupo.'}</p>
-                </div>
-                <SessionProgress />
-              </div>
+            <section className="section-wrap chapter-index" aria-labelledby="index-title">
+              <h2 id="index-title" className="index-title">Índice</h2>
+              <ol className="chapter-grid">
+                {chapters.map(({ id, roman, title, teaser, Art }) => (
+                  <li key={id}>
+                    <a className="chapter-card" href={`#${id}`} data-chapter={id} style={{ viewTransitionName: `ch-${id}` }} onClick={(e) => sparkleAt(e.currentTarget, 16)}>
+                      <span className="chapter-roman" aria-hidden="true">{roman}</span>
+                      <span className="chapter-art"><Art /></span>
+                      <span className="chapter-title"><span className="sr-only">Capítulo {roman}: </span>{title}</span>
+                      <span className="chapter-teaser">{teaser}</span>
+                      <span className="chapter-open" aria-hidden="true">Abrir capítulo →</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
             </section>
 
-            <section className="guide-section section-wrap" id="wen" aria-labelledby="guide-title">
+            <section className="guide-section section-wrap book-guide" id="wen" aria-labelledby="guide-title">
               <div className="guide-avatar" aria-hidden="true">🪐</div>
               <div>
-                <p className="section-label">Tu guía</p>
-                <h2 id="guide-title" className="guide-title">Hola, soy Wen <span aria-hidden="true">👋</span></h2>
+                <p className="book-kicker">Tu guía</p>
+                <h2 id="guide-title" className="guide-title">Hola, soy Wen</h2>
                 <p className="guide-short">Psicóloga, maestrante en Neuropsicología Clínica y científica de datos. Me mueve transformar la realidad con ciencia y tecnología.</p>
                 <div id="bio-more" hidden={!showBio}>
                   <p className="guide-bio">Trabajo donde se cruzan la mente, los datos, la inteligencia artificial y la educación, y me encanta llevarlo al impacto público: impartí talleres de alfabetización en IA en un programa nacional vinculado a OpenAI en México, con más de 3,000 personas de gobierno, el Congreso y universidades.</p>
-                  <p className="guide-bio">Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones. Este es un espacio seguro para explorar juntas y descubrir nuevos caminos, constelaciones y sueños. <span aria-hidden="true">✨</span></p>
+                  <p className="guide-bio">Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones. Este es un espacio seguro para explorar juntas y descubrir nuevos caminos, constelaciones y sueños.</p>
                 </div>
                 <button className="text-button" type="button" aria-expanded={showBio} aria-controls="bio-more" onClick={() => setShowBio((v) => !v)}>{showBio ? 'Ver menos' : 'Conóceme más'}</button>
               </div>
             </section>
+          </div>
+        )}
 
-            <section className="mission-section" id="mision" aria-labelledby="mission-title">
-              <div className="section-wrap">
-                <p className="section-label on-dark-label">Tu primera misión <span aria-hidden="true">🔭</span></p>
-                <h2 id="mission-title" className="mission-title">Misión 0: preséntate con IA</h2>
-                <p className="mission-lede">Antes de la sesión 1. No tiene que quedar perfecto: si sale raro, ¡mejor!</p>
-                <ol className="mission-steps">
-                  <li><span className="step-icon" aria-hidden="true">🎨</span><span>Elige un formato</span></li>
-                  <li><span className="step-icon" aria-hidden="true">📋</span><span>Copia el prompt y cambia lo que está entre [corchetes]</span></li>
-                  <li><span className="step-icon" aria-hidden="true">💬</span><span>Compártelo en la sesión: ¿qué le corregiste a la IA?</span></li>
+        {view === 'mision' && (
+          <div className="book">
+            <article className="chapter section-wrap" aria-labelledby="view-mision-title">
+              <header className="chapter-hero" style={{ viewTransitionName: 'ch-mision' }}>
+                <span className="chapter-roman" aria-hidden="true">I</span>
+                <span className="chapter-art"><EngravingTelescope /></span>
+                <p className="book-kicker">Capítulo I</p>
+                <h1 id="view-mision-title" tabIndex={-1}>Tu primera misión</h1>
+                <p className="chapter-sub">Preséntate con IA antes de la sesión 1</p>
+              </header>
+              <StarDivider />
+              <div className="chapter-body">
+                <p className="drop-cap">Antes de conocernos en vivo, te invito a presentarte de una forma creativa: con una infografía, un video corto o un cómic hecho con ayuda de la IA. No tiene que quedar perfecto. Si algo sale raro, mejor: de eso vamos a platicar.</p>
+                <ol className="mission-steps book-steps">
+                  <li><span className="step-num" aria-hidden="true">1</span><span>Elige un formato.</span></li>
+                  <li><span className="step-num" aria-hidden="true">2</span><span>Copia el prompt y cambia lo que está entre [corchetes] por tus datos.</span></li>
+                  <li><span className="step-num" aria-hidden="true">3</span><span>Compártelo en la sesión y cuéntanos qué le corregiste a la IA.</span></li>
                 </ol>
                 <MissionTabs />
-                <p className="privacy-tip">🔒 No le compartas a la IA tu dirección, teléfono ni CURP.</p>
+                <p className="book-note"><span aria-hidden="true">🔒</span> No le compartas a la IA tu dirección, teléfono, CURP ni datos de otras personas. Si no quieres usar tu foto, un avatar funciona perfecto.</p>
               </div>
-            </section>
-          </>
+              <StarDivider />
+              <nav className="chapter-nav" aria-label="Capítulos">
+                <a href="#inicio">← Volver al índice</a>
+                <a href="#sesiones">Siguiente: Tres noches de observación →</a>
+              </nav>
+            </article>
+          </div>
         )}
 
         {/* ═════ SESIONES ═════ */}
         {view === 'sesiones' && (
           <section className="view route-section" aria-labelledby="view-sesiones-title">
             <div className="section-wrap">
-              <header className="view-head">
+              <header className="view-head" style={{ viewTransitionName: 'ch-sesiones' }}>
                 <p className="section-label">Sesiones</p>
                 <h1 id="view-sesiones-title" className="view-title" tabIndex={-1}>Tres noches de observación</h1>
                 <p className="section-intro">Toca una sesión para ver qué haremos y qué traer.</p>
@@ -668,7 +713,7 @@ function Microsite() {
         {view === 'herramientas' && (
           <section className="view tools-view" aria-labelledby="view-herramientas-title">
             <div className="section-wrap">
-              <header className="view-head">
+              <header className="view-head" style={{ viewTransitionName: 'ch-herramientas' }}>
                 <p className="section-label">Herramientas</p>
                 <h1 id="view-herramientas-title" className="view-title" tabIndex={-1}>Tu kit de exploradora</h1>
                 <p className="privacy-seal"><span aria-hidden="true">🔒</span> Todo lo que escribas se queda en tu celular. Ni yo lo veo.</p>
@@ -742,7 +787,7 @@ function Microsite() {
           <>
             <section className="view nos-view" aria-labelledby="view-nosotras-title">
               <div className="section-wrap">
-                <header className="view-head">
+                <header className="view-head" style={{ viewTransitionName: 'ch-nosotras' }}>
                   <p className="section-label">Nosotras</p>
                   <h1 id="view-nosotras-title" className="view-title" tabIndex={-1}>Cómo cuidamos este espacio</h1>
                 </header>
