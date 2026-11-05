@@ -385,6 +385,32 @@ const chapters = [
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Tarjetas-capítulo: se inclinan siguiendo el cursor y sueltan un destello pequeño al llegar. */
+function tiltCard(event) {
+  if (event.pointerType !== 'mouse' || reducedMotion()) return;
+  const card = event.currentTarget;
+  const r = card.getBoundingClientRect();
+  const x = (event.clientX - r.left) / r.width - 0.5;
+  const y = (event.clientY - r.top) / r.height - 0.5;
+  card.style.setProperty('--ry', `${(x * 10).toFixed(2)}deg`);
+  card.style.setProperty('--rx', `${(-y * 8).toFixed(2)}deg`);
+  card.style.setProperty('--gx', `${((x + 0.5) * 100).toFixed(0)}%`);
+  card.style.setProperty('--gy', `${((y + 0.5) * 100).toFixed(0)}%`);
+}
+function resetTilt(event) {
+  const card = event.currentTarget;
+  card.style.setProperty('--rx', '0deg');
+  card.style.setProperty('--ry', '0deg');
+}
+let lastHoverSparkle = 0;
+function hoverSparkle(event) {
+  const now = performance.now();
+  if (now - lastHoverSparkle < 500) return;
+  lastHoverSparkle = now;
+  const art = event.currentTarget.querySelector('.chapter-art');
+  sparkleAt(art, 6);
+}
+
 function readHash() {
   return window.location.hash.replace('#', '');
 }
@@ -605,7 +631,7 @@ function Microsite() {
               <ol className="chapter-grid">
                 {chapters.map(({ id, roman, title, teaser, Art }) => (
                   <li key={id}>
-                    <a className="chapter-card" href={`#${id}`} data-chapter={id} style={{ viewTransitionName: `ch-${id}` }} onClick={(e) => sparkleAt(e.currentTarget, 16)}>
+                    <a className="chapter-card" href={`#${id}`} data-chapter={id} style={{ viewTransitionName: `ch-${id}` }} onClick={(e) => sparkleAt(e.currentTarget, 16)} onPointerMove={tiltCard} onPointerLeave={resetTilt} onPointerEnter={hoverSparkle} onFocus={hoverSparkle}>
                       <span className="chapter-roman" aria-hidden="true">{roman}</span>
                       <span className="chapter-art"><Art /></span>
                       <span className="chapter-title"><span className="sr-only">Capítulo {roman}: </span>{title}</span>

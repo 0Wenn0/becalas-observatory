@@ -531,3 +531,40 @@ html.vt-close::view-transition-group(*) { animation-duration: 280ms; animation-t
 body:has(.book) { background: var(--book-bg); }
 body:has(.book) .site-footer { background: var(--plum-card); border-top-color: rgba(205, 184, 238, .2); }
 .step-num { font: 700 16px var(--sans); }
+
+
+/* ═════ Animación propia de cada tarjeta-capítulo (hover en escritorio, foco con teclado) ═════ */
+.chapter-card { --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 30%; transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .25s ease-out, box-shadow .35s ease; }
+.chapter-card::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at var(--gx) var(--gy), rgba(205, 184, 238, .22), transparent 55%); opacity: 0; transition: opacity .3s ease; pointer-events: none; }
+.chapter-card:hover::before, .chapter-card:focus-visible::before { opacity: 1; }
+.chapter-card:hover { transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-4px); }
+.engraving * { transform-box: view-box; }
+.engraving .tw { transition: transform .4s ease, opacity .4s ease; }
+.chapter-card:hover .tw, .chapter-card:focus-visible .tw { animation: tw-pulse 1.4s ease-in-out infinite; }
+.chapter-card:hover .tw:nth-of-type(2n), .chapter-card:focus-visible .tw:nth-of-type(2n) { animation-delay: .35s; }
+@keyframes tw-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.6); opacity: .55; } }
+/* I · El telescopio busca la estrella */
+.tel-tube { transform-origin: 78px 62px; transition: transform .9s cubic-bezier(.3, 1.4, .5, 1); }
+.chapter-card:hover .tel-tube, .chapter-card:focus-visible .tel-tube { transform: rotate(-9deg); }
+/* II · La luna se mece y las nubes avanzan */
+.moon-body { transform-origin: 92px 54px; }
+.chapter-card:hover .moon-body, .chapter-card:focus-visible .moon-body { animation: moon-rock 2.6s ease-in-out infinite; }
+.chapter-card:hover .cloud-a, .chapter-card:focus-visible .cloud-a { animation: cloud-drift 3s ease-in-out infinite; }
+.chapter-card:hover .cloud-b, .chapter-card:focus-visible .cloud-b { animation: cloud-drift 3.6s ease-in-out infinite reverse; }
+@keyframes moon-rock { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-8deg); } }
+@keyframes cloud-drift { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+/* III · El astrolabio gira */
+.alidade, .astro-ring { transform-origin: 80px 62px; }
+.chapter-card:hover .alidade, .chapter-card:focus-visible .alidade { animation: spin 4s linear infinite; }
+.chapter-card:hover .astro-ring, .chapter-card:focus-visible .astro-ring { animation: spin 10s linear infinite reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+/* IV · La constelación se dibuja */
+.const-line { stroke-dasharray: 3 4; }
+.chapter-card:hover .const-line, .chapter-card:focus-visible .const-line { stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw-line 1.6s ease forwards; }
+@keyframes draw-line { to { stroke-dashoffset: 0; } }
+/* En celular la tarjeta respira suavemente al tocarla */
+.chapter-card:active { transform: scale(.98); }
+@media (prefers-reduced-motion: reduce) {
+  .chapter-card, .chapter-card:hover { transform: none !important; }
+  .engraving * { animation: none !important; transition: none !important; }
+}
