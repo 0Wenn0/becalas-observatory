@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet } from './Chapters.jsx';
+import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 
 /* ───────── Contenido ───────── */
@@ -137,11 +137,11 @@ const nodes = [
 ];
 
 const agreements = [
-  ['🤝', 'Aquí cabemos todas', 'Cero discriminación, cero acoso. Cada voz cuenta y se escucha con respeto.'],
-  ['🔒', 'Lo que se dice aquí, aquí se queda', 'Cuidamos lo que cada una comparte. No grabamos sin el acuerdo de todas.'],
-  ['🧪', 'Equivocarse es parte del experimento', 'Preguntar y pedir ayuda no es debilidad: es como se aprende.'],
-  ['📣', 'Nos echamos porras, no competimos', 'Somos aliadas. Celebramos los logros de cada una, grandes o pequeños.'],
-  ['💬', 'Si algo pesa, lo hablamos', 'Si algo te supera, dímelo. Buscamos juntas el apoyo adecuado con el equipo del programa.'],
+  ['todas', 'Aquí cabemos todas', 'Cero discriminación, cero acoso. Cada voz cuenta y se escucha con respeto.'],
+  ['candado', 'Lo que se dice aquí, aquí se queda', 'Cuidamos lo que cada una comparte. No grabamos sin el acuerdo de todas.'],
+  ['matraz', 'Equivocarse es parte del experimento', 'Preguntar y pedir ayuda no es debilidad: es como se aprende.'],
+  ['porras', 'Nos echamos porras, no competimos', 'Somos aliadas. Celebramos los logros de cada una, grandes o pequeños.'],
+  ['dialogo', 'Si algo pesa, lo hablamos', 'Si algo te supera, dímelo. Buscamos juntas el apoyo adecuado con el equipo del programa.'],
 ];
 
 const initialSmart = { goal: '', measure: '', achievable: '', realistic: '', deadline: '', firstStep: '' };
@@ -174,9 +174,9 @@ async function copyText(text) {
 }
 
 
-function BrandLockup({ href, label }) {
+function BrandLockup({ href }) {
   return (
-    <a className="brand-lockup" href={href} aria-label={label}>
+    <a className="brand-lockup" href={href}>
       <span className="brand-program">Mentorías BécALAS 2026 · Grupo de Wen</span>
       <span className="brand-primary">un proyecto de Cognitive Observatory</span>
     </a>
@@ -813,7 +813,7 @@ function Microsite() {
                 <div className="agreement-grid">
                   {agreements.map(([icon, title, text]) => (
                     <details className="agreement-tile" key={title}>
-                      <summary><span className="tile-icon" aria-hidden="true">{icon}</span><span className="tile-title">{title}</span></summary>
+                      <summary><span className="tile-icon"><RuleIcon name={icon} /></span><span className="tile-title">{title}</span></summary>
                       <p>{text}</p>
                     </details>
                   ))}

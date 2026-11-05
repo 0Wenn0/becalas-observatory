@@ -37,3 +37,5 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Chapter cards animate on hover/focus: 3D tilt following the mouse with a lilac glow, small sparkle on enter, and an engraving-specific motion (telescope tilts to the star, moon rocks and clouds drift, astrolabe spins, constellation lines draw themselves). Pure SVG/CSS; disabled with reduced motion.
 - All four chapters (I Misión, II Sesiones, III Herramientas, IV Nosotras) use the book style: ChapterHero (roman numeral, engraving, kicker, title) + StarDivider + chapter body + ChapterNav (prev/next). Header is always lilac.
 - Breathing planet (button and guide): metal-engraving style, gold gradient lines on a wine disk (GoldPlanet in src/Chapters.jsx). Moons orbit, the gold sheen rotates, orbits grow to 1.24x on inhale with a gold glow and shrink to .72x on exhale.
+
+- Reglas del cielo (capítulo IV): tarjetas ciruela como las del índice, con iconos propios de línea fina en dorado (`RuleIcon` en Chapters.jsx) en lugar de emojis. La rejilla usa `align-items: start` para que abrir una tarjeta no estire a su vecina.

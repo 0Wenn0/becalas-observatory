@@ -157,3 +157,51 @@ export function GoldPlanet({ idPrefix = 'gp', animate = true, className = '' }) 
     </svg>
   );
 }
+
+/* Iconos de línea fina para "Nuestras reglas del cielo" */
+const ruleIconPaths = {
+  todas: (
+    <>
+      <circle cx="16" cy="16" r="11" />
+      <circle cx="16" cy="5" r="1.6" className="tw" /><circle cx="26.5" cy="12.6" r="1.6" className="tw" />
+      <circle cx="22.5" cy="25" r="1.6" className="tw" /><circle cx="9.5" cy="25" r="1.6" className="tw" />
+      <circle cx="5.5" cy="12.6" r="1.6" className="tw" />
+      <path d="M16 11.5v9M11.5 16h9" />
+    </>
+  ),
+  candado: (
+    <>
+      <rect x="8" y="14" width="16" height="12" rx="2.5" />
+      <path d="M11.5 14v-3.5a4.5 4.5 0 0 1 9 0V14" />
+      <circle cx="16" cy="19.5" r="1.4" /><path d="M16 21v2.2" />
+    </>
+  ),
+  matraz: (
+    <>
+      <path d="M13 5h6M14 5v8l-6.5 11a2 2 0 0 0 1.7 3h13.6a2 2 0 0 0 1.7-3L18 13V5" />
+      <path d="M10.5 20h11" />
+      <circle cx="14" cy="23.5" r="1" /><circle cx="18.5" cy="22.5" r=".8" />
+    </>
+  ),
+  porras: (
+    <>
+      <path d="M16 6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L16 19.3l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" />
+      <path d="M5 26l3-3M27 26l-3-3M16 27v-3" />
+    </>
+  ),
+  dialogo: (
+    <>
+      <path d="M6 9a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-8l-5 5v-5H9a3 3 0 0 1-3-3z" />
+      <path d="M11 13.5h10M11 17h6" />
+    </>
+  ),
+};
+
+export function RuleIcon({ name }) {
+  return (
+    <svg className="rule-icon" viewBox="0 0 32 32" width="40" height="40" aria-hidden="true" focusable="false"
+      fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      {ruleIconPaths[name]}
+    </svg>
+  );
+}
