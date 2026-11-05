@@ -568,3 +568,69 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
   .chapter-card, .chapter-card:hover { transform: none !important; }
   .engraving * { animation: none !important; transition: none !important; }
 }
+
+/* ═════ Capítulos II–IV en estilo libro ═════ */
+.chapter-wide { max-width: 1120px; }
+.chapter-section { margin-top: clamp(32px, 5vw, 56px); }
+.chapter-section:first-child { margin-top: 0; }
+.book .block-title { color: var(--plum); font-weight: 500; }
+.book .section-intro, .book .field-prompt, .book .tile-sub, .book .agreement-tile p { color: var(--plum-muted); }
+
+/* Sesiones */
+.book .session-list { margin-top: 0; border-top-color: rgba(59, 31, 74, .22); }
+.book .session { border-bottom-color: rgba(59, 31, 74, .22); }
+.book .session-trigger { color: var(--plum); }
+.book .session-number { color: var(--plum-muted); font-weight: 500; }
+.book .session-eyebrow { color: var(--plum-muted); }
+.book .session-title { font-weight: 500; }
+.book .session-toggle { background: rgba(59, 31, 74, .1); color: var(--plum); }
+.book .session-trigger:hover .session-title { color: #5B2D86; }
+.book .mini-title { color: var(--plum); }
+.book .session-aside { background: rgba(59, 31, 74, .06); }
+.book .comet-box { background: var(--plum-card); }
+
+/* Herramientas */
+.book .privacy-seal { background: rgba(59, 31, 74, .08); color: var(--plum); }
+.book .tool-tabs { background: rgba(59, 31, 74, .08); margin-top: 18px; }
+.book .tool-tab { color: var(--plum-muted); }
+.book .tool-tab[aria-selected='true'] { color: var(--plum); }
+.book .howto { background: rgba(59, 31, 74, .07); border-color: rgba(59, 31, 74, .16); color: var(--plum); }
+.book .howto-title { color: var(--plum); }
+.book .howto li::before { background: var(--plum-card); color: #F3ECFB; }
+.book .howto-note { color: var(--plum-muted); border-color: rgba(59, 31, 74, .2); }
+.book .worksheet { border-color: rgba(59, 31, 74, .16); box-shadow: 0 10px 28px rgba(47, 28, 66, .08); }
+.book .worksheet-title, .book .field label { color: var(--plum); }
+.book .worksheet-title span { color: #5B2D86; }
+.book .goal-preview { border-color: rgba(91, 45, 134, .45); background: rgba(91, 45, 134, .05); }
+.book .goal-preview.is-complete { border-color: #5B2D86; background: rgba(91, 45, 134, .1); }
+.book .goal-preview-label { color: #5B2D86; }
+.book .button-primary { background: #5B2D86; }
+.book .button-primary:hover:not(:disabled) { background: var(--plum-card); }
+.book .button-dark { background: var(--plum-card); }
+.book .constellation-card { background: var(--plum-card); }
+.book .constellation-card .howto { background: rgba(243, 236, 251, .08); border-color: rgba(205, 184, 238, .25); color: #F3ECFB; }
+.book .constellation-card .howto-title { color: var(--ink-lilac); }
+.book .constellation-card .howto li::before { background: var(--ink-lilac); color: var(--plum-card); }
+.book .node-tab { border-color: var(--ink-lilac); }
+.book .node-tab.is-selected, .book .node-tab:hover { background: var(--ink-lilac); color: var(--plum-card); }
+.book .node-prompt { background: #3E2757; border-color: rgba(205, 184, 238, .45); }
+.book .node-prompt span { color: var(--ink-lilac); }
+
+/* Nosotras */
+.book .agreement-tile { border-color: rgba(59, 31, 74, .14); }
+.book .agreement-tile summary { color: var(--plum); }
+.book .agreement-tile summary::after { color: #5B2D86; }
+.breath-card { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 24px; padding: clamp(22px, 4vw, 36px); border-radius: 22px; background: var(--book-bg-2); }
+.breath-card .breath-copy p:not(.book-kicker) { margin: 8px 0 0; color: var(--plum-muted); }
+.breath-card .block-title { margin-bottom: 0; }
+.book .planet-button { color: var(--plum); }
+.book .breath-cue { color: var(--plum); }
+.book .resource-tiles a { background: rgba(59, 31, 74, .07); color: var(--plum); }
+.book .resource-tiles a:hover { background: rgba(59, 31, 74, .13); }
+.support-card { padding: clamp(20px, 3vw, 28px); border-radius: 20px; border: 1px solid rgba(59, 31, 74, .2); }
+.support-card p { margin: 6px 0 0; color: var(--plum-muted); }
+.support-card .contact-line { color: var(--plum); }
+.chapter-wide .resource-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.chapter .resource-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 700px) { .breath-card { flex-direction: column; } }
+.chapter-wide .chapter-body { max-width: none; }
