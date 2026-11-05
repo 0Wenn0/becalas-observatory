@@ -122,6 +122,7 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .guide-section { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 32px; padding: 80px 0; }
 .guide-avatar { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2A3A60, var(--night)); font-size: 54px; box-shadow: 0 0 0 6px rgba(107, 63, 214, .15); }
 .guide-bio { max-width: 68ch; margin: 16px 0 0; }
+.guide-invite { padding: 14px 18px; border-left: 4px solid var(--lilac); border-radius: 0 14px 14px 0; background: rgba(107, 63, 214, .08); font-size: 1.05rem; }
 .guide-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; list-style: none; }
 .guide-tags li { padding: 6px 14px; border-radius: 99px; background: rgba(107, 63, 214, .12); color: var(--lilac-text); font-size: 15px; font-weight: 700; }
 

@@ -522,9 +522,10 @@ function Microsite() {
           <div className="guide-avatar" aria-hidden="true">🪐</div>
           <div>
             <SectionHeading id="guide-title" label="Tu guía en este observatorio" title="Hola, soy Wen 👋" />
-            <p className="guide-bio">Soy psicóloga con formación en neuropsicología y trabajo donde se cruzan la inteligencia artificial, los datos, la tecnología y la educación. Me encanta usar la tecnología para resolver problemas reales y encontrar conexiones entre cosas que parecen no tener nada que ver. Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones.</p>
-            <p className="guide-bio">Este espacio es suyo: para preguntar, experimentar, equivocarse y descubrir todo lo que son capaces de construir. Yo también vengo a aprender de ustedes.</p>
-            <ul className="guide-tags" aria-label="Lo que me apasiona"><li>Neurociencia</li><li>Datos</li><li>IA</li><li>Educación</li></ul>
+            <p className="guide-bio">Soy psicóloga, maestrante en Neuropsicología Clínica y científica de datos. Trabajo donde se cruzan la mente, los datos, la inteligencia artificial y la educación, y me encanta llevar todo eso al impacto público: he diseñado y acompañado proyectos de política pública para que la tecnología llegue a más personas.</p>
+            <p className="guide-bio">Lo que más me mueve es transformar la realidad con ciencia y tecnología: convertir en algo real esos mundos que parecían de ciencia ficción o demasiado lejanos. Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones. 🪐</p>
+            <p className="guide-bio guide-invite">Este es un espacio seguro para explorar juntas: para preguntar sin miedo, equivocarnos, reírnos y descubrir nuevos caminos, nuevas constelaciones y los sueños hacia los que quieres volar. Yo también vengo a aprender de ustedes. ✨</p>
+            <ul className="guide-tags" aria-label="Lo que me apasiona"><li>Neurociencia</li><li>Ciencia de datos</li><li>IA</li><li>Educación</li><li>Política pública</li></ul>
           </div>
         </section>
 
