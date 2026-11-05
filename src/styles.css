@@ -103,7 +103,8 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .hero .kicker { color: var(--rose-soft); }
 .hero h1 { margin: 0; font-size: clamp(48px, 8vw, 92px); line-height: 1; }
 .hero-lede { max-width: 56ch; margin: 22px 0 0; color: var(--muted-on-dark); font-size: clamp(18px, 2vw, 21px); }
-.hero-quote { max-width: 56ch; margin: 26px 0 0; padding: 14px 0 14px 20px; border-left: 4px solid var(--lilac-soft); color: var(--paper); font-size: 18px; font-style: italic; background: linear-gradient(90deg, rgba(10, 18, 34, .65), rgba(10, 18, 34, 0)); }
+.hero-quote { position: relative; max-width: 56ch; margin: 30px 0 0; padding: 0 0 0 48px; color: var(--paper); font-size: 18px; font-style: italic; }
+.hero-quote::before { content: '“'; position: absolute; left: -4px; top: -18px; color: var(--lilac-soft); font: 600 84px/1 var(--serif); font-style: normal; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 
 /* Próxima sesión */
@@ -124,7 +125,8 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .guide-section { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 32px; padding: 80px 0; }
 .guide-avatar { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2A3A60, var(--night)); font-size: 54px; box-shadow: 0 0 0 6px rgba(107, 63, 214, .15); }
 .guide-bio { max-width: 68ch; margin: 16px 0 0; }
-.guide-invite { padding: 14px 18px; border-left: 4px solid var(--lilac); border-radius: 0 14px 14px 0; background: rgba(107, 63, 214, .08); font-size: 1.05rem; }
+.guide-invite { position: relative; padding: 20px 120px 20px 22px; border-radius: 20px; background: rgba(107, 63, 214, .08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cg fill='none' stroke='%236B3FD6' stroke-opacity='.35' stroke-width='1'%3E%3Cpath d='M8 60 L38 34 L70 46 L104 14'/%3E%3Cpath d='M70 46 L92 66'/%3E%3C/g%3E%3Cg fill='%236B3FD6' fill-opacity='.55'%3E%3Ccircle cx='8' cy='60' r='2.5'/%3E%3Ccircle cx='38' cy='34' r='3'/%3E%3Ccircle cx='70' cy='46' r='2.5'/%3E%3Ccircle cx='104' cy='14' r='3.5'/%3E%3Ccircle cx='92' cy='66' r='2'/%3E%3C/g%3E%3C/svg%3E") no-repeat right 16px center / 96px auto; font-size: 1.05rem; }
+@media (max-width: 700px) { .guide-invite { padding: 64px 18px 18px; background-position: right 14px top 12px; background-size: 72px auto; } }
 .guide-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; list-style: none; }
 .guide-tags li { padding: 6px 14px; border-radius: 99px; background: rgba(107, 63, 214, .12); color: var(--lilac-text); font-size: 15px; font-weight: 700; }
 
@@ -199,8 +201,8 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--lilac); outline: 3px solid rgba(107, 63, 214, .35); outline-offset: 1px; }
 .field input::placeholder, .field textarea::placeholder { color: #5C6675; }
 .field textarea { resize: vertical; }
-.goal-preview { margin-top: 22px; padding: 18px 20px; border-left: 4px solid var(--lilac); border-radius: 0 14px 14px 0; background: rgba(107, 63, 214, .08); transition: background-color .3s ease; }
-.goal-preview.is-complete { background: rgba(107, 63, 214, .16); }
+.goal-preview { margin-top: 22px; padding: 18px 20px; border: 2px dashed rgba(107, 63, 214, .45); border-radius: 16px; background: rgba(107, 63, 214, .05); transition: background-color .3s ease, border-color .3s ease; }
+.goal-preview.is-complete { border-style: solid; border-color: var(--lilac); background: rgba(107, 63, 214, .12); }
 .goal-preview-label { color: var(--lilac-text); font-size: 15px; font-weight: 700; }
 .goal-preview p { margin: 8px 0 0; white-space: pre-line; }
 
@@ -225,17 +227,20 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 
 /* Respiración: planeta con anillos que crecen al inhalar y se encogen al exhalar */
 .breath-guide { flex-direction: column; align-items: flex-start; }
-.breathing-planet { display: flex; align-items: center; gap: 16px; }
-.breathing-planet svg { width: 180px; height: 180px; flex: none; overflow: visible; }
-.bp-rings { transform-origin: 100px 100px; transform: scale(.8); transition: transform 4s ease-in-out; }
-.is-inhala .bp-rings { transform: scale(1.18); }
-.is-exhala .bp-rings { transform: scale(.8); }
+.breathing-planet { display: flex; align-items: center; gap: 28px; padding: 36px 0 36px 30px; }
+.breathing-planet svg { width: 170px; height: 170px; flex: none; overflow: visible; }
+.bp-rings { transform-origin: 100px 100px; transform: scale(.72); transition: transform 4s ease-in-out, filter 4s ease-in-out; }
+.is-inhala .bp-rings { transform: scale(1.5); filter: drop-shadow(0 0 6px rgba(242, 167, 195, .7)); }
+.is-exhala .bp-rings { transform: scale(.72); }
 .bp-ring { transform-origin: 100px 100px; transform: rotate(-18deg); }
-.bp-ring ellipse { fill: none; stroke: #C9B4F7; stroke-width: 3; stroke-linecap: round; }
-/* Los guiones avanzan alrededor de cada órbita: los anillos “giran” sin perder la inclinación del planeta. */
-.bp-ring-1 ellipse { stroke: #A985F5; stroke-width: 4; stroke-dasharray: 60 14; animation: ring-flow 6s linear infinite; }
-.bp-ring-2 ellipse { opacity: .8; stroke-dasharray: 22 12; animation: ring-flow 9s linear infinite reverse; }
-.bp-ring-3 ellipse { opacity: .5; stroke-dasharray: 6 10; animation: ring-flow 13s linear infinite; }
+.bp-ring ellipse { fill: none; stroke-linecap: round; transition: stroke 4s ease-in-out, stroke-width 4s ease-in-out, opacity 4s ease-in-out; }
+/* Al exhalar los anillos son lavanda; al llegar al máximo de la inhalación se tiñen de rosa y azul. */
+.bp-ring-1 ellipse { stroke: #A985F5; stroke-width: 5; stroke-dasharray: 60 14; animation: ring-flow 6s linear infinite; }
+.bp-ring-2 ellipse { stroke: #C9B4F7; stroke-width: 4; opacity: .9; stroke-dasharray: 22 12; animation: ring-flow 9s linear infinite reverse; }
+.bp-ring-3 ellipse { stroke: #C9B4F7; stroke-width: 3; opacity: .7; stroke-dasharray: 8 10; animation: ring-flow 13s linear infinite; }
+.is-inhala .bp-ring-1 ellipse { stroke: #F2A7C3; stroke-width: 6; }
+.is-inhala .bp-ring-2 ellipse { stroke: #8FC3FF; stroke-width: 5; opacity: 1; }
+.is-inhala .bp-ring-3 ellipse { stroke: #E7B8F5; stroke-width: 4; opacity: .95; }
 @keyframes ring-flow { to { stroke-dashoffset: -440; } }
 .breath-cue { margin: 0; max-width: 16ch; color: var(--ink); font: 600 clamp(22px, 2.6vw, 28px)/1.2 var(--serif); }
 
@@ -245,7 +250,7 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .node-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .node-tab { min-height: 44px; padding: 0 16px; color: var(--paper); border: 2px solid var(--lilac-soft); border-radius: 99px; background: transparent; font-size: 16px; font-weight: 700; cursor: pointer; }
 .node-tab.is-selected, .node-tab:hover { color: var(--night); background: var(--lilac-soft); }
-.node-prompt { margin-top: 20px; padding: 18px 20px; border-left: 4px solid var(--lilac-soft); background: var(--blue); }
+.node-prompt { margin-top: 20px; padding: 18px 20px; background: var(--blue); }
 .node-prompt span { color: var(--rose-soft); font-size: 15px; font-weight: 700; }
 .node-prompt p { margin: 8px 0 0; font: 600 clamp(22px, 2.4vw, 26px)/1.3 var(--serif); }
 .constellation-map { position: relative; }
@@ -334,7 +339,8 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
   .session-detail { padding-left: 0; }
   .smart-fields { grid-template-columns: 1fr; }
   .breath-section { flex-direction: column; gap: 20px; padding: 44px 20px; }
-  .breathing-planet svg { width: 140px; height: 140px; }
+  .breathing-planet { padding: 40px 0 40px 36px; gap: 34px; }
+  .breathing-planet svg { width: 120px; height: 120px; }
   .worksheet { padding: 16px; }
   .resource-row { grid-template-columns: 28px minmax(0, 1fr); }
   .resource-row > a { grid-column: 2; }

@@ -28,3 +28,6 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Tools pattern: each tool has a translucent "Cómo se usa" panel (numbered steps, privacy note) separated from a white "Tu hoja de trabajo" card that holds the inputs. On dark sections use the `.on-dark` variants.
 - "Lanza un cometa" fires a star burst and a real comet (`launchComet`) that starts very bright and fades as it crosses the screen.
 - Breathing guide: planet with three tilted orbit rings whose dashes flow around (spinning feel) and that grow on "Inhala" and shrink on "Exhala" (4 s each); text cue always visible. Reduced motion keeps rings static.
+- Avoid the "AI-template" left accent border on cards/quotes. Use brand devices instead: large serif opening quote mark for quotes, a small constellation drawing inside highlighted cards, dashed "ticket" border for generated outputs.
+- Comets from "Lanza un cometa" shoot in 3 different random directions around the button.
+- Breathing rings scale .72 → 1.5 and shift from lavender to pink/blue at the top of the inhale.
