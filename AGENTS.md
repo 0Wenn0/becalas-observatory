@@ -21,3 +21,6 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Decorative motion: hero starfield canvas, comet-trail cursor (pointer: fine only) and sparkles. All disabled with prefers-reduced-motion; native cursor is never replaced.
 - Interactive helpers: "Lanza un cometa" icebreakers and a 3-star session progress constellation driven by the session dates.
 - Header lockup: "Mentorías BécALAS 2026 · Grupo de Wen" with "un proyecto de Cognitive Observatory" secondary. Footer states the site is personal, non-official and part of Wen's UX/UI portfolio; /caso holds the case study.
+- Session dates are "Por definir" until agreed; edit `dateLabel` and `done` in src/App.jsx. Never state how many mentees are in the group (it may grow).
+- Breathing toggle is a ringed-planet button (brand: observatory), not a generic button.
+- Comet cursor must be clearly visible: glowing star head offset from the pointer tip, star-trail particles, and a star burst + ring on every button/link click.
