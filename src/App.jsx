@@ -37,7 +37,8 @@ const sessions = [
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Por definir',
     done: false,
-    name: 'Despegue al mundo laboral 🚀',
+    name: 'Despegue al mundo laboral',
+    emoji: '🚀',
     plain: 'Sesión 3 · Primer empleo',
     objective: 'CV, LinkedIn, entrevistas y cómo no tomarte el “no” como algo personal.',
     bullets: ['Tu CV y LinkedIn, con tus logros a la vista', 'Practicamos una entrevista (en modo amable)', 'Resiliencia: el rechazo también enseña'],
@@ -144,12 +145,12 @@ const agreements = [
 
 const initialSmart = { goal: '', measure: '', achievable: '', realistic: '', deadline: '', firstStep: '' };
 const smartFields = [
-  ['goal', 'S · Específica', '¿Qué quieres lograr?', 'Ej. Conseguir mis primeras prácticas en un laboratorio'],
-  ['measure', 'M · Medible', '¿Cómo sabrás que avanzaste?', 'Ej. Enviar 10 solicitudes y tener 2 entrevistas'],
-  ['achievable', 'A · Alcanzable', '¿Qué necesitas para lograrlo?', 'Ej. Actualizar mi CV y mi LinkedIn'],
-  ['realistic', 'R · Realista', '¿Qué no vas a sacrificar?', 'Ej. Mis horas de sueño y mis clases'],
-  ['deadline', 'T · Con fecha', '¿Para cuándo?', 'Ej. 31 de enero de 2027'],
-  ['firstStep', 'Primer pasito 👣', '¿Qué puedes hacer esta semana?', 'Ej. Pedirle a alguien que revise mi CV'],
+  ['goal', 'S · Específica', '¿Qué quieres lograr?', 'Ej. Mis primeras prácticas'],
+  ['measure', 'M · Medible', '¿Cómo sabrás que avanzaste?', 'Ej. 10 solicitudes enviadas'],
+  ['achievable', 'A · Alcanzable', '¿Qué necesitas para lograrlo?', 'Ej. CV actualizado'],
+  ['realistic', 'R · Realista', '¿Qué no vas a sacrificar?', 'Ej. Mis horas de sueño'],
+  ['deadline', 'T · Con fecha', '¿Para cuándo?', 'Ej. 31 de enero'],
+  ['firstStep', 'Primer pasito 👣', '¿Qué puedes hacer esta semana?', 'Ej. Pedir que revisen mi CV'],
 ];
 
 /* ───────── Utilidades ───────── */
@@ -208,6 +209,7 @@ export function App() {
 function MissionTabs() {
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState('');
+  const [expanded, setExpanded] = useState(false);
   const tabRefs = useRef([]);
 
   function onKey(event) {
@@ -252,9 +254,10 @@ function MissionTabs() {
         ))}
       </div>
       <div className="prompt-panel" role="tabpanel" id={`panel-${prompts[active].id}`} aria-labelledby={`tab-${prompts[active].id}`}>
-        <pre className="prompt-text" tabIndex={0}>{prompts[active].text}</pre>
+        <pre className={`prompt-text ${expanded ? 'is-expanded' : ''}`} id="prompt-text" tabIndex={0}>{prompts[active].text}</pre>
+        <button className="text-button prompt-toggle" type="button" aria-expanded={expanded} aria-controls="prompt-text" onClick={() => setExpanded((v) => !v)}>{expanded ? 'Ver menos' : 'Ver el prompt completo'}</button>
         <div className="prompt-actions">
-          <button className="button button-primary" type="button" onClick={onCopy}>Copiar prompt ✨</button>
+          <button className="button button-primary" type="button" onClick={onCopy}>Copiar prompt <span aria-hidden="true">✨</span></button>
           <p className="status-text" role="status" aria-live="polite">{copied}</p>
         </div>
       </div>
@@ -508,7 +511,7 @@ function Microsite() {
           <div className="section-wrap next-grid">
             <div>
               <p className="section-label">Próxima sesión</p>
-              <h2 id="next-title">{nextDefined ? nextSession.dateLabel : 'Fecha por definir 🗓️'}</h2>
+              <h2 id="next-title">{nextDefined ? nextSession.dateLabel : <>Fecha por definir <span aria-hidden="true">🗓️</span></>}</h2>
               <p className="next-sub">{nextSession.plain} · {nextSession.name}.</p>
               <p className="next-sub">{nextDefined ? 'Por videollamada: el enlace llega por el grupo de WhatsApp.' : 'La acordamos juntas en el grupo de WhatsApp. En cuanto la tengamos, aparece aquí.'}</p>
               <p className="next-sub">Duración: 1 hora · En grupo, con Wen.</p>
@@ -521,10 +524,10 @@ function Microsite() {
         <section className="guide-section section-wrap" aria-labelledby="guide-title">
           <div className="guide-avatar" aria-hidden="true">🪐</div>
           <div>
-            <SectionHeading id="guide-title" label="Tu guía en este observatorio" title="Hola, soy Wen 👋" />
+            <SectionHeading id="guide-title" label="Tu guía en este observatorio" title={<>Hola, soy Wen <span aria-hidden="true">👋</span></>} />
             <p className="guide-bio">Soy psicóloga, maestrante en Neuropsicología Clínica y científica de datos. Trabajo donde se cruzan la mente, los datos, la inteligencia artificial y la educación, y me encanta llevar todo eso al impacto público. Por ejemplo, impartí talleres de alfabetización en IA en un programa nacional vinculado a OpenAI en México, con más de 3,000 personas de gobierno, el Congreso y universidades, para que la tecnología llegue a más gente y se use con criterio.</p>
             <p className="guide-bio">Lo que más me mueve es transformar la realidad con ciencia y tecnología: convertir en algo real esos mundos que parecían de ciencia ficción o demasiado lejanos. Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones. 🪐</p>
-            <p className="guide-bio guide-invite">Este es un espacio seguro para explorar juntas: para preguntar sin miedo, equivocarnos, reírnos y descubrir nuevos caminos, nuevas constelaciones y los sueños hacia los que quieres volar. Yo también vengo a aprender de ustedes. ✨</p>
+            <p className="guide-bio guide-invite">Este es un espacio seguro para explorar juntas: para preguntar sin miedo, equivocarnos, reírnos y descubrir nuevos caminos, nuevas constelaciones y los sueños hacia los que quieres volar. Yo también vengo a aprender de ustedes. <span aria-hidden="true">✨</span></p>
             <ul className="guide-tags" aria-label="Lo que me apasiona"><li>Neurociencia</li><li>Ciencia de datos</li><li>IA</li><li>Educación</li><li>Política pública</li></ul>
           </div>
         </section>
@@ -535,7 +538,7 @@ function Microsite() {
             <SectionHeading
               id="mission-title"
               dark
-              label="Tu primera misión 🔭"
+              label={<>Tu primera misión <span aria-hidden="true">🔭</span></>}
               title="Misión 0: preséntate con IA"
               intro="Antes de la sesión 1, elige un formato, copia el prompt, cambia lo que está entre [corchetes] por tus datos y pégalo en ChatGPT, Gemini o la IA que prefieras. No tiene que quedar perfecto: si sale raro, mejor, ¡de eso platicamos! En la sesión compartimos lo que hiciste y qué tuviste que corregirle a la IA."
             />
@@ -557,8 +560,8 @@ function Microsite() {
                       <button className="session-trigger" type="button" aria-expanded={expanded} aria-controls={`session-${session.id}`} onClick={() => setOpenSession(expanded ? '' : session.id)}>
                         <span className="session-number" aria-hidden="true">{session.number}</span>
                         <span className="session-title-group">
-                          <span className="session-eyebrow">{session.plain} · {session.dateLabel === 'Por definir' ? 'Fecha por definir' : session.dateLabel}</span>
-                          <span className="session-title">{session.name}</span>
+                          <span className="session-eyebrow">{session.plain}{session.dateLabel === 'Por definir' ? '' : ` · ${session.dateLabel}`}</span>
+                          <span className="session-title">{session.name}{session.emoji && <span aria-hidden="true"> {session.emoji}</span>}</span>
                         </span>
                         <span className="session-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
                       </button>
@@ -590,7 +593,7 @@ function Microsite() {
         {/* RESPIRA */}
         <section className="breath-section" id="pausa" aria-labelledby="breath-title">
           <div className="breath-copy">
-            <p className="section-label">Opcional, sin presión 🌬️</p>
+            <p className="section-label">Opcional, sin presión <span aria-hidden="true">🌬️</span></p>
             <h2 id="breath-title">Antes de despegar, respira</h2>
             <p>Un minuto para llegar de verdad. Puedes cerrar los ojos o mirar un punto fijo. No hay una forma correcta de sentirse.</p>
           </div>
@@ -633,7 +636,8 @@ function Microsite() {
               <p>{smartSentence || 'Empieza por “¿Qué quieres lograr?” y aquí va apareciendo 👣'}</p>
             </div>
             <div className="prompt-actions">
-              <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence}>Copiar mi meta</button>
+              <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Copiar mi meta</button>
+              {!smartSentence && <p className="field-prompt" id="smart-copy-hint">Se activa cuando escribas qué quieres lograr.</p>}
               <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
             </div>
           </div>
@@ -642,14 +646,14 @@ function Microsite() {
         <section className="constellation-section" id="mapa" aria-labelledby="map-title">
           <div className="section-wrap constellation-layout">
             <div className="constellation-copy">
-              <SectionHeading id="map-title" dark label="Mis herramientas" title="Tu constelación ✨" intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar. Toca un punto y contesta en tu cabeza (o en tu bitácora). No hay respuestas correctas, solo pistas." />
+              <SectionHeading id="map-title" dark label="Mis herramientas" title={<>Tu constelación <span aria-hidden="true">✨</span></>} intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar. Toca un punto y contesta en tu cabeza (o en tu bitácora). No hay respuestas correctas, solo pistas." />
               <div className="node-selector" role="group" aria-label="Elige un punto de tu constelación">
                 {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
         </div>
               <div className="node-prompt" aria-live="polite"><span>{currentNode.label}</span><p>{currentNode.prompt}</p></div>
             </div>
             <div className="constellation-map" aria-hidden="true">
-              <img src="/observatory-map.png" alt="" />
+              <img src="/observatory-map.webp" alt="" loading="lazy" decoding="async" width="1200" height="614" />
               {nodes.map((node) => <span key={node.id} className={`map-node ${node.position} ${activeNode === node.id ? 'is-active' : ''}`}>{node.label}</span>)}
             </div>
           </div>
@@ -704,7 +708,7 @@ function Microsite() {
       <footer className="site-footer">
         <div className="footer-top">
           <div className="footer-cta">
-            <p className="footer-title">¿Te quedó alguna duda? 💬</p>
+            <p className="footer-title">¿Te quedó alguna duda? <span aria-hidden="true">💬</span></p>
             <p>Escríbeme por el grupo de WhatsApp. No hay preguntas tontas, solo preguntas que todavía no hacemos.</p>
           </div>
           <nav className="footer-nav" aria-label="Enlaces rápidos">
@@ -716,7 +720,7 @@ function Microsite() {
         </div>
         <div className="footer-bottom">
           <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI <strong>Cognitive Observatory</strong>.</p>
-          <a href="/caso">Cómo diseñé este sitio →</a>
+          <a className="footer-case-link" href="/caso">Cómo diseñé este sitio →</a>
         </div>
       </footer>
     </>
