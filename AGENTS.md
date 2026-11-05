@@ -23,4 +23,4 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Header lockup: "Mentorías BécALAS 2026 · Grupo de Wen" with "un proyecto de Cognitive Observatory" secondary. Footer states the site is personal, non-official and part of Wen's UX/UI portfolio; /caso holds the case study.
 - Session dates are "Por definir" until agreed; edit `dateLabel` and `done` in src/App.jsx. Never state how many mentees are in the group (it may grow).
 - Breathing toggle is a ringed-planet button (brand: observatory), not a generic button.
-- Comet cursor must be clearly visible: glowing star head offset from the pointer tip, star-trail particles, and a star burst + ring on every button/link click.
+- Comet cursor must be clearly visible and round: glowing circular head offset from the pointer tip, continuous circular light trail, and a star burst + ring on every button/link click.
