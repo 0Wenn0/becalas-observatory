@@ -31,3 +31,5 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Avoid the "AI-template" left accent border on cards/quotes. Use brand devices instead: large serif opening quote mark for quotes, a small constellation drawing inside highlighted cards, dashed "ticket" border for generated outputs.
 - Comets from "Lanza un cometa" shoot in 3 different random directions around the button.
 - Breathing rings scale .72 → 1.5 and shift from lavender to pink/blue at the top of the inhale.
+- Information architecture: four hash views (#inicio, #sesiones, #herramientas, #nosotras) instead of one long page. Sub-anchors (#mision, #proxima, #meta, #constelacion, #bitacora, #respira, #acuerdos, #recursos, #apoyo) open their view. Keep total visible copy around 600 words; intros max two lines; one privacy seal in Herramientas.
+- Inicio shows Wen's bio in a two-line short version with "Conóceme más".

@@ -136,11 +136,11 @@ const nodes = [
 ];
 
 const agreements = [
-  ['Aquí cabemos todas', 'Cero discriminación, cero acoso. Cada voz cuenta y se escucha con respeto.'],
-  ['Lo que se dice aquí, aquí se queda', 'Cuidamos lo que cada una comparte. No grabamos sin el acuerdo de todas.'],
-  ['Equivocarse es parte del experimento', 'Preguntar y pedir ayuda no es debilidad: es como se aprende.'],
-  ['Nos echamos porras, no competimos', 'Somos aliadas. Celebramos los logros de cada una, grandes o pequeños.'],
-  ['Si algo pesa, lo hablamos', 'Si algo te supera, dímelo. Buscamos juntas el apoyo adecuado con el equipo del programa.'],
+  ['🤝', 'Aquí cabemos todas', 'Cero discriminación, cero acoso. Cada voz cuenta y se escucha con respeto.'],
+  ['🔒', 'Lo que se dice aquí, aquí se queda', 'Cuidamos lo que cada una comparte. No grabamos sin el acuerdo de todas.'],
+  ['🧪', 'Equivocarse es parte del experimento', 'Preguntar y pedir ayuda no es debilidad: es como se aprende.'],
+  ['📣', 'Nos echamos porras, no competimos', 'Somos aliadas. Celebramos los logros de cada una, grandes o pequeños.'],
+  ['💬', 'Si algo pesa, lo hablamos', 'Si algo te supera, dímelo. Buscamos juntas el apoyo adecuado con el equipo del programa.'],
 ];
 
 const initialSmart = { goal: '', measure: '', achievable: '', realistic: '', deadline: '', firstStep: '' };
@@ -172,16 +172,6 @@ async function copyText(text) {
   try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 }
 
-
-function SectionHeading({ id, label, title, intro, dark }) {
-  return (
-    <header className={`section-heading ${dark ? 'on-dark' : ''}`}>
-      <p className="section-label">{label}</p>
-      <h2 id={id}>{title}</h2>
-      {intro && <p className="section-intro">{intro}</p>}
-    </header>
-  );
-}
 
 function BrandLockup({ href, label }) {
   return (
@@ -362,36 +352,36 @@ function PlanetIcon() {
   );
 }
 
-const navLinks = [
-  { id: 'proxima', label: 'Próxima sesión', primary: true },
-  { id: 'mision', label: 'Mi misión', primary: true },
-  { id: 'sesiones', label: 'Sesiones', primary: true },
-  { id: 'herramientas', label: 'Mis herramientas' },
-  { id: 'recursos', label: 'Recursos' },
-  { id: 'apoyo', label: 'Apoyo' },
+
+/* ───────── Navegación por vistas ───────── */
+
+const views = [
+  { id: 'inicio', label: 'Inicio' },
+  { id: 'sesiones', label: 'Sesiones' },
+  { id: 'herramientas', label: 'Herramientas' },
+  { id: 'nosotras', label: 'Nosotras' },
 ];
 
-/* Secciones que no están en el menú se asocian al enlace más cercano para indicar “estás aquí”. */
-const sectionToLink = { inicio: '', proxima: 'proxima', mision: 'mision', sesiones: 'sesiones', pausa: 'sesiones', herramientas: 'herramientas', mapa: 'herramientas', bitacora: 'herramientas', recursos: 'recursos', acuerdos: 'apoyo', apoyo: 'apoyo' };
+/* Anclas internas → vista que las contiene (y pestaña de herramienta, si aplica). */
+const anchorToView = {
+  inicio: 'inicio', proxima: 'inicio', mision: 'inicio', wen: 'inicio',
+  sesiones: 'sesiones',
+  herramientas: 'herramientas', meta: 'herramientas', constelacion: 'herramientas', bitacora: 'herramientas',
+  nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
+};
+const toolTabs = [
+  { id: 'meta', label: 'Mi meta' },
+  { id: 'constelacion', label: 'Mi constelación' },
+  { id: 'bitacora', label: 'Mi bitácora' },
+];
 
-function SiteHeader() {
-  const [active, setActive] = useState('');
-  const [moreOpen, setMoreOpen] = useState(false);
+function readHash() {
+  return window.location.hash.replace('#', '');
+}
+
+function SiteHeader({ view }) {
   const [hidden, setHidden] = useState(false);
   const headerRef = useRef(null);
-  const moreButtonRef = useRef(null);
-  const morePanelRef = useRef(null);
-
-  // “Estás aquí”: resalta el enlace de la sección visible.
-  useEffect(() => {
-    const sections = Object.keys(sectionToLink).map((id) => document.getElementById(id)).filter(Boolean);
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActive(sectionToLink[visible.target.id] ?? '');
-    }, { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.25, 0.5] });
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
 
   // En celular, el encabezado se esconde al bajar y reaparece al subir.
   useEffect(() => {
@@ -400,56 +390,72 @@ function SiteHeader() {
     function onScroll() {
       const y = window.scrollY;
       const focusInside = headerRef.current?.contains(document.activeElement);
-      if (!mobile.matches || moreOpen || focusInside || y < 120) setHidden(false);
+      if (!mobile.matches || focusInside || y < 120) setHidden(false);
       else if (y > lastY + 6) setHidden(true);
       else if (y < lastY - 6) setHidden(false);
       lastY = y;
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [moreOpen]);
-
-  // Menú “Más”: se cierra con Esc, al hacer clic afuera o al elegir una opción, y devuelve el foco.
-  useEffect(() => {
-    if (!moreOpen) return undefined;
-    morePanelRef.current?.querySelector('a')?.focus();
-    function onKey(event) {
-      if (event.key === 'Escape') { setMoreOpen(false); moreButtonRef.current?.focus(); }
-    }
-    function onClick(event) {
-      if (!morePanelRef.current?.contains(event.target) && !moreButtonRef.current?.contains(event.target)) setMoreOpen(false);
-    }
-    document.addEventListener('keydown', onKey);
-    document.addEventListener('click', onClick);
-    return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('click', onClick); };
-  }, [moreOpen]);
-
-  const link = (item, extra = '') => (
-    <a key={item.id} href={`#${item.id}`} className={`nav-link ${extra} ${active === item.id ? 'is-active' : ''}`} aria-current={active === item.id ? 'location' : undefined} onClick={() => setMoreOpen(false)}>{item.label}</a>
-  );
+  }, []);
 
   return (
     <header className={`site-header ${hidden ? 'is-hidden' : ''}`} ref={headerRef} onFocus={() => setHidden(false)}>
       <BrandLockup href="#inicio" label="Mentorías BécALAS 2026, grupo de Wen. Ir al inicio" />
-      <nav className="main-nav" aria-label="Navegación principal">
-        {navLinks.map((item) => link(item, item.primary ? 'is-primary' : 'is-secondary'))}
-        <div className="more-wrap">
-          <button ref={moreButtonRef} className={`more-button ${navLinks.some((i) => !i.primary && i.id === active) ? 'is-active' : ''}`} type="button" aria-expanded={moreOpen} aria-controls="more-panel" onClick={() => setMoreOpen((v) => !v)}>
-            Más <span aria-hidden="true">✦</span>
-          </button>
-          <div className="more-panel" id="more-panel" ref={morePanelRef} hidden={!moreOpen}>
-            {navLinks.filter((i) => !i.primary).map((item) => link(item))}
-          </div>
-        </div>
+      <nav className="main-nav" aria-label="Secciones del sitio">
+        {views.map((item) => (
+          <a key={item.id} href={`#${item.id}`} className={`nav-link ${view === item.id ? 'is-active' : ''}`} aria-current={view === item.id ? 'page' : undefined}>{item.label}</a>
+        ))}
       </nav>
     </header>
+  );
+}
+
+function ToolTabs({ active, onChange }) {
+  const refs = useRef([]);
+  function onKey(event) {
+    const index = toolTabs.findIndex((t) => t.id === active);
+    let next = null;
+    if (event.key === 'ArrowRight') next = (index + 1) % toolTabs.length;
+    if (event.key === 'ArrowLeft') next = (index - 1 + toolTabs.length) % toolTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = toolTabs.length - 1;
+    if (next !== null) {
+      event.preventDefault();
+      onChange(toolTabs[next].id);
+      refs.current[next]?.focus();
+    }
+  }
+  return (
+    <div className="tool-tabs" role="tablist" aria-label="Elige una herramienta">
+      {toolTabs.map((tab, index) => (
+        <button
+          key={tab.id}
+          ref={(el) => { refs.current[index] = el; }}
+          type="button"
+          role="tab"
+          id={`tooltab-${tab.id}`}
+          aria-selected={active === tab.id}
+          aria-controls={`toolpanel-${tab.id}`}
+          tabIndex={active === tab.id ? 0 : -1}
+          className="tool-tab"
+          onClick={() => onChange(tab.id)}
+          onKeyDown={onKey}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
   );
 }
 
 /* ───────── Página principal ───────── */
 
 function Microsite() {
-  const [openSession, setOpenSession] = useState('metas');
+  const [view, setView] = useState(() => anchorToView[readHash()] ?? 'inicio');
+  const [tool, setTool] = useState(() => (toolTabs.some((t) => t.id === readHash()) ? readHash() : 'meta'));
+  const [openSession, setOpenSession] = useState('');
+  const [showBio, setShowBio] = useState(false);
   const [activeNode, setActiveNode] = useState('intereses');
   const [breathing, setBreathing] = useState(false);
   const [smart, setSmart] = useState(() => readSaved('becalas-smart', initialSmart));
@@ -459,6 +465,32 @@ function Microsite() {
   const [savedMessage, setSavedMessage] = useState('');
   const celebrated = useRef(false);
   const previewRef = useRef(null);
+  const firstRender = useRef(true);
+
+  // Enrutamiento por #hash: cada vista tiene su enlace para compartir por WhatsApp.
+  useEffect(() => {
+    function onHash() {
+      const hash = readHash();
+      const target = anchorToView[hash];
+      if (!target) return;
+      setView(target);
+      if (toolTabs.some((t) => t.id === hash)) setTool(hash);
+      window.requestAnimationFrame(() => {
+        const el = document.getElementById(hash);
+        const isView = views.some((v) => v.id === hash);
+        if (isView || !el) {
+          window.scrollTo({ top: 0 });
+          document.getElementById(`view-${target}-title`)?.focus({ preventScroll: true });
+        } else {
+          el.scrollIntoView();
+        }
+      });
+    }
+    window.addEventListener('hashchange', onHash);
+    if (firstRender.current && readHash() && anchorToView[readHash()]) onHash();
+    firstRender.current = false;
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   const nextSession = sessions.find((session) => !session.done) ?? sessions[sessions.length - 1];
   const nextDefined = nextSession.dateLabel !== 'Por definir';
@@ -493,22 +525,16 @@ function Microsite() {
     window.setTimeout(() => setter(''), 3200);
   }
 
-  async function copySmart(event) {
+  async function copySmart() {
     const ok = await copyText(smartSentence);
     flash(setSmartCopied, ok ? '¡Copiada! Tráela a la sesión ✨' : 'Selecciona el texto y cópialo manualmente.');
-  }
-
-  function openJournal(sessionId) {
-    if (sessionId) setActiveLogSession(sessionId);
-    document.getElementById('bitacora')?.scrollIntoView({ behavior: 'smooth' });
-    window.setTimeout(() => document.getElementById('journal-discovery')?.focus({ preventScroll: true }), 450);
   }
 
   function updateCurrentLog(field, value) {
     setLog((previous) => ({ ...previous, [activeLogSession]: { ...(previous[activeLogSession] ?? {}), [field]: value } }));
   }
 
-  function saveJournal(event) {
+  function saveJournal() {
     const next = { ...log, [activeLogSession]: currentLog };
     setLog(next);
     saveLocal('becalas-log', next);
@@ -529,251 +555,261 @@ function Microsite() {
 
   return (
     <>
-      <a className="skip-link" href="#contenido">Saltar al contenido</a>
-      <SiteHeader />
+      <a className="skip-link" href="#contenido" onClick={(e) => { e.preventDefault(); document.getElementById('contenido')?.focus(); }}>Saltar al contenido</a>
+      <SiteHeader view={view} />
 
-      <main id="contenido">
-        {/* HERO */}
-        <section className="hero" id="inicio" aria-labelledby="hero-title">
-          <Starfield />
-          <div className="hero-copy">
-            <p className="kicker">Observatorio de mentoría · BécALAS 2026</p>
-            <h1 id="hero-title">¡Exploremos juntas! <span aria-hidden="true">🔭</span></h1>
-            <p className="hero-lede">Aquí está todo lo de nuestras mentorías: cuándo nos vemos, tu primera misión y herramientas para jugar con tus ideas.</p>
-            <blockquote className="hero-quote">No necesitas tener todo resuelto para empezar a construir la trayectoria que deseas. La curiosidad, la constancia y las ganas de aprender abren caminos que hoy ni imaginas.</blockquote>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#mision">Ver mi primera misión</a>
-              <a className="button button-ghost" href="#proxima">Próxima sesión: {nextDefined ? nextSession.dateLabel : 'por definir'}</a>
-            </div>
-          </div>
-        </section>
-
-        {/* PRÓXIMA SESIÓN */}
-        <section className="next-session" id="proxima" aria-labelledby="next-title">
-          <div className="section-wrap next-grid">
-            <div>
-              <p className="section-label">Próxima sesión</p>
-              <h2 id="next-title">{nextDefined ? nextSession.dateLabel : <>Fecha por definir <span aria-hidden="true">🗓️</span></>}</h2>
-              <p className="next-sub">{nextSession.plain} · {nextSession.name}.</p>
-              <p className="next-sub">{nextDefined ? 'Por videollamada: el enlace llega por el grupo de WhatsApp.' : 'La acordamos juntas en el grupo de WhatsApp. En cuanto la tengamos, aparece aquí.'}</p>
-              <p className="next-sub">Duración: 1 hora · En grupo, con Wen.</p>
-            </div>
-            <SessionProgress />
-          </div>
-        </section>
-
-        {/* WEN */}
-        <section className="guide-section section-wrap" aria-labelledby="guide-title">
-          <div className="guide-avatar" aria-hidden="true">🪐</div>
-          <div>
-            <SectionHeading id="guide-title" label="Tu guía en este observatorio" title={<>Hola, soy Wen <span aria-hidden="true">👋</span></>} />
-            <p className="guide-bio">Soy psicóloga, maestrante en Neuropsicología Clínica y científica de datos. Trabajo donde se cruzan la mente, los datos, la inteligencia artificial y la educación, y me encanta llevar todo eso al impacto público. Por ejemplo, impartí talleres de alfabetización en IA en un programa nacional vinculado a OpenAI en México, con más de 3,000 personas de gobierno, el Congreso y universidades, para que la tecnología llegue a más gente y se use con criterio.</p>
-            <p className="guide-bio">Lo que más me mueve es transformar la realidad con ciencia y tecnología: convertir en algo real esos mundos que parecían de ciencia ficción o demasiado lejanos. Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones. 🪐</p>
-            <p className="guide-bio guide-invite">Este es un espacio seguro para explorar juntas: para preguntar sin miedo, equivocarnos, reírnos y descubrir nuevos caminos, nuevas constelaciones y los sueños hacia los que quieres volar. Yo también vengo a aprender de ustedes. <span aria-hidden="true">✨</span></p>
-            <ul className="guide-tags" aria-label="Lo que me apasiona"><li>Neurociencia</li><li>Ciencia de datos</li><li>IA</li><li>Educación</li><li>Política pública</li></ul>
-          </div>
-        </section>
-
-        {/* MISIÓN 0 */}
-        <section className="mission-section" id="mision" aria-labelledby="mission-title">
-          <div className="section-wrap">
-            <SectionHeading
-              id="mission-title"
-              dark
-              label={<>Tu primera misión <span aria-hidden="true">🔭</span></>}
-              title="Misión 0: preséntate con IA"
-              intro="Antes de la sesión 1, elige un formato, copia el prompt, cambia lo que está entre [corchetes] por tus datos y pégalo en ChatGPT, Gemini o la IA que prefieras. No tiene que quedar perfecto: si sale raro, mejor, ¡de eso platicamos! En la sesión compartimos lo que hiciste y qué tuviste que corregirle a la IA."
-            />
-            <MissionTabs />
-            <p className="privacy-tip">🔒 <strong>Cuida tus datos:</strong> no le compartas a la IA tu dirección, teléfono, CURP ni datos de otras personas. Si no quieres usar tu foto, un avatar ilustrado funciona perfecto.</p>
-          </div>
-        </section>
-
-        {/* SESIONES */}
-        <section className="route-section" id="sesiones" aria-labelledby="sessions-title">
-          <div className="section-wrap">
-            <SectionHeading id="sessions-title" label="Sesiones" title="Tres noches de observación" intro="Nuestras 3 sesiones de noviembre: nos vemos para platicar, probar cosas y armar planes. Las fechas las acordamos juntas." />
-            <div className="session-list">
-              {sessions.map((session) => {
-                const expanded = openSession === session.id;
-                return (
-                  <article className={`session ${expanded ? 'is-open' : ''}`} key={session.id}>
-                    <h3 className="session-heading">
-                      <button className="session-trigger" type="button" aria-expanded={expanded} aria-controls={`session-${session.id}`} onClick={() => setOpenSession(expanded ? '' : session.id)}>
-                        <span className="session-number" aria-hidden="true">{session.number}</span>
-                        <span className="session-title-group">
-                          <span className="session-eyebrow">{session.plain}{session.dateLabel === 'Por definir' ? '' : ` · ${session.dateLabel}`}</span>
-                          <span className="session-title">{session.name}{session.emoji && <span aria-hidden="true"> {session.emoji}</span>}</span>
-                        </span>
-                        <span className="session-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
-                      </button>
-                    </h3>
-                    <div className="session-detail" id={`session-${session.id}`} hidden={!expanded}>
-                      <p className="session-objective">{session.objective}</p>
-                      <div className="session-detail-grid">
-                        <div>
-                          <h4>En esta sesión vamos a…</h4>
-                          <ul className="plain-list">{session.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
-                          <h4>Trae contigo…</h4>
-                          <ul className="plain-list">{session.bring.map((b) => <li key={b}>{b}</li>)}</ul>
-                        </div>
-                        <aside className="session-aside">
-                          <h4>Preguntas para ir pensando</h4>
-                          <ul className="plain-list">{session.questions.map((q) => <li key={q}>{q}</li>)}</ul>
-                        </aside>
-                      </div>
-                      <button className="text-button" type="button" onClick={() => openJournal(session.id)}>Anotar en mi bitácora <span aria-hidden="true">↘</span></button>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-            <CometButton />
-          </div>
-        </section>
-
-        {/* RESPIRA */}
-        <section className="breath-section" id="pausa" aria-labelledby="breath-title">
-          <div className="breath-copy">
-            <p className="section-label">Opcional, sin presión <span aria-hidden="true">🌬️</span></p>
-            <h2 id="breath-title">Antes de despegar, respira</h2>
-            <p>Un minuto para llegar de verdad. Puedes cerrar los ojos o mirar un punto fijo. No hay una forma correcta de sentirse.</p>
-          </div>
-          <div className="breath-control">
-            <button className={`planet-button ${breathing ? 'is-breathing' : ''}`} type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>
-              <PlanetIcon />
-              <span className="planet-label">{breathing ? 'Cerrar la guía' : 'Toca el planeta para empezar'}</span>
-            </button>
-            <div className="breath-guide" id="breath-guide" hidden={!breathing}>
-              {breathing && <BreathingPlanet />}
-              <ol>
-                <li>Ponte cómoda, con la espalda derecha.</li>
-                <li>Sigue al planeta: inhala mientras los anillos crecen y suelta el aire cuando se encogen.</li>
-                <li>Siente tus pies en el piso y el peso de tu cuerpo.</li>
-                <li>¿Cómo llegas hoy? No tienes que decirlo en voz alta.</li>
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* HERRAMIENTAS */}
-        <section className="smart-section section-wrap" id="herramientas" aria-labelledby="smart-title">
-          <div className="smart-intro">
-            <p className="section-label">Mis herramientas · Sesión 1</p>
-            <h2 id="smart-title">Tu meta, pero aterrizada</h2>
-            <HowTo
-              steps={['Empieza por “¿Qué quieres lograr?”. Escríbelo como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Mira tu meta armada en el recuadro de abajo y cópiala.', 'Tráela a la sesión 1 y la pulimos juntas.']}
-              note="🔒 Se guarda solo en tu celular o compu. Nadie más la ve."
-            />
-          </div>
-          <div className="smart-builder worksheet">
-            <div className="worksheet-head">
-              <p className="worksheet-title"><span aria-hidden="true">✎</span> Tu hoja de trabajo</p>
-              <button className="quiet-button" type="button" onClick={clearSmart}>Borrar mis respuestas</button>
-            </div>
-            <div className="smart-fields">
-              {smartFields.map(([key, title, question, example]) => (
-                <div className="field" key={key}>
-                  <label htmlFor={`smart-${key}`}>{title}</label>
-                  <span className="field-prompt" id={`smart-${key}-hint`}>{question}</span>
-                  <input id={`smart-${key}`} aria-describedby={`smart-${key}-hint`} value={smart[key] ?? ''} onChange={(e) => setSmart((p) => ({ ...p, [key]: e.target.value }))} placeholder={example} />
+      <main id="contenido" tabIndex={-1}>
+        {/* ═════ INICIO ═════ */}
+        {view === 'inicio' && (
+          <>
+            <section className="hero" aria-labelledby="view-inicio-title">
+              <Starfield />
+              <div className="hero-copy">
+                <p className="kicker">Observatorio de mentoría · BécALAS 2026</p>
+                <h1 id="view-inicio-title" tabIndex={-1}>¡Exploremos juntas! <span aria-hidden="true">🔭</span></h1>
+                <p className="hero-lede">Fechas, tu primera misión y herramientas para jugar con tus ideas.</p>
+                <blockquote className="hero-quote">No necesitas tener todo resuelto para empezar a construir la trayectoria que deseas.</blockquote>
+                <div className="hero-actions">
+                  <a className="button button-primary" href="#mision">Ver mi primera misión</a>
+                  <a className="button button-ghost" href="#proxima">Próxima sesión: {nextDefined ? nextSession.dateLabel : 'por definir'}</a>
                 </div>
-              ))}
-            </div>
-            <div className={`goal-preview ${smartComplete ? 'is-complete' : ''}`} ref={previewRef}>
-              <span className="goal-preview-label">{smartComplete ? '¡Meta lista! ✨' : 'Tu meta se arma aquí'}</span>
-              <p>{smartSentence || 'Empieza por “¿Qué quieres lograr?” y aquí va apareciendo 👣'}</p>
-            </div>
-            <div className="prompt-actions">
-              <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Copiar mi meta</button>
-              {!smartSentence && <p className="field-prompt" id="smart-copy-hint">Se activa cuando escribas qué quieres lograr.</p>}
-              <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
-            </div>
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <section className="constellation-section" id="mapa" aria-labelledby="map-title">
-          <div className="section-wrap constellation-layout">
-            <div className="constellation-copy">
-              <SectionHeading id="map-title" dark label="Mis herramientas" title={<>Tu constelación <span aria-hidden="true">✨</span></>} intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar." />
-              <HowTo dark steps={['Elige un punto de tu constelación.', 'Lee la pregunta que aparece.', 'Contéstala en tu cabeza o anótala en tu bitácora. No hay respuestas correctas, solo pistas.']} />
-              <div className="node-selector" role="group" aria-label="Elige un punto de tu constelación">
-                {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
-        </div>
-              <div className="node-prompt worksheet on-dark" aria-live="polite"><span>Tu pregunta · {currentNode.label}</span><p>{currentNode.prompt}</p></div>
-            </div>
-            <div className="constellation-map" aria-hidden="true">
-              <img src="/observatory-map.webp" alt="" loading="lazy" decoding="async" width="1200" height="614" />
-              {nodes.map((node) => <span key={node.id} className={`map-node ${node.position} ${activeNode === node.id ? 'is-active' : ''}`}>{node.label}</span>)}
-            </div>
-          </div>
-        </section>
+            <section className="next-session" id="proxima" aria-labelledby="next-title">
+              <div className="section-wrap next-grid">
+                <div>
+                  <p className="section-label">Próxima sesión</p>
+                  <h2 id="next-title">{nextDefined ? nextSession.dateLabel : <>Fecha por definir <span aria-hidden="true">🗓️</span></>}</h2>
+                  <p className="next-sub">{nextSession.plain}. {nextDefined ? 'El enlace llega por WhatsApp.' : 'La acordamos juntas en el grupo.'}</p>
+                </div>
+                <SessionProgress />
+              </div>
+            </section>
 
-        {/* BITÁCORA */}
-        <section className="journal-section" id="bitacora" aria-labelledby="journal-title">
-          <div className="section-wrap journal-layout">
-            <div className="journal-intro">
-              <SectionHeading id="journal-title" label="Mis herramientas" title="Tu bitácora de exploradora" intro="Para después de cada sesión." />
-              <HowTo
-                steps={['Elige de qué sesión vas a escribir.', 'Responde las tres preguntas con frases cortas.', 'Toca “Guardar mis notas”. Puedes volver y editarlas cuando quieras.']}
-                note="🔒 Lo que escribas se queda en tu celular o compu. Ni yo lo veo."
-              />
+            <section className="guide-section section-wrap" id="wen" aria-labelledby="guide-title">
+              <div className="guide-avatar" aria-hidden="true">🪐</div>
+              <div>
+                <p className="section-label">Tu guía</p>
+                <h2 id="guide-title" className="guide-title">Hola, soy Wen <span aria-hidden="true">👋</span></h2>
+                <p className="guide-short">Psicóloga, maestrante en Neuropsicología Clínica y científica de datos. Me mueve transformar la realidad con ciencia y tecnología.</p>
+                <div id="bio-more" hidden={!showBio}>
+                  <p className="guide-bio">Trabajo donde se cruzan la mente, los datos, la inteligencia artificial y la educación, y me encanta llevarlo al impacto público: impartí talleres de alfabetización en IA en un programa nacional vinculado a OpenAI en México, con más de 3,000 personas de gobierno, el Congreso y universidades.</p>
+                  <p className="guide-bio">Soy una eterna aprendiz, fan de la ciencia, el arte, el deporte y las buenas conversaciones. Este es un espacio seguro para explorar juntas y descubrir nuevos caminos, constelaciones y sueños. <span aria-hidden="true">✨</span></p>
+                </div>
+                <button className="text-button" type="button" aria-expanded={showBio} aria-controls="bio-more" onClick={() => setShowBio((v) => !v)}>{showBio ? 'Ver menos' : 'Conóceme más'}</button>
+              </div>
+            </section>
+
+            <section className="mission-section" id="mision" aria-labelledby="mission-title">
+              <div className="section-wrap">
+                <p className="section-label on-dark-label">Tu primera misión <span aria-hidden="true">🔭</span></p>
+                <h2 id="mission-title" className="mission-title">Misión 0: preséntate con IA</h2>
+                <p className="mission-lede">Antes de la sesión 1. No tiene que quedar perfecto: si sale raro, ¡mejor!</p>
+                <ol className="mission-steps">
+                  <li><span className="step-icon" aria-hidden="true">🎨</span><span>Elige un formato</span></li>
+                  <li><span className="step-icon" aria-hidden="true">📋</span><span>Copia el prompt y cambia lo que está entre [corchetes]</span></li>
+                  <li><span className="step-icon" aria-hidden="true">💬</span><span>Compártelo en la sesión: ¿qué le corregiste a la IA?</span></li>
+                </ol>
+                <MissionTabs />
+                <p className="privacy-tip">🔒 No le compartas a la IA tu dirección, teléfono ni CURP.</p>
+              </div>
+            </section>
+          </>
+        )}
+
+        {/* ═════ SESIONES ═════ */}
+        {view === 'sesiones' && (
+          <section className="view route-section" aria-labelledby="view-sesiones-title">
+            <div className="section-wrap">
+              <header className="view-head">
+                <p className="section-label">Sesiones</p>
+                <h1 id="view-sesiones-title" className="view-title" tabIndex={-1}>Tres noches de observación</h1>
+                <p className="section-intro">Toca una sesión para ver qué haremos y qué traer.</p>
+              </header>
+              <div className="session-list">
+                {sessions.map((session) => {
+                  const expanded = openSession === session.id;
+                  return (
+                    <article className={`session ${expanded ? 'is-open' : ''}`} key={session.id}>
+                      <h2 className="session-heading">
+                        <button className="session-trigger" type="button" aria-expanded={expanded} aria-controls={`session-${session.id}`} onClick={() => setOpenSession(expanded ? '' : session.id)}>
+                          <span className="session-number" aria-hidden="true">{session.number}</span>
+                          <span className="session-title-group">
+                            <span className="session-eyebrow">{session.plain}{session.dateLabel === 'Por definir' ? '' : ` · ${session.dateLabel}`}</span>
+                            <span className="session-title">{session.name}{session.emoji && <span aria-hidden="true"> {session.emoji}</span>}</span>
+                          </span>
+                          <span className="session-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
+                        </button>
+                      </h2>
+                      <div className="session-detail" id={`session-${session.id}`} hidden={!expanded}>
+                        <p className="session-objective">{session.objective}</p>
+                        <div className="session-detail-grid">
+                          <div>
+                            <h3 className="mini-title">Vamos a…</h3>
+                            <ul className="plain-list">{session.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
+                          </div>
+                          <div className="session-aside">
+                            <h3 className="mini-title">Trae contigo</h3>
+                            <ul className="plain-list">{session.bring.map((b) => <li key={b}>{b}</li>)}</ul>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+              <CometButton />
             </div>
-            <div className="journal-form worksheet">
-              <div className="worksheet-head"><p className="worksheet-title"><span aria-hidden="true">✎</span> Tu hoja de trabajo</p></div>
-              <div className="field"><label htmlFor="journal-session">Sesión</label><select id="journal-session" value={activeLogSession} onChange={(e) => setActiveLogSession(e.target.value)}>{sessions.map((session) => <option value={session.id} key={session.id}>{session.plain}</option>)}</select></div>
-              <div className="field"><label htmlFor="journal-discovery">¿Qué descubrí?</label><textarea id="journal-discovery" value={currentLog.discovery ?? ''} onChange={(e) => updateCurrentLog('discovery', e.target.value)} placeholder="Una idea, una fortaleza, algo que no había visto…" rows="3" /></div>
-              <div className="field"><label htmlFor="journal-learning">¿Qué me llevo?</label><textarea id="journal-learning" value={currentLog.learning ?? ''} onChange={(e) => updateCurrentLog('learning', e.target.value)} placeholder="Algo que aprendí o una pregunta que sigue dando vueltas…" rows="3" /></div>
-              <div className="field"><label htmlFor="journal-commitment">¿Qué voy a probar esta semana?</label><textarea id="journal-commitment" value={currentLog.commitment ?? ''} onChange={(e) => updateCurrentLog('commitment', e.target.value)} placeholder="Un pasito concreto y posible 👣" rows="2" /></div>
-              <div className="journal-actions"><button className="button button-dark" type="button" onClick={saveJournal}>Guardar mis notas</button><button className="quiet-button" type="button" onClick={clearJournal}>Borrar esta sesión</button></div>
-              <p className="status-text" role="status" aria-live="polite">{savedMessage}</p>
+          </section>
+        )}
+
+        {/* ═════ HERRAMIENTAS ═════ */}
+        {view === 'herramientas' && (
+          <section className="view tools-view" aria-labelledby="view-herramientas-title">
+            <div className="section-wrap">
+              <header className="view-head">
+                <p className="section-label">Herramientas</p>
+                <h1 id="view-herramientas-title" className="view-title" tabIndex={-1}>Tu kit de exploradora</h1>
+                <p className="privacy-seal"><span aria-hidden="true">🔒</span> Todo lo que escribas se queda en tu celular. Ni yo lo veo.</p>
+              </header>
+              <ToolTabs active={tool} onChange={setTool} />
+
+              <div className="tool-panel" role="tabpanel" id={`toolpanel-${tool}`} aria-labelledby={`tooltab-${tool}`}>
+                {tool === 'meta' && (
+                  <div className="tool-grid" id="meta">
+                    <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Copia tu meta y tráela a la sesión 1.']} />
+                    <div className="smart-builder worksheet">
+                      <div className="worksheet-head">
+                        <p className="worksheet-title"><span aria-hidden="true">✎</span> Tu meta SMART</p>
+                        <button className="quiet-button" type="button" onClick={clearSmart}>Borrar</button>
+                      </div>
+                      <div className="smart-fields">
+                        {smartFields.map(([key, title, question, example]) => (
+                          <div className="field" key={key}>
+                            <label htmlFor={`smart-${key}`}>{title}</label>
+                            <span className="field-prompt" id={`smart-${key}-hint`}>{question}</span>
+                            <input id={`smart-${key}`} aria-describedby={`smart-${key}-hint`} value={smart[key] ?? ''} onChange={(e) => setSmart((p) => ({ ...p, [key]: e.target.value }))} placeholder={example} />
+                          </div>
+                        ))}
+                      </div>
+                      <div className={`goal-preview ${smartComplete ? 'is-complete' : ''}`} ref={previewRef}>
+                        <span className="goal-preview-label">{smartComplete ? '¡Meta lista! ✨' : 'Tu meta se arma aquí'}</span>
+                        <p>{smartSentence || 'Empieza por “¿Qué quieres lograr?” 👣'}</p>
+                      </div>
+                      <div className="prompt-actions">
+                        <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Copiar mi meta</button>
+                        {!smartSentence && <p className="field-prompt" id="smart-copy-hint">Se activa cuando escribas qué quieres lograr.</p>}
+                        <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {tool === 'constelacion' && (
+                  <div className="tool-grid constellation-card" id="constelacion">
+                    <HowTo dark steps={['Elige un punto.', 'Lee la pregunta.', 'Contéstala en tu cabeza o en tu bitácora.']} />
+                    <div>
+                      <div className="node-selector" role="group" aria-label="Puntos de tu constelación">
+                        {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
+                      </div>
+                      <div className="node-prompt worksheet on-dark" aria-live="polite"><span>Tu pregunta · {currentNode.label}</span><p>{currentNode.prompt}</p></div>
+                    </div>
+                  </div>
+                )}
+
+                {tool === 'bitacora' && (
+                  <div className="tool-grid" id="bitacora">
+                    <HowTo steps={['Elige la sesión.', 'Responde con frases cortas.', 'Guarda. Puedes volver a editar.']} />
+                    <div className="journal-form worksheet">
+                      <div className="worksheet-head"><p className="worksheet-title"><span aria-hidden="true">✎</span> Tu bitácora</p></div>
+                      <div className="field"><label htmlFor="journal-session">Sesión</label><select id="journal-session" value={activeLogSession} onChange={(e) => setActiveLogSession(e.target.value)}>{sessions.map((session) => <option value={session.id} key={session.id}>{session.plain}</option>)}</select></div>
+                      <div className="field"><label htmlFor="journal-discovery">¿Qué descubrí?</label><textarea id="journal-discovery" value={currentLog.discovery ?? ''} onChange={(e) => updateCurrentLog('discovery', e.target.value)} placeholder="Una idea o fortaleza que no había visto…" rows="3" /></div>
+                      <div className="field"><label htmlFor="journal-learning">¿Qué me llevo?</label><textarea id="journal-learning" value={currentLog.learning ?? ''} onChange={(e) => updateCurrentLog('learning', e.target.value)} placeholder="Algo que aprendí…" rows="3" /></div>
+                      <div className="field"><label htmlFor="journal-commitment">¿Qué voy a probar esta semana?</label><textarea id="journal-commitment" value={currentLog.commitment ?? ''} onChange={(e) => updateCurrentLog('commitment', e.target.value)} placeholder="Un pasito concreto 👣" rows="2" /></div>
+                      <div className="journal-actions"><button className="button button-dark" type="button" onClick={saveJournal}>Guardar mis notas</button><button className="quiet-button" type="button" onClick={clearJournal}>Borrar esta sesión</button></div>
+                      <p className="status-text" role="status" aria-live="polite">{savedMessage}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
-        {/* RECURSOS */}
-        <section className="resources-section section-wrap" id="recursos" aria-labelledby="resources-title">
-          <SectionHeading id="resources-title" label="Recursos" title="Instrumentos del observatorio" intro="Cosas útiles para antes y después de cada sesión." />
-          <div className="resource-rows">
-            <article className="resource-row"><span className="resource-index" aria-hidden="true">A</span><div><h3>Respirar antes de empezar</h3><p>Un minuto para bajar revoluciones antes de una sesión, un examen o una entrevista.</p></div><a href="#pausa">Ir a la pausa</a></article>
-            <article className="resource-row"><span className="resource-index" aria-hidden="true">B</span><div><h3>Metas que sí se cumplen</h3><p>Usa la herramienta SMART y pega tu meta donde la veas diario (fondo de pantalla, espejo, agenda).</p></div><a href="#herramientas">Abrir mi meta</a></article>
-            <article className="resource-row"><span className="resource-index" aria-hidden="true">C</span><div><h3>Hablar en público sin temblar (tanto)</h3><p>Charla TED de Amy Cuddy sobre cómo el lenguaje corporal cambia cómo te sientes. Para la sesión 3.</p></div><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer">Ver la charla<span className="sr-only"> (se abre en otra pestaña)</span></a></article>
-            <article className="resource-row"><span className="resource-index" aria-hidden="true">D</span><div><h3>Metas a largo plazo</h3><p>Una guía corta para dividir un objetivo grande en pasos.</p></div><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer">Leer la guía<span className="sr-only"> (se abre en otra pestaña)</span></a></article>
-          </div>
-        </section>
+        {/* ═════ NOSOTRAS ═════ */}
+        {view === 'nosotras' && (
+          <>
+            <section className="view nos-view" aria-labelledby="view-nosotras-title">
+              <div className="section-wrap">
+                <header className="view-head">
+                  <p className="section-label">Nosotras</p>
+                  <h1 id="view-nosotras-title" className="view-title" tabIndex={-1}>Cómo cuidamos este espacio</h1>
+                </header>
+                <div className="agreement-grid" id="acuerdos">
+                  {agreements.map(([icon, title, text]) => (
+                    <details className="agreement-tile" key={title}>
+                      <summary><span className="tile-icon" aria-hidden="true">{icon}</span><span className="tile-title">{title}</span></summary>
+                      <p>{text}</p>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            </section>
 
-        {/* ACUERDOS */}
-        <section className="agreements-section" id="acuerdos" aria-labelledby="agreements-title">
-          <div className="section-wrap">
-            <SectionHeading id="agreements-title" label="Para cuidar el espacio" title="Nuestras reglas del cielo" intro="Lo que hace que este sea un lugar seguro para todas." />
-            <div className="agreement-list">{agreements.map(([title, text], index) => <article className="agreement" key={title}><span className="agreement-index" aria-hidden="true">✦ 0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div>
-          </div>
-        </section>
+            <section className="breath-section" id="respira" aria-labelledby="breath-title">
+              <div className="breath-copy">
+                <p className="section-label">Opcional, sin presión</p>
+                <h2 id="breath-title">Antes de despegar, respira</h2>
+                <p>Un minuto para llegar de verdad.</p>
+              </div>
+              <div className="breath-control">
+                <button className={`planet-button ${breathing ? 'is-breathing' : ''}`} type="button" aria-expanded={breathing} aria-controls="breath-guide" onClick={() => setBreathing((v) => !v)}>
+                  <PlanetIcon />
+                  <span className="planet-label">{breathing ? 'Cerrar la guía' : 'Toca el planeta para empezar'}</span>
+                </button>
+                <div className="breath-guide" id="breath-guide" hidden={!breathing}>
+                  {breathing && <BreathingPlanet />}
+                  <p className="breath-tip">Ponte cómoda. Sigue al planeta: inhala cuando los anillos crecen y suelta el aire cuando se encogen.</p>
+                </div>
+              </div>
+            </section>
 
-        {/* APOYO */}
-        <section className="contact-section" id="apoyo" aria-labelledby="support-title">
-          <div className="section-wrap">
-            <SectionHeading id="support-title" label="Apoyo" title="¿Algo te está costando?" intro="Escríbeme por el grupo de WhatsApp y lo vemos juntas. Si hace falta, te ayudo a contactar al equipo del programa." />
-            <p className="contact-line"><strong>Equipo de seguimiento BécALAS:</strong> contacto@becalasonline.mx</p>
-          </div>
-        </section>
+            <section className="section-wrap resources-block" id="recursos" aria-labelledby="resources-title">
+              <h2 id="resources-title" className="block-title">Instrumentos</h2>
+              <ul className="resource-tiles">
+                <li><a href="#respira"><span className="tile-icon" aria-hidden="true">🌬️</span><span className="tile-title">Respirar</span><span className="tile-sub">Antes de un examen o entrevista</span></a></li>
+                <li><a href="#meta"><span className="tile-icon" aria-hidden="true">🎯</span><span className="tile-title">Mi meta</span><span className="tile-sub">Pégala donde la veas diario</span></a></li>
+                <li><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🎤</span><span className="tile-title">Hablar en público</span><span className="tile-sub">Charla TED de Amy Cuddy<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
+                <li><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🪜</span><span className="tile-title">Metas grandes</span><span className="tile-sub">Divídelas en pasos<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
+              </ul>
+            </section>
+
+            <section className="contact-section" id="apoyo" aria-labelledby="support-title">
+              <div className="section-wrap">
+                <h2 id="support-title" className="block-title">¿Algo te está costando?</h2>
+                <p className="section-intro">Escríbeme por el grupo y lo vemos juntas.</p>
+                <p className="contact-line"><strong>Equipo BécALAS:</strong> contacto@becalasonline.mx</p>
+              </div>
+            </section>
+          </>
+        )}
       </main>
 
       <footer className="site-footer">
         <div className="footer-top">
           <div className="footer-cta">
-            <p className="footer-title">¿Te quedó alguna duda? <span aria-hidden="true">💬</span></p>
-            <p>Escríbeme por el grupo de WhatsApp. No hay preguntas tontas, solo preguntas que todavía no hacemos.</p>
+            <p className="footer-title">¿Dudas? <span aria-hidden="true">💬</span></p>
+            <p>Escríbeme por el grupo. No hay preguntas tontas.</p>
           </div>
           <nav className="footer-nav" aria-label="Enlaces rápidos">
-            <p className="footer-title">Ir a…</p>
             <ul>
-              {navLinks.map((link) => <li key={link.id}><a href={`#${link.id}`}>{link.label}</a></li>)}
+              {views.map((item) => <li key={item.id}><a href={`#${item.id}`}>{item.label}</a></li>)}
             </ul>
           </nav>
         </div>
         <div className="footer-bottom">
-          <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI <strong>Cognitive Observatory</strong>.</p>
+          <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Sitio personal de apoyo, no oficial de BécALAS ni de Bécalos. Parte del portafolio UX/UI <strong>Cognitive Observatory</strong>.</p>
           <a className="footer-case-link" href="/caso">Cómo diseñé este sitio →</a>
         </div>
       </footer>
