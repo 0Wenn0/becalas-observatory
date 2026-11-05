@@ -44,6 +44,22 @@ export function launchComet(element) {
   burst(x, y, 18);
 }
 
+/** Implosión: un anillo de estrellitas que se recoge hacia el centro del elemento (al cerrar un capítulo). */
+export function implodeAt(element, amount = 16) {
+  if (!element || !motionAllowed()) return;
+  const rect = element.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const radius = Math.max(rect.width, rect.height) * 0.6;
+  for (let i = 0; i < amount; i += 1) {
+    const a = (Math.PI * 2 * i) / amount;
+    const x = cx + Math.cos(a) * radius;
+    const y = cy + Math.sin(a) * radius;
+    particles.push({ x, y, vx: (cx - x) / 22, vy: (cy - y) / 22, life: 1, size: 3, decay: 0.045, star: true });
+  }
+  ensureLoop();
+}
+
 /** Destello de estrellas desde el centro de un elemento (metas completadas, botones especiales). */
 export function sparkleAt(element, amount = 14) {
   if (!element || !motionAllowed()) return;
