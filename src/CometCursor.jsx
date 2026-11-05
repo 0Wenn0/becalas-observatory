@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 
 const particles = [];
 const bursts = [];
+const comets = [];
 let ensureLoop = () => {};
 
 function motionAllowed() {
@@ -23,6 +24,19 @@ function burst(cx, cy, amount) {
   }
   bursts.push({ x: cx, y: cy, r: 6, life: 1 });
   ensureLoop();
+}
+
+/** Lanza un cometa desde un elemento: nace muy brillante y se desvanece mientras cruza la pantalla. */
+export function launchComet(element) {
+  if (!element || !motionAllowed()) return;
+  const rect = element.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const w = window.innerWidth;
+  const distance = Math.min(Math.max(w * 0.55, 260), 720);
+  const angle = -Math.PI / 6 - Math.random() * 0.2;
+  comets.push({ x, y, sx: x, sy: y, tx: x + Math.cos(angle) * distance, ty: y + Math.sin(angle) * distance, t: 0, trail: [] });
+  burst(x, y, 18);
 }
 
 /** Destello de estrellas desde el centro de un elemento (metas completadas, botones especiales). */
@@ -71,6 +85,40 @@ export function CometCursor() {
 
     function frame() {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      for (let i = comets.length - 1; i >= 0; i -= 1) {
+        const c = comets[i];
+        c.t += 1 / 80;
+        if (c.t >= 1) { comets.splice(i, 1); continue; }
+        const ease = 1 - (1 - c.t) ** 3;
+        c.x = c.sx + (c.tx - c.sx) * ease;
+        c.y = c.sy + (c.ty - c.sy) * ease;
+        c.trail.unshift({ x: c.x, y: c.y });
+        if (c.trail.length > 26) c.trail.pop();
+        const alpha = (1 - c.t) ** 1.6; // empieza muy brillante y se desvanece
+        for (let k = c.trail.length - 1; k > 0; k -= 1) {
+          const a = c.trail[k];
+          const b = c.trail[k - 1];
+          const f = 1 - k / c.trail.length;
+          ctx.strokeStyle = `rgba(214, 196, 250, ${alpha * f * 0.9})`;
+          ctx.lineWidth = 9 * f * alpha + 1;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+        const r = 10 + 8 * alpha;
+        const glow = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 2.6);
+        glow.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+        glow.addColorStop(0.3, `rgba(228, 216, 251, ${alpha * 0.85})`);
+        glow.addColorStop(1, 'rgba(167, 133, 245, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, r * 2.6, 0, Math.PI * 2);
+        ctx.fill();
+        if (Math.random() < 0.5) particles.push({ x: c.x, y: c.y, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, life: alpha, size: 2.4, decay: 0.03, star: true });
+      }
 
       for (let i = bursts.length - 1; i >= 0; i -= 1) {
         const b = bursts[i];
@@ -126,7 +174,7 @@ export function CometCursor() {
         ctx.fill();
       }
 
-      const keepGoing = particles.length || bursts.length || (fine && head.visible && head.idle < 240);
+      const keepGoing = particles.length || bursts.length || comets.length || (fine && head.visible && head.idle < 240);
       if (keepGoing) {
         raf = requestAnimationFrame(frame);
       } else {

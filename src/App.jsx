@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Starfield } from './Starfield.jsx';
-import { CometCursor, sparkleAt } from './CometCursor.jsx';
+import { CometCursor, sparkleAt, launchComet } from './CometCursor.jsx';
 
 /* ───────── Contenido ───────── */
 
@@ -272,6 +272,7 @@ function CometButton() {
   function launch(event) {
     if (pool.current.length === 0) pool.current = [...icebreakers].sort(() => Math.random() - 0.5);
     setQuestion(pool.current.pop());
+    launchComet(event.currentTarget);
   }
 
   return (
@@ -297,6 +298,47 @@ function SessionProgress() {
         );
       })}
     </ol>
+  );
+}
+
+function HowTo({ steps, note, dark }) {
+  return (
+    <div className={`howto ${dark ? 'on-dark' : ''}`}>
+      <p className="howto-title"><span aria-hidden="true">🧭</span> Cómo se usa</p>
+      <ol>{steps.map((step) => <li key={step}>{step}</li>)}</ol>
+      {note && <p className="howto-note">{note}</p>}
+    </div>
+  );
+}
+
+function BreathingPlanet() {
+  const [phase, setPhase] = useState('inhala');
+  useEffect(() => {
+    const id = window.setInterval(() => setPhase((p) => (p === 'inhala' ? 'exhala' : 'inhala')), 4000);
+    return () => window.clearInterval(id);
+  }, []);
+  return (
+    <div className={`breathing-planet is-${phase}`}>
+      <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <defs>
+          <radialGradient id="bp-body" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stopColor="#E4D8FB" />
+            <stop offset="55%" stopColor="#8A5CF0" />
+            <stop offset="100%" stopColor="#4E3592" />
+          </radialGradient>
+        </defs>
+        <g className="bp-rings">
+          <g className="bp-ring bp-ring-1"><ellipse cx="100" cy="100" rx="62" ry="18" /></g>
+          <g className="bp-ring bp-ring-2"><ellipse cx="100" cy="100" rx="78" ry="24" /></g>
+          <g className="bp-ring bp-ring-3"><ellipse cx="100" cy="100" rx="94" ry="30" /></g>
+        </g>
+        <circle cx="100" cy="100" r="34" fill="url(#bp-body)" />
+        <circle cx="88" cy="89" r="6" fill="#fff" opacity=".35" />
+      </svg>
+      <p className="breath-cue">
+        {phase === 'inhala' ? 'Inhala… los anillos crecen' : 'Exhala… los anillos se encogen'}
+      </p>
+    </div>
   );
 }
 
@@ -603,9 +645,10 @@ function Microsite() {
               <span className="planet-label">{breathing ? 'Cerrar la guía' : 'Toca el planeta para empezar'}</span>
             </button>
             <div className="breath-guide" id="breath-guide" hidden={!breathing}>
+              {breathing && <BreathingPlanet />}
               <ol>
                 <li>Ponte cómoda, con la espalda derecha.</li>
-                <li>Inhala lento por la nariz… y suelta el aire despacito.</li>
+                <li>Sigue al planeta: inhala mientras los anillos crecen y suelta el aire cuando se encogen.</li>
                 <li>Siente tus pies en el piso y el peso de tu cuerpo.</li>
                 <li>¿Cómo llegas hoy? No tienes que decirlo en voz alta.</li>
               </ol>
@@ -618,10 +661,16 @@ function Microsite() {
           <div className="smart-intro">
             <p className="section-label">Mis herramientas · Sesión 1</p>
             <h2 id="smart-title">Tu meta, pero aterrizada</h2>
-            <p>Escríbela como te salga; abajo se va armando sola. Nadie más la ve: se guarda solo en tu celular o compu.</p>
-            <button className="text-button" type="button" onClick={clearSmart}>Borrar mis respuestas <span aria-hidden="true">↺</span></button>
+            <HowTo
+              steps={['Empieza por “¿Qué quieres lograr?”. Escríbelo como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Mira tu meta armada en el recuadro de abajo y cópiala.', 'Tráela a la sesión 1 y la pulimos juntas.']}
+              note="🔒 Se guarda solo en tu celular o compu. Nadie más la ve."
+            />
           </div>
-          <div className="smart-builder">
+          <div className="smart-builder worksheet">
+            <div className="worksheet-head">
+              <p className="worksheet-title"><span aria-hidden="true">✎</span> Tu hoja de trabajo</p>
+              <button className="quiet-button" type="button" onClick={clearSmart}>Borrar mis respuestas</button>
+            </div>
             <div className="smart-fields">
               {smartFields.map(([key, title, question, example]) => (
                 <div className="field" key={key}>
@@ -646,11 +695,12 @@ function Microsite() {
         <section className="constellation-section" id="mapa" aria-labelledby="map-title">
           <div className="section-wrap constellation-layout">
             <div className="constellation-copy">
-              <SectionHeading id="map-title" dark label="Mis herramientas" title={<>Tu constelación <span aria-hidden="true">✨</span></>} intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar. Toca un punto y contesta en tu cabeza (o en tu bitácora). No hay respuestas correctas, solo pistas." />
+              <SectionHeading id="map-title" dark label="Mis herramientas" title={<>Tu constelación <span aria-hidden="true">✨</span></>} intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar." />
+              <HowTo dark steps={['Elige un punto de tu constelación.', 'Lee la pregunta que aparece.', 'Contéstala en tu cabeza o anótala en tu bitácora. No hay respuestas correctas, solo pistas.']} />
               <div className="node-selector" role="group" aria-label="Elige un punto de tu constelación">
                 {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
         </div>
-              <div className="node-prompt" aria-live="polite"><span>{currentNode.label}</span><p>{currentNode.prompt}</p></div>
+              <div className="node-prompt worksheet on-dark" aria-live="polite"><span>Tu pregunta · {currentNode.label}</span><p>{currentNode.prompt}</p></div>
             </div>
             <div className="constellation-map" aria-hidden="true">
               <img src="/observatory-map.webp" alt="" loading="lazy" decoding="async" width="1200" height="614" />
@@ -663,10 +713,14 @@ function Microsite() {
         <section className="journal-section" id="bitacora" aria-labelledby="journal-title">
           <div className="section-wrap journal-layout">
             <div className="journal-intro">
-              <SectionHeading id="journal-title" label="Mis herramientas" title="Tu bitácora de exploradora" intro="Después de cada sesión: ¿qué descubriste?, ¿qué te llevas?, ¿qué vas a probar esta semana?" />
-              <p className="privacy-note">🔒 Lo que escribas se queda en tu celular o compu. Ni yo lo veo.</p>
+              <SectionHeading id="journal-title" label="Mis herramientas" title="Tu bitácora de exploradora" intro="Para después de cada sesión." />
+              <HowTo
+                steps={['Elige de qué sesión vas a escribir.', 'Responde las tres preguntas con frases cortas.', 'Toca “Guardar mis notas”. Puedes volver y editarlas cuando quieras.']}
+                note="🔒 Lo que escribas se queda en tu celular o compu. Ni yo lo veo."
+              />
             </div>
-            <div className="journal-form">
+            <div className="journal-form worksheet">
+              <div className="worksheet-head"><p className="worksheet-title"><span aria-hidden="true">✎</span> Tu hoja de trabajo</p></div>
               <div className="field"><label htmlFor="journal-session">Sesión</label><select id="journal-session" value={activeLogSession} onChange={(e) => setActiveLogSession(e.target.value)}>{sessions.map((session) => <option value={session.id} key={session.id}>{session.plain}</option>)}</select></div>
               <div className="field"><label htmlFor="journal-discovery">¿Qué descubrí?</label><textarea id="journal-discovery" value={currentLog.discovery ?? ''} onChange={(e) => updateCurrentLog('discovery', e.target.value)} placeholder="Una idea, una fortaleza, algo que no había visto…" rows="3" /></div>
               <div className="field"><label htmlFor="journal-learning">¿Qué me llevo?</label><textarea id="journal-learning" value={currentLog.learning ?? ''} onChange={(e) => updateCurrentLog('learning', e.target.value)} placeholder="Algo que aprendí o una pregunta que sigue dando vueltas…" rows="3" /></div>

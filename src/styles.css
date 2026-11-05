@@ -174,7 +174,7 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .breath-copy p:not(.section-label) { margin: 12px 0 0; color: #2E3644; }
 .breath-section .section-label { color: #5E2F3B; }
 .breath-control { display: grid; gap: 16px; justify-items: start; min-width: 260px; }
-.breath-guide { display: flex; gap: 18px; align-items: center; }
+.breath-guide { display: flex; gap: 18px; }
 .breath-guide ol { margin: 0; padding-left: 20px; max-width: 34ch; }
 .planet-button { display: flex; align-items: center; gap: 14px; min-height: 48px; padding: 6px 18px 6px 6px; border: 2px solid transparent; border-radius: 99px; background: transparent; color: var(--ink); font-size: 16px; font-weight: 700; cursor: pointer; }
 .planet-button:hover { background: rgba(255, 255, 255, .35); }
@@ -203,6 +203,41 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
 .goal-preview.is-complete { background: rgba(107, 63, 214, .16); }
 .goal-preview-label { color: var(--lilac-text); font-size: 15px; font-weight: 700; }
 .goal-preview p { margin: 8px 0 0; white-space: pre-line; }
+
+
+/* Herramientas: instrucciones (recuadro translúcido) vs. hoja de trabajo (tarjeta blanca) */
+.howto { margin-top: 20px; padding: 18px 20px; border: 1px solid rgba(10, 18, 34, .14); border-radius: 16px; background: rgba(10, 18, 34, .07); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.howto.on-dark { border-color: rgba(240, 234, 225, .2); background: rgba(240, 234, 225, .08); color: var(--paper); }
+.howto-title { margin: 0 0 10px; color: var(--lilac-text); font-size: 15px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.howto.on-dark .howto-title { color: var(--lilac-soft); }
+.howto ol { margin: 0; padding: 0; list-style: none; counter-reset: howto; display: grid; gap: 10px; }
+.howto li { position: relative; padding-left: 38px; counter-increment: howto; }
+.howto li::before { content: counter(howto); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--lilac); color: #fff; font-size: 14px; font-weight: 700; }
+.howto.on-dark li::before { background: var(--lilac-soft); color: var(--night); }
+.howto-note { margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed rgba(10, 18, 34, .2); color: var(--muted); font-size: 16px; }
+.howto.on-dark .howto-note { border-color: rgba(240, 234, 225, .25); color: var(--muted-on-dark); }
+.worksheet { padding: 22px; border: 1px solid rgba(10, 18, 34, .16); border-radius: 18px; background: #fff; box-shadow: 0 10px 28px rgba(10, 18, 34, .08); }
+.worksheet.on-dark { border: 1px solid rgba(201, 180, 247, .45); border-radius: 16px; background: var(--blue); box-shadow: none; }
+.worksheet-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin: -4px 0 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(10, 18, 34, .12); }
+.worksheet-title { margin: 0; color: var(--ink); font-size: 16px; font-weight: 700; }
+.worksheet-title span { color: var(--lilac); }
+.worksheet .field input, .worksheet .field textarea, .worksheet .field select { background: #FBF9F6; }
+
+/* Respiración: planeta con anillos que crecen al inhalar y se encogen al exhalar */
+.breath-guide { flex-direction: column; align-items: flex-start; }
+.breathing-planet { display: flex; align-items: center; gap: 16px; }
+.breathing-planet svg { width: 180px; height: 180px; flex: none; overflow: visible; }
+.bp-rings { transform-origin: 100px 100px; transform: scale(.8); transition: transform 4s ease-in-out; }
+.is-inhala .bp-rings { transform: scale(1.18); }
+.is-exhala .bp-rings { transform: scale(.8); }
+.bp-ring { transform-origin: 100px 100px; transform: rotate(-18deg); }
+.bp-ring ellipse { fill: none; stroke: #C9B4F7; stroke-width: 3; stroke-linecap: round; }
+/* Los guiones avanzan alrededor de cada órbita: los anillos “giran” sin perder la inclinación del planeta. */
+.bp-ring-1 ellipse { stroke: #A985F5; stroke-width: 4; stroke-dasharray: 60 14; animation: ring-flow 6s linear infinite; }
+.bp-ring-2 ellipse { opacity: .8; stroke-dasharray: 22 12; animation: ring-flow 9s linear infinite reverse; }
+.bp-ring-3 ellipse { opacity: .5; stroke-dasharray: 6 10; animation: ring-flow 13s linear infinite; }
+@keyframes ring-flow { to { stroke-dashoffset: -440; } }
+.breath-cue { margin: 0; max-width: 16ch; color: var(--ink); font: 600 clamp(22px, 2.6vw, 28px)/1.2 var(--serif); }
 
 /* Constelación */
 .constellation-section { padding: 84px 0; background: var(--night); color: var(--paper); }
@@ -299,6 +334,8 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
   .session-detail { padding-left: 0; }
   .smart-fields { grid-template-columns: 1fr; }
   .breath-section { flex-direction: column; gap: 20px; padding: 44px 20px; }
+  .breathing-planet svg { width: 140px; height: 140px; }
+  .worksheet { padding: 16px; }
   .resource-row { grid-template-columns: 28px minmax(0, 1fr); }
   .resource-row > a { grid-column: 2; }
   .footer-top { grid-template-columns: 1fr; }
@@ -323,4 +360,6 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .button:hover { transform: none; }
   .site-header.is-hidden { transform: none; }
+  .bp-ring ellipse { animation: none !important; }
+  .bp-rings { transition: none; }
 }
