@@ -317,6 +317,90 @@ function PlanetIcon() {
   );
 }
 
+const navLinks = [
+  { id: 'proxima', label: 'Próxima sesión', primary: true },
+  { id: 'mision', label: 'Mi misión', primary: true },
+  { id: 'sesiones', label: 'Sesiones', primary: true },
+  { id: 'herramientas', label: 'Mis herramientas' },
+  { id: 'recursos', label: 'Recursos' },
+  { id: 'apoyo', label: 'Apoyo' },
+];
+
+/* Secciones que no están en el menú se asocian al enlace más cercano para indicar “estás aquí”. */
+const sectionToLink = { inicio: '', proxima: 'proxima', mision: 'mision', sesiones: 'sesiones', pausa: 'sesiones', herramientas: 'herramientas', mapa: 'herramientas', bitacora: 'herramientas', recursos: 'recursos', acuerdos: 'apoyo', apoyo: 'apoyo' };
+
+function SiteHeader() {
+  const [active, setActive] = useState('');
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const headerRef = useRef(null);
+  const moreButtonRef = useRef(null);
+  const morePanelRef = useRef(null);
+
+  // “Estás aquí”: resalta el enlace de la sección visible.
+  useEffect(() => {
+    const sections = Object.keys(sectionToLink).map((id) => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActive(sectionToLink[visible.target.id] ?? '');
+    }, { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.25, 0.5] });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  // En celular, el encabezado se esconde al bajar y reaparece al subir.
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const mobile = window.matchMedia('(max-width: 700px)');
+    function onScroll() {
+      const y = window.scrollY;
+      const focusInside = headerRef.current?.contains(document.activeElement);
+      if (!mobile.matches || moreOpen || focusInside || y < 120) setHidden(false);
+      else if (y > lastY + 6) setHidden(true);
+      else if (y < lastY - 6) setHidden(false);
+      lastY = y;
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [moreOpen]);
+
+  // Menú “Más”: se cierra con Esc, al hacer clic afuera o al elegir una opción, y devuelve el foco.
+  useEffect(() => {
+    if (!moreOpen) return undefined;
+    morePanelRef.current?.querySelector('a')?.focus();
+    function onKey(event) {
+      if (event.key === 'Escape') { setMoreOpen(false); moreButtonRef.current?.focus(); }
+    }
+    function onClick(event) {
+      if (!morePanelRef.current?.contains(event.target) && !moreButtonRef.current?.contains(event.target)) setMoreOpen(false);
+    }
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('click', onClick);
+    return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('click', onClick); };
+  }, [moreOpen]);
+
+  const link = (item, extra = '') => (
+    <a key={item.id} href={`#${item.id}`} className={`nav-link ${extra} ${active === item.id ? 'is-active' : ''}`} aria-current={active === item.id ? 'location' : undefined} onClick={() => setMoreOpen(false)}>{item.label}</a>
+  );
+
+  return (
+    <header className={`site-header ${hidden ? 'is-hidden' : ''}`} ref={headerRef} onFocus={() => setHidden(false)}>
+      <BrandLockup href="#inicio" label="Mentorías BécALAS 2026, grupo de Wen. Ir al inicio" />
+      <nav className="main-nav" aria-label="Navegación principal">
+        {navLinks.map((item) => link(item, item.primary ? 'is-primary' : 'is-secondary'))}
+        <div className="more-wrap">
+          <button ref={moreButtonRef} className={`more-button ${navLinks.some((i) => !i.primary && i.id === active) ? 'is-active' : ''}`} type="button" aria-expanded={moreOpen} aria-controls="more-panel" onClick={() => setMoreOpen((v) => !v)}>
+            Más <span aria-hidden="true">✦</span>
+          </button>
+          <div className="more-panel" id="more-panel" ref={morePanelRef} hidden={!moreOpen}>
+            {navLinks.filter((i) => !i.primary).map((item) => link(item))}
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
 /* ───────── Página principal ───────── */
 
 function Microsite() {
@@ -401,17 +485,7 @@ function Microsite() {
   return (
     <>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
-      <header className="site-header">
-        <BrandLockup href="#inicio" label="Mentorías BécALAS 2026, grupo de Wen. Ir al inicio" />
-        <nav className="main-nav" aria-label="Navegación principal">
-          <a href="#proxima">Próxima sesión</a>
-          <a href="#mision">Mi misión</a>
-          <a href="#sesiones">Sesiones</a>
-          <a href="#herramientas">Mis herramientas</a>
-          <a href="#recursos">Recursos</a>
-          <a href="#apoyo">Apoyo</a>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <main id="contenido">
         {/* HERO */}
@@ -570,7 +644,7 @@ function Microsite() {
               <SectionHeading id="map-title" dark label="Mis herramientas" title="Tu constelación ✨" intro="Conecta lo que te gusta, lo que sabes hacer y lo que quieres probar. Toca un punto y contesta en tu cabeza (o en tu bitácora). No hay respuestas correctas, solo pistas." />
               <div className="node-selector" role="group" aria-label="Elige un punto de tu constelación">
                 {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
-              </div>
+        </div>
               <div className="node-prompt" aria-live="polite"><span>{currentNode.label}</span><p>{currentNode.prompt}</p></div>
             </div>
             <div className="constellation-map" aria-hidden="true">
@@ -627,8 +701,22 @@ function Microsite() {
       </main>
 
       <footer className="site-footer">
-        <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI <strong>Cognitive Observatory</strong>.</p>
-        <a href="/caso">Cómo diseñé este sitio →</a>
+        <div className="footer-top">
+          <div className="footer-cta">
+            <p className="footer-title">¿Te quedó alguna duda? 💬</p>
+            <p>Escríbeme por el grupo de WhatsApp. No hay preguntas tontas, solo preguntas que todavía no hacemos.</p>
+          </div>
+          <nav className="footer-nav" aria-label="Enlaces rápidos">
+            <p className="footer-title">Ir a…</p>
+            <ul>
+              {navLinks.map((link) => <li key={link.id}><a href={`#${link.id}`}>{link.label}</a></li>)}
+            </ul>
+          </nav>
+        </div>
+        <div className="footer-bottom">
+          <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Es un sitio personal de apoyo, no un sitio oficial de BécALAS ni de Bécalos. Forma parte del portafolio de diseño UX/UI <strong>Cognitive Observatory</strong>.</p>
+          <a href="/caso">Cómo diseñé este sitio →</a>
+        </div>
       </footer>
     </>
   );
@@ -642,7 +730,7 @@ function CaseStudy() {
       <a className="skip-link" href="#case-content">Saltar al contenido</a>
       <header className="site-header">
         <BrandLockup href="/" label="Volver al micrositio de mentoría" />
-        <nav className="main-nav" aria-label="Navegación"><a href="/">← Volver al observatorio</a></nav>
+        <nav className="main-nav case-nav" aria-label="Navegación"><a className="nav-link" href="/">← Volver al observatorio</a></nav>
       </header>
       <main className="case-page section-wrap" id="case-content">
         <p className="section-label">Caso de diseño UX/UI · Cognitive Observatory · 2026</p>
@@ -694,8 +782,10 @@ function CaseStudy() {
         </section>
       </main>
       <footer className="site-footer">
-        <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Sitio personal de apoyo, no oficial de BécALAS ni de Bécalos. Parte del portafolio UX/UI <strong>Cognitive Observatory</strong>.</p>
-        <a href="/">Volver al observatorio →</a>
+        <div className="footer-bottom">
+          <p>Micrositio diseñado y desarrollado por Wen (Wendy Ramírez) para su grupo de mentoría BécALAS 2026‑2027. Sitio personal de apoyo, no oficial de BécALAS ni de Bécalos. Parte del portafolio UX/UI <strong>Cognitive Observatory</strong>.</p>
+          <a href="/">Volver al observatorio →</a>
+        </div>
       </footer>
     </>
   );

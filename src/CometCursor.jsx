@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 /*
- * Cometa que acompaña al cursor nativo: una estrella brillante en la punta y una cola de chispas
+ * Cometa que acompaña al cursor nativo: un núcleo circular brillante y una cola de luz redonda
  * que se desvanece. Cada clic en un botón o enlace lanza un destello de estrellas.
  * Solo con mouse (pointer: fine) y sin "reducir movimiento". Decorativo: no intercepta clics.
  */
@@ -110,9 +110,20 @@ export function CometCursor() {
         head.x += (head.tx - head.x) * 0.35;
         head.y += (head.ty - head.y) * 0.35;
         head.idle += 1;
-        const pulse = 1 + Math.sin(performance.now() / 260) * 0.12;
-        // La estrella va un poco abajo a la derecha de la punta del cursor para no tapar dónde haces clic.
-        drawStar(head.x + 14, head.y + 16, 3.6 * pulse, 0.95, '240, 228, 255');
+        const pulse = 1 + Math.sin(performance.now() / 260) * 0.1;
+        // Núcleo del cometa: círculo brillante, un poco abajo a la derecha de la punta para no tapar dónde haces clic.
+        const hx = head.x + 14;
+        const hy = head.y + 16;
+        const r = 6 * pulse;
+        const glow = ctx.createRadialGradient(hx, hy, 0, hx, hy, r * 3.2);
+        glow.addColorStop(0, 'rgba(255, 255, 255, .95)');
+        glow.addColorStop(0.25, 'rgba(228, 216, 251, .9)');
+        glow.addColorStop(0.6, 'rgba(167, 133, 245, .35)');
+        glow.addColorStop(1, 'rgba(167, 133, 245, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(hx, hy, r * 3.2, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       const keepGoing = particles.length || bursts.length || (fine && head.visible && head.idle < 240);
@@ -132,27 +143,33 @@ export function CometCursor() {
     };
 
     let last = 0;
+    let prev = { x: 0, y: 0 };
     function onMove(event) {
+      if (!head.visible) prev = { x: event.clientX, y: event.clientY };
       head.tx = event.clientX;
       head.ty = event.clientY;
       if (!head.visible) { head.x = head.tx; head.y = head.ty; }
       head.visible = true;
       head.idle = 0;
       const now = performance.now();
-      if (now - last > 14 && particles.length < 70) {
+      if (now - last > 12 && particles.length < 110) {
         last = now;
-        for (let i = 0; i < 2; i += 1) {
+        // Rellena la cola entre la posición anterior y la actual para que se vea continua.
+        const steps = 4;
+        for (let i = 0; i < steps; i += 1) {
+          const t = i / steps;
           particles.push({
-            x: event.clientX + 14 + (Math.random() - 0.5) * 6,
-            y: event.clientY + 16 + (Math.random() - 0.5) * 6,
-            vx: (Math.random() - 0.5) * 0.8,
-            vy: (Math.random() - 0.5) * 0.8 + 0.35,
+            x: prev.x + (event.clientX - prev.x) * t + 14 + (Math.random() - 0.5) * 3,
+            y: prev.y + (event.clientY - prev.y) * t + 16 + (Math.random() - 0.5) * 3,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
             life: 1,
-            size: Math.random() * 2.4 + 2.2,
-            decay: 0.022,
-            star: Math.random() < 0.3,
+            size: Math.random() * 1.6 + 3,
+            decay: 0.03,
+            star: false,
           });
         }
+        prev = { x: event.clientX, y: event.clientY };
       }
       ensureLoop();
     }
