@@ -32,10 +32,15 @@ export function launchComet(element) {
   const rect = element.getBoundingClientRect();
   const x = rect.left + rect.width / 2;
   const y = rect.top + rect.height / 2;
-  const w = window.innerWidth;
-  const distance = Math.min(Math.max(w * 0.55, 260), 720);
-  const angle = -Math.PI / 6 - Math.random() * 0.2;
-  comets.push({ x, y, sx: x, sy: y, tx: x + Math.cos(angle) * distance, ty: y + Math.sin(angle) * distance, t: 0, trail: [] });
+  const reach = Math.min(window.innerWidth, window.innerHeight);
+  // Varios cometas salen disparados en direcciones distintas alrededor del botón.
+  const count = 3;
+  const base = Math.random() * Math.PI * 2;
+  for (let i = 0; i < count; i += 1) {
+    const angle = base + (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.9;
+    const distance = reach * (0.35 + Math.random() * 0.3);
+    comets.push({ x, y, sx: x, sy: y, tx: x + Math.cos(angle) * distance, ty: y + Math.sin(angle) * distance, t: -i * 0.06, trail: [] });
+  }
   burst(x, y, 18);
 }
 
@@ -89,6 +94,7 @@ export function CometCursor() {
       for (let i = comets.length - 1; i >= 0; i -= 1) {
         const c = comets[i];
         c.t += 1 / 80;
+        if (c.t < 0) continue;
         if (c.t >= 1) { comets.splice(i, 1); continue; }
         const ease = 1 - (1 - c.t) ** 3;
         c.x = c.sx + (c.tx - c.sx) * ease;
