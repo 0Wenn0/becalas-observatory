@@ -103,6 +103,180 @@ target.add(halo, halo2);
 target.position.set(100, 18, -760);
 scene.add(target);
 
+
+/* ───────── Final: partículas que se transforman ───────── */
+const N = 2200;
+const SHAPE_SCALE = 40;
+const SHAPE_X = 42;
+
+function sampleDrawing(draw, count) {
+  const size = 400;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  g.strokeStyle = g.fillStyle = '#fff';
+  g.lineCap = g.lineJoin = 'round';
+  draw(g);
+  const data = g.getImageData(0, 0, size, size).data;
+  const pixels = [];
+  for (let y = 0; y < size; y += 2) for (let x = 0; x < size; x += 2) if (data[(y * size + x) * 4 + 3] > 120) pixels.push([x, y]);
+  const out = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const [x, y] = pixels[Math.floor(Math.random() * pixels.length)];
+    out[i * 3] = ((x - 200) / 200) * SHAPE_SCALE + SHAPE_X + (Math.random() - 0.5) * 0.8;
+    out[i * 3 + 1] = (-(y - 200) / 200) * SHAPE_SCALE + (Math.random() - 0.5) * 0.8;
+    out[i * 3 + 2] = (Math.random() - 0.5) * 6;
+  }
+  return out;
+}
+
+function scattered(count) {
+  const out = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    out[i * 3] = (Math.random() - 0.5) * 230;
+    out[i * 3 + 1] = (Math.random() - 0.5) * 130;
+    out[i * 3 + 2] = (Math.random() - 0.5) * 40;
+  }
+  return out;
+}
+
+function network(count) {
+  const layers = [3, 5, 5, 2];
+  const nodes = layers.map((n, li) => Array.from({ length: n }, (_, k) => [SHAPE_X - 39 + li * 26, (k - (n - 1) / 2) * (n > 3 ? 15 : 22)]));
+  const edges = [];
+  for (let li = 0; li < nodes.length - 1; li++) for (const a of nodes[li]) for (const b of nodes[li + 1]) edges.push([a, b]);
+  const flat = nodes.flat();
+  const out = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    let x, y;
+    if (Math.random() < 0.5) {
+      const [nx, ny] = flat[Math.floor(Math.random() * flat.length)];
+      const r = Math.sqrt(Math.random()) * 3, a = Math.random() * Math.PI * 2;
+      x = nx + Math.cos(a) * r; y = ny + Math.sin(a) * r;
+    } else {
+      const [[ax, ay], [bx, by]] = edges[Math.floor(Math.random() * edges.length)];
+      const t = Math.random();
+      x = ax + (bx - ax) * t; y = ay + (by - ay) * t;
+    }
+    out[i * 3] = x; out[i * 3 + 1] = y; out[i * 3 + 2] = (Math.random() - 0.5) * 4;
+  }
+  return out;
+}
+
+function brainOutline(g) {
+  g.beginPath();
+  g.moveTo(80, 248);
+  g.bezierCurveTo(30, 190, 70, 72, 190, 64);
+  g.bezierCurveTo(305, 56, 368, 128, 346, 206);
+  g.bezierCurveTo(338, 240, 314, 256, 282, 256);
+  g.bezierCurveTo(244, 262, 204, 262, 172, 272);
+  g.bezierCurveTo(130, 284, 96, 274, 80, 248);
+  g.closePath();
+}
+function brainParts(g, mode) {
+  brainOutline(g);
+  if (mode === 'fill') g.fill(); else g.stroke();
+  g.beginPath(); g.ellipse(288, 282, 44, 27, -0.15, 0, Math.PI * 2);
+  if (mode === 'fill') g.fill(); else g.stroke();
+  g.beginPath(); g.moveTo(228, 258); g.quadraticCurveTo(238, 310, 228, 350); g.lineTo(256, 350); g.quadraticCurveTo(264, 308, 258, 262); g.closePath();
+  if (mode === 'fill') g.fill(); else g.stroke();
+}
+const drawBrainEdge = (g) => {
+  g.lineWidth = 5;
+  brainParts(g, 'stroke');
+  // surco lateral y central, sutiles
+  g.lineWidth = 3;
+  g.beginPath(); g.moveTo(112, 214); g.bezierCurveTo(160, 192, 212, 206, 262, 186); g.stroke();
+  g.beginPath(); g.moveTo(206, 70); g.bezierCurveTo(214, 132, 182, 182, 196, 236); g.stroke();
+};
+const drawBrainFill = (g) => brainParts(g, 'fill');
+const brainShape = (count) => {
+  const edgeCount = Math.round(count * 0.38);
+  const out = new Float32Array(count * 3);
+  out.set(sampleDrawing(drawBrainFill, count - edgeCount), 0);
+  out.set(sampleDrawing(drawBrainEdge, edgeCount), (count - edgeCount) * 3);
+  return out;
+};
+
+const drawHeart = (g) => {
+  [[11, 7], [7.6, 5]].forEach(([k, w]) => {
+    g.lineWidth = w;
+    g.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const t = (i / 200) * Math.PI * 2;
+      const x = 16 * Math.sin(t) ** 3;
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+      const px = 200 + x * k, py = 190 - y * k;
+      if (i === 0) g.moveTo(px, py); else g.lineTo(px, py);
+    }
+    g.stroke();
+  });
+};
+
+const drawComet = (g) => {
+  g.beginPath(); g.arc(285, 120, 30, 0, Math.PI * 2); g.fill();
+  for (let i = 0; i < 9; i++) {
+    const spread = (i - 4) * 0.075;
+    const len = 300 - Math.abs(i - 4) * 28;
+    const ang = Math.atan2(210, -225) + spread;
+    g.lineWidth = 7 - Math.abs(i - 4) * 1.2;
+    g.beginPath(); g.moveTo(285, 120); g.lineTo(285 + Math.cos(ang) * len, 120 + Math.sin(ang) * len); g.stroke();
+  }
+};
+
+const shapes = [scattered(N), network(N), brainShape(N), sampleDrawing(drawHeart, N), sampleDrawing(drawComet, N)];
+
+const particleGeo = new THREE.BufferGeometry();
+const particlePos = new Float32Array(shapes[0]);
+particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+const particleCol = new Float32Array(N * 3);
+const finalPalette = ['#F6DFA0', '#D9B76A', '#C9B4F7', '#F3EDF8'].map((c) => new THREE.Color(c));
+for (let i = 0; i < N; i++) { const c = finalPalette[i % 4]; particleCol.set([c.r, c.g, c.b], i * 3); }
+particleGeo.setAttribute('color', new THREE.BufferAttribute(particleCol, 3));
+const particleMat = new THREE.PointsMaterial({ size: 1.25, map: starTexture, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending });
+const particles = new THREE.Points(particleGeo, particleMat);
+particles.position.set(0, 0, -100);
+particles.renderOrder = 10;
+camera.add(particles);
+scene.add(camera);
+
+// Plexo del cerebro: líneas entre nodos cercanos
+const brainTarget = shapes[2];
+const NODE_COUNT = 520;
+const nodeIdx = Array.from({ length: NODE_COUNT }, (_, k) => Math.floor((k / NODE_COUNT) * N));
+const pairs = [];
+for (let a = 0; a < NODE_COUNT; a++) {
+  const ia = nodeIdx[a] * 3;
+  const near = [];
+  for (let b = 0; b < NODE_COUNT; b++) {
+    if (a === b) continue;
+    const ib = nodeIdx[b] * 3;
+    const d = Math.hypot(brainTarget[ia] - brainTarget[ib], brainTarget[ia + 1] - brainTarget[ib + 1]);
+    if (d < 7.5) near.push([d, b]);
+  }
+  near.sort((x, y) => x[0] - y[0]).slice(0, 4).forEach(([, b]) => { if (a < b) pairs.push([nodeIdx[a], nodeIdx[b]]); });
+}
+const plexusPos = new Float32Array(pairs.length * 6);
+const plexusGeo = new THREE.BufferGeometry();
+plexusGeo.setAttribute('position', new THREE.BufferAttribute(plexusPos, 3));
+const plexusMat = new THREE.LineBasicMaterial({ color: '#B7C3F0', transparent: true, opacity: 0, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending });
+const plexus = new THREE.LineSegments(plexusGeo, plexusMat);
+plexus.position.copy(particles.position);
+plexus.renderOrder = 9;
+camera.add(plexus);
+const speeds = Float32Array.from({ length: N }, () => 0.018 + Math.random() * 0.03);
+const phases = Float32Array.from({ length: N }, () => Math.random() * Math.PI * 2);
+
+const nextStar = new THREE.Sprite(new THREE.SpriteMaterial({ map: softDot(128, 'rgba(255,240,200,1)'), color: '#F6DFA0', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false }));
+nextStar.scale.set(10, 10, 1);
+nextStar.position.set(86, 42, -100);
+nextStar.renderOrder = 11;
+camera.add(nextStar);
+
+let finalStage = 0;
+let flightStart = 0;
+const flight = new THREE.Vector3();
+
 // Paradas de cámara: una por escena
 const stops = [
   [[0, 0, 200], [30, 0, 0]],
@@ -115,6 +289,7 @@ const stops = [
   [[-20, -10, -940], [0, 0, -1300]],
   [[30, 20, -1140], [0, 0, -1500]],
   [[0, 0, -1360], [0, 10, -1700]],
+  [[0, 0, -1560], [0, 0, -1900]],
 ].map(([p, l]) => ({ pos: new THREE.Vector3(...p), look: new THREE.Vector3(...l) }));
 
 /* ───────── Navegación ───────── */
@@ -135,9 +310,17 @@ const look = stops[index].look.clone();
 const stepsOf = (s) => [...s.querySelectorAll('.step')];
 const shownCount = (s) => stepsOf(s).filter((el) => el.classList.contains('is-shown')).length;
 
+const hud = document.querySelector('.hud');
 function syncSky(s) {
   const map = s.querySelector('.sky-map');
   if (map) map.dataset.shown = String(shownCount(s));
+  if (s.classList.contains('final')) {
+    const stage = shownCount(s);
+    if (stage === 5 && finalStage !== 5) flightStart = performance.now();
+    finalStage = stage;
+    s.dataset.stage = String(stage);
+    hud.classList.toggle('next-lit', stage === 5);
+  }
 }
 
 function show(i, { revealAll = false } = {}) {
@@ -160,6 +343,8 @@ function show(i, { revealAll = false } = {}) {
   notesText.textContent = current.dataset.notes;
   history.replaceState(null, '', `#${i}`);
   if (video && i !== 1) video.pause();
+  if (!current.classList.contains('final')) hud.classList.remove('next-lit');
+  else if (!revealAll) particlePos.set(shapes[0]);
 }
 
 function next() {
@@ -277,6 +462,43 @@ function frame() {
     halo.rotation.z = t * 0.2;
     halo2.scale.setScalar(1.5 + Math.sin(t * 1.4) * 0.12);
   }
+
+  // Final: morph de partículas
+  const finalOn = scenes[index].classList.contains('final');
+  particleMat.opacity += ((finalOn ? 1 : 0) - particleMat.opacity) * 0.05;
+  particles.visible = particleMat.opacity > 0.01;
+  if (particles.visible) {
+    const shapeIndex = Math.min(finalStage, 4);
+    const goal = shapes[shapeIndex];
+    if (finalStage === 5) {
+      const k = Math.min(1, (performance.now() - flightStart) / 3200);
+      const e = k * k * (3 - 2 * k);
+      flight.set(e * 105, e * 62, 0);
+    } else flight.set(0, 0, 0);
+    const wobble = reduce ? 0 : 0.35;
+    for (let i = 0; i < N; i++) {
+      const j = i * 3;
+      const sp = reduce ? 1 : speeds[i];
+      const tx = goal[j] + flight.x + Math.sin(t * 0.9 + phases[i]) * wobble;
+      const ty = goal[j + 1] + flight.y + Math.cos(t * 0.8 + phases[i]) * wobble;
+      particlePos[j] += (tx - particlePos[j]) * sp;
+      particlePos[j + 1] += (ty - particlePos[j + 1]) * sp;
+      particlePos[j + 2] += (goal[j + 2] - particlePos[j + 2]) * sp;
+    }
+    particleGeo.attributes.position.needsUpdate = true;
+  }
+  const plexusGoal = particles.visible && finalStage === 2 ? 0.45 : 0;
+  plexusMat.opacity += (plexusGoal - plexusMat.opacity) * (plexusGoal ? 0.012 : 0.06);
+  plexus.visible = plexusMat.opacity > 0.01;
+  if (plexus.visible) {
+    pairs.forEach(([a, b], k) => {
+      plexusPos.set([particlePos[a * 3], particlePos[a * 3 + 1], particlePos[a * 3 + 2], particlePos[b * 3], particlePos[b * 3 + 1], particlePos[b * 3 + 2]], k * 6);
+    });
+    plexusGeo.attributes.position.needsUpdate = true;
+  }
+  const starGoal = finalOn && finalStage >= 4 ? (finalStage === 5 ? 1 : 0.55) : 0;
+  nextStar.material.opacity += (starGoal - nextStar.material.opacity) * 0.03;
+  nextStar.scale.setScalar(10 + Math.sin(t * 1.6) * 1.2 + (finalStage === 5 ? 4 : 0));
   renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }

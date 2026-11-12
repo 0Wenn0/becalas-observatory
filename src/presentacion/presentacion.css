@@ -122,6 +122,14 @@ h3 { font-size: clamp(18px, 1.45vw, 26px); color: var(--gold); line-height: 1.25
 .closing p b { color: var(--ivory); }
 .closing .next { border-style: dashed; }
 
+/* 10 · Final */
+.final { align-content: center; }
+.final-text { position: relative; width: min(44vw, 760px); min-height: 34vh; }
+.fline { position: absolute; left: 0; top: 4.5vh; margin: 0; font-family: var(--serif); font-size: clamp(40px, 4.2vw, 80px); line-height: 1.08; opacity: 0; transform: translateY(16px); filter: blur(6px); transition: opacity 1.2s ease, transform 1.4s cubic-bezier(.2, .7, .2, 1), filter 1.2s ease; }
+.fline small { display: block; margin-top: 2.4vh; font-family: var(--sans); font-size: clamp(16px, 1.25vw, 22px); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.final[data-stage="0"] .fline[data-n="0"], .final[data-stage="1"] .fline[data-n="1"], .final[data-stage="2"] .fline[data-n="2"],
+.final[data-stage="3"] .fline[data-n="3"], .final[data-stage="4"] .fline[data-n="4"], .final[data-stage="5"] .fline[data-n="5"] { opacity: 1; transform: none; filter: none; transition-delay: .5s; }
+
 /* HUD */
 .hud { position: fixed; left: 8vw; right: 8vw; bottom: 5vh; display: flex; align-items: center; justify-content: space-between; font-size: 15px; color: var(--muted); letter-spacing: .06em; }
 .track { display: flex; gap: 10px; align-items: center; }
@@ -135,6 +143,10 @@ h3 { font-size: clamp(18px, 1.45vw, 26px); color: var(--gold); line-height: 1.25
 .constel path { stroke: rgba(201, 180, 247, .45); stroke-width: 1.2; fill: none; }
 .constel circle { fill: rgba(243, 237, 248, .35); }
 .constel circle.on { fill: var(--gold); }
+.constel .seg2 { stroke: var(--gold); stroke-width: 1.6; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s ease .8s; }
+.constel circle.c2 { transition: fill 1s ease 3s, filter 1s ease 3s; }
+.hud.next-lit .seg2 { stroke-dashoffset: 0; }
+.hud.next-lit circle.c2 { fill: var(--lilac); filter: drop-shadow(0 0 4px var(--lilac)); }
 
 /* Notas y ayuda */
 .notes { position: fixed; right: 2vw; top: 2vh; width: min(420px, 34vw); padding: 18px 20px; border-radius: 16px; background: rgba(11, 13, 31, .92); border: 1px solid rgba(217, 183, 106, .45); font-size: 16px; line-height: 1.5; color: var(--ivory); z-index: 5; }
