@@ -677,3 +677,9 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
 }
 .rule-icon .tw { transform-box: fill-box; transform-origin: center; fill: currentColor; stroke: none; }
 .book .agreement-grid { align-items: start; }
+
+/* Misión 0 de Wen: ejemplo en video (capítulo I) */
+.mission-example { margin: 28px 0 8px; }
+.mission-example video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; background: #2F1C42; box-shadow: 0 14px 34px rgba(47, 28, 66, .22); }
+.mission-example figcaption { margin-top: 12px; color: var(--plum-muted); font-size: 16px; line-height: 1.45; }
+.mission-example figcaption strong { color: var(--plum); }
