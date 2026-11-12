@@ -1,5 +1,14 @@
 {
   "buildCommand": "vite build",
   "outputDirectory": "dist/client",
-  "rewrites": [{ "source": "/caso", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/presentacion",
+      "destination": "/presentacion/index.html"
+    },
+    {
+      "source": "/caso",
+      "destination": "/index.html"
+    }
+  ]
 }
