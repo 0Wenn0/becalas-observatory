@@ -683,3 +683,58 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
 .mission-example video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; background: #2F1C42; box-shadow: 0 14px 34px rgba(47, 28, 66, .22); }
 .mission-example figcaption { margin-top: 12px; color: var(--plum-muted); font-size: 16px; line-height: 1.45; }
 .mission-example figcaption strong { color: var(--plum); }
+
+/* ── Portada nocturna (misma identidad que la presentación en vivo) ── */
+.frame.night-frame { overflow: hidden; color: #F3EDF8; border-color: rgba(217, 183, 106, .45); outline-color: rgba(59, 31, 74, .2); border-radius: 18px;
+  background: radial-gradient(ellipse at 78% 18%, rgba(120, 70, 160, .55), transparent 55%), radial-gradient(ellipse at 15% 90%, rgba(184, 137, 146, .28), transparent 50%), linear-gradient(180deg, #0B0D1F, #22163A); }
+.night-frame > *:not(.starfield) { position: relative; }
+.night-frame .starfield { opacity: .6; }
+.night-frame h1, .night-frame .book-lede, .night-frame .book-kicker { text-shadow: 0 2px 14px rgba(11, 13, 31, .9); }
+@media (max-width: 700px) { .night-frame .starfield { opacity: .38; } }
+.night-frame .corner { color: #D9B76A; opacity: .7; position: absolute; }
+.night-frame .book-kicker { color: #D9B76A; }
+.night-frame h1 { color: #F3EDF8; }
+.night-frame .star-divider { color: #C9B4F7; }
+.night-frame .book-lede { color: #CFC5DD; }
+.nights { margin: 26px auto 0; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #CFC5DD; font-size: 15px; letter-spacing: .04em; }
+.nights svg { width: 160px; height: 48px; overflow: visible; }
+.nights path { fill: none; stroke: rgba(201, 180, 247, .5); stroke-width: 1.4; stroke-dasharray: 3 5; }
+.nights circle { fill: rgba(243, 237, 248, .35); }
+.nights circle.done { fill: #C9B4F7; }
+.nights circle.next { fill: #D9B76A; filter: drop-shadow(0 0 6px rgba(217, 183, 106, .9)); animation: nightPulse 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes nightPulse { 50% { transform: scale(1.25); } }
+
+/* ── Acceso directo a herramientas en Inicio ── */
+.quick-kit { margin: 26px auto 0; max-width: 980px; }
+.quick-kit-title { margin: 0 0 12px; text-align: center; font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--plum-muted); }
+.quick-kit ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.quick-kit-link { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(59, 31, 74, .16); color: var(--plum); text-decoration: none; box-shadow: 0 6px 18px rgba(47, 28, 66, .08); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.quick-kit-link:hover, .quick-kit-link:focus-visible { transform: translateY(-2px); border-color: #5B2D86; box-shadow: 0 12px 26px rgba(47, 28, 66, .16); }
+.qk-icon { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--plum-card); color: #D9B76A; font-size: 18px; }
+.qk-text { flex: 1; display: flex; flex-direction: column; line-height: 1.3; }
+.qk-text b { font-size: 17px; }
+.qk-text small { font-size: 14px; color: var(--plum-muted); }
+.qk-arrow { color: #5B2D86; font-size: 18px; }
+@media (max-width: 700px) { .quick-kit ul { grid-template-columns: 1fr; } }
+
+/* ── Índice: entrada en cascada ── */
+.chapter-grid li { animation: cardRise .9s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(.15s + var(--i, 0) * .12s); }
+@keyframes cardRise { from { opacity: 0; translate: 0 22px; filter: blur(5px); } }
+
+/* ── Herramientas: todas visibles ── */
+.tool-jump { position: sticky; top: 84px; z-index: 3; display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; padding: 8px; width: fit-content; max-width: 100%; border-radius: 999px; background: rgba(236, 228, 246, .92); backdrop-filter: blur(6px); box-shadow: 0 4px 14px rgba(47, 28, 66, .1); }
+.tool-jump a { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 16px; border-radius: 999px; color: var(--plum); font-weight: 700; font-size: 15px; text-decoration: none; }
+.tool-jump a:hover, .tool-jump a:focus-visible, .tool-jump a.is-current { background: var(--plum-card); color: #F3EDF8; }
+.tool-stack { display: grid; gap: clamp(36px, 5vw, 56px); margin-top: 18px; }
+.tool-section { scroll-margin-top: 140px; }
+.tool-section .tool-grid { scroll-margin-top: 150px; }
+.tool-section-title { margin: 0 0 14px; font-size: clamp(28px, 3vw, 36px); color: var(--plum); }
+.tool-section-title span { color: #B08A3E; font-size: .8em; }
+
+/* ── Botón «Copiar mi meta» todavía sin activar: que se lea como «aún no», no como error ── */
+.book .button-primary:disabled { opacity: 1; background: transparent; color: var(--plum-muted); border: 1.5px dashed rgba(59, 31, 74, .45); box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-grid li { animation: none; }
+  .nights circle.next { animation: none; }
+}

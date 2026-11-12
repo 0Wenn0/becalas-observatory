@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
+import { Starfield } from './Starfield.jsx';
 
 /* ───────── Contenido ───────── */
 
@@ -340,15 +341,15 @@ const anchorToView = {
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
 };
 const toolTabs = [
-  { id: 'meta', label: 'Mi meta' },
-  { id: 'constelacion', label: 'Mi constelación' },
-  { id: 'bitacora', label: 'Mi bitácora' },
+  { id: 'meta', label: 'Mi meta', icon: '✎', hint: 'Arma tu meta SMART' },
+  { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Fortalezas e intereses' },
+  { id: 'bitacora', label: 'Mi bitácora', icon: '☾', hint: 'Lo que descubres cada sesión' },
 ];
 
 const chapters = [
   { id: 'mision', roman: 'I', title: 'Tu primera misión', teaser: 'Preséntate con IA antes de la sesión 1', Art: EngravingTelescope },
   { id: 'sesiones', roman: 'II', title: 'Tres noches de observación', teaser: 'Qué haremos en cada sesión y qué traer', Art: EngravingMoon },
-  { id: 'herramientas', roman: 'III', title: 'Tu kit de exploradora', teaser: 'Tu meta, tu constelación y tu bitácora', Art: EngravingAstrolabe },
+  { id: 'herramientas', roman: 'III', title: 'Tu kit de exploradora', teaser: 'Tus herramientas: meta, constelación y bitácora', Art: EngravingAstrolabe },
   { id: 'nosotras', roman: 'IV', title: 'Nosotras', teaser: 'Cómo nos cuidamos, respirar y pedir apoyo', Art: EngravingConstellation },
 ];
 
@@ -413,44 +414,6 @@ function SiteHeader({ view }) {
         ))}
       </nav>
     </header>
-  );
-}
-
-function ToolTabs({ active, onChange }) {
-  const refs = useRef([]);
-  function onKey(event) {
-    const index = toolTabs.findIndex((t) => t.id === active);
-    let next = null;
-    if (event.key === 'ArrowRight') next = (index + 1) % toolTabs.length;
-    if (event.key === 'ArrowLeft') next = (index - 1 + toolTabs.length) % toolTabs.length;
-    if (event.key === 'Home') next = 0;
-    if (event.key === 'End') next = toolTabs.length - 1;
-    if (next !== null) {
-      event.preventDefault();
-      onChange(toolTabs[next].id);
-      refs.current[next]?.focus();
-    }
-  }
-  return (
-    <div className="tool-tabs" role="tablist" aria-label="Elige una herramienta">
-      {toolTabs.map((tab, index) => (
-        <button
-          key={tab.id}
-          ref={(el) => { refs.current[index] = el; }}
-          type="button"
-          role="tab"
-          id={`tooltab-${tab.id}`}
-          aria-selected={active === tab.id}
-          aria-controls={`toolpanel-${tab.id}`}
-          tabIndex={active === tab.id ? 0 : -1}
-          className="tool-tab"
-          onClick={() => onChange(tab.id)}
-          onKeyDown={onKey}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
   );
 }
 
@@ -606,21 +569,34 @@ function Microsite() {
         {view === 'inicio' && (
           <div className="book">
             <section className="frontispiece section-wrap" aria-labelledby="view-inicio-title">
-              <div className="frame">
+              <div className="frame night-frame">
+                <Starfield />
                 <CornerOrnament className="c-tl" /><CornerOrnament className="c-tr" /><CornerOrnament className="c-bl" /><CornerOrnament className="c-br" />
                 <p className="book-kicker">Observatorio de mentoría · BécALAS 2026</p>
                 <h1 id="view-inicio-title" tabIndex={-1}>¡Exploremos juntas!</h1>
                 <StarDivider />
                 <p className="book-lede">Un pequeño libro para nuestras mentorías: cuatro capítulos para mirar el cielo, hacer preguntas y armar caminos.</p>
+                <div className="nights" aria-label={`Noches de observación: ${sessions.filter((x) => x.done).length} de 3 completadas`} role="img">
+                  <svg viewBox="0 0 160 48" aria-hidden="true"><path d="M14 34 L80 12 L146 30" />{sessions.map((x, i) => <circle key={x.id} cx={[14, 80, 146][i]} cy={[34, 12, 30][i]} r={x === nextSession ? 7 : 5} className={x.done ? 'done' : x === nextSession ? 'next' : ''} />)}</svg>
+                  <span>Noche {sessions.indexOf(nextSession) + 1} de 3</span>
+                </div>
               </div>
               <p className="next-note" id="proxima"><span aria-hidden="true">☾</span> <strong>Próxima sesión:</strong> {nextDefined ? nextSession.dateLabel : 'por definir, la acordamos juntas en el grupo'}.</p>
+              <nav className="quick-kit" aria-labelledby="quick-kit-title">
+                <h2 id="quick-kit-title" className="quick-kit-title">Tus herramientas, a un toque</h2>
+                <ul>
+                  {toolTabs.map((t) => (
+                    <li key={t.id}><a href={`#${t.id}`} className="quick-kit-link" onClick={(e) => sparkleAt(e.currentTarget, 10)}><span className="qk-icon" aria-hidden="true">{t.icon}</span><span className="qk-text"><b>{t.label}</b><small>{t.hint}</small></span><span className="qk-arrow" aria-hidden="true">→</span></a></li>
+                  ))}
+                </ul>
+              </nav>
             </section>
 
             <section className="section-wrap chapter-index" aria-labelledby="index-title">
               <h2 id="index-title" className="index-title">Índice</h2>
               <ol className="chapter-grid">
-                {chapters.map(({ id, roman, title, teaser, Art }) => (
-                  <li key={id}>
+                {chapters.map(({ id, roman, title, teaser, Art }, i) => (
+                  <li key={id} style={{ '--i': i }}>
                     <a className="chapter-card" href={`#${id}`} data-chapter={id} style={{ viewTransitionName: `ch-${id}` }} onClick={(e) => sparkleAt(e.currentTarget, 16)} onPointerMove={tiltCard} onPointerLeave={resetTilt} onPointerEnter={hoverSparkle} onFocus={hoverSparkle}>
                       <span className="chapter-roman" aria-hidden="true">{roman}</span>
                       <span className="chapter-art"><Art /></span>
@@ -742,14 +718,17 @@ function Microsite() {
         {view === 'herramientas' && (
           <div className="book">
           <article className="chapter chapter-wide section-wrap" aria-labelledby="view-herramientas-title">
-            <ChapterHero id="herramientas" roman="III" Art={EngravingAstrolabe} title="Tu kit de exploradora" sub="Tu meta, tu constelación y tu bitácora" />
+            <ChapterHero id="herramientas" roman="III" Art={EngravingAstrolabe} title="Tu kit de exploradora" sub="Tus herramientas: meta, constelación y bitácora" />
             <StarDivider />
             <div className="chapter-body">
               <p className="privacy-seal"><span aria-hidden="true">🔒</span> Todo lo que escribas se queda en tu celular. Ni yo lo veo.</p>
-              <ToolTabs active={tool} onChange={setTool} />
+              <nav className="tool-jump" aria-label="Ir a una herramienta">
+                {toolTabs.map((t) => <a key={t.id} href={`#${t.id}`} className={tool === t.id ? 'is-current' : undefined}><span aria-hidden="true">{t.icon}</span> {t.label}</a>)}
+              </nav>
 
-              <div className="tool-panel" role="tabpanel" id={`toolpanel-${tool}`} aria-labelledby={`tooltab-${tool}`}>
-                {tool === 'meta' && (
+              <div className="tool-stack">
+                <section className="tool-section" aria-labelledby="tool-title-meta">
+                  <h2 className="tool-section-title" id="tool-title-meta"><span aria-hidden="true">✎</span> Mi meta</h2>
                   <div className="tool-grid" id="meta">
                     <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Copia tu meta y tráela a la sesión 1.']} />
                     <div className="smart-builder worksheet">
@@ -777,9 +756,10 @@ function Microsite() {
                       </div>
                     </div>
                   </div>
-                )}
+                </section>
 
-                {tool === 'constelacion' && (
+                <section className="tool-section" aria-labelledby="tool-title-constelacion">
+                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación</h2>
                   <div className="tool-grid constellation-card" id="constelacion">
                     <HowTo dark steps={['Elige un punto.', 'Lee la pregunta.', 'Contéstala en tu cabeza o en tu bitácora.']} />
                     <div>
@@ -789,9 +769,10 @@ function Microsite() {
                       <div className="node-prompt worksheet on-dark" aria-live="polite"><span>Tu pregunta · {currentNode.label}</span><p>{currentNode.prompt}</p></div>
                     </div>
                   </div>
-                )}
+                </section>
 
-                {tool === 'bitacora' && (
+                <section className="tool-section" aria-labelledby="tool-title-bitacora">
+                  <h2 className="tool-section-title" id="tool-title-bitacora"><span aria-hidden="true">☾</span> Mi bitácora</h2>
                   <div className="tool-grid" id="bitacora">
                     <HowTo steps={['Elige la sesión.', 'Responde con frases cortas.', 'Guarda. Puedes volver a editar.']} />
                     <div className="journal-form worksheet">
@@ -804,7 +785,7 @@ function Microsite() {
                       <p className="status-text" role="status" aria-live="polite">{savedMessage}</p>
                     </div>
                   </div>
-                )}
+                </section>
               </div>
             </div>
             <StarDivider />
