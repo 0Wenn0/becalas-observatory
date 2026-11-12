@@ -343,6 +343,8 @@ function show(i, { revealAll = false } = {}) {
   notesText.textContent = current.dataset.notes;
   history.replaceState(null, '', `#${i}`);
   if (video && i !== 1) video.pause();
+  document.querySelectorAll('.has-spot').forEach((g) => g.classList.remove('has-spot'));
+  document.querySelectorAll('.card.is-spot').forEach((c) => c.classList.remove('is-spot'));
   if (!current.classList.contains('final')) hud.classList.remove('next-lit');
   else if (!revealAll) particlePos.set(shapes[0]);
 }
@@ -370,7 +372,7 @@ function prev() {
 }
 
 addEventListener('keydown', (e) => {
-  if (e.target.closest && e.target.closest('video, button') && (e.key === ' ' || e.key === 'Enter')) return;
+  if (e.target.closest && e.target.closest('video, button, .card') && (e.key === ' ' || e.key === 'Enter')) return;
   if (['ArrowRight', 'PageDown', 'ArrowDown'].includes(e.key)) { e.preventDefault(); next(); }
   else if (['ArrowLeft', 'PageUp', 'ArrowUp'].includes(e.key)) { e.preventDefault(); prev(); }
   else if (e.key === 'n' || e.key === 'N') notes.hidden = !notes.hidden;
@@ -387,6 +389,56 @@ document.getElementById('prev').addEventListener('click', () => { prev(); hideHi
 const hint = document.getElementById('hint');
 let hintTimer = setTimeout(hideHint, 6000);
 function hideHint() { clearTimeout(hintTimer); hint.classList.add('is-gone'); }
+
+
+/* ───────── Tarjetas vivas ───────── */
+function sparkle(x, y, count = 10) {
+  if (reduce) return;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('i');
+    el.className = `spark${i % 3 === 0 ? ' lilac' : ''}`;
+    const a = (i / count) * Math.PI * 2 + Math.random() * 0.4;
+    const d = 30 + Math.random() * 45;
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.setProperty('--dx', `${Math.cos(a) * d}px`);
+    el.style.setProperty('--dy', `${Math.sin(a) * d}px`);
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+document.querySelectorAll('.scene').forEach((sc) => sc.querySelectorAll('.card').forEach((card, i) => {
+  card.style.setProperty('--i', String(i));
+  card.tabIndex = 0;
+  card.addEventListener('pointermove', (e) => {
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    card.style.setProperty('--mx', `${px * 100}%`);
+    card.style.setProperty('--my', `${py * 100}%`);
+    if (!reduce) {
+      card.style.setProperty('--ry', `${(px - 0.5) * 10}deg`);
+      card.style.setProperty('--rx', `${(0.5 - py) * 8}deg`);
+    }
+  });
+  card.addEventListener('pointerenter', (e) => sparkle(e.clientX, e.clientY, 5));
+  card.addEventListener('pointerleave', () => { card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg'); });
+  const spot = (x, y) => {
+    const group = card.parentElement;
+    const on = !card.classList.contains('is-spot');
+    group.querySelectorAll('.card').forEach((c) => c.classList.remove('is-spot'));
+    card.classList.toggle('is-spot', on);
+    group.classList.toggle('has-spot', on);
+    if (on) sparkle(x, y, 14);
+  };
+  card.addEventListener('click', (e) => spot(e.clientX, e.clientY));
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const r = card.getBoundingClientRect();
+      spot(r.left + r.width / 2, r.top + r.height / 2);
+    }
+  });
+}));
 
 /* ───────── Temporizador de 10 minutos ───────── */
 const TIMER_SECONDS = 600;
