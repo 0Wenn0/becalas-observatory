@@ -774,3 +774,18 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
   .astro-label { font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .astro-dot { animation: none; } .astro-lines line { transition: none; } }
+
+/* ── Volver al inicio siempre a mano ── */
+.crumb { margin: 0 0 14px; font-size: 15px; color: var(--plum-muted); }
+.crumb a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; background: rgba(59, 31, 74, .08); color: var(--plum); font-weight: 700; text-decoration: none; }
+.crumb a:hover, .crumb a:focus-visible { background: var(--plum-card); color: #F3EDF8; }
+.chapter-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+.chapter-nav .chapter-nav-home { justify-self: center; padding: 0 18px; border-radius: 999px; border: 1.5px solid rgba(59, 31, 74, .3); text-decoration: none; }
+.chapter-nav .chapter-nav-home span { color: #B08A3E; margin-right: 6px; }
+.chapter-nav .chapter-nav-home:hover, .chapter-nav .chapter-nav-home:focus-visible { background: var(--plum-card); color: #F3EDF8; border-color: var(--plum-card); }
+.chapter-nav .chapter-nav-next { justify-self: end; text-align: right; }
+.site-header .brand-lockup:hover .brand-program, .site-header .brand-lockup:focus-visible .brand-program { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 700px) {
+  .chapter-nav { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .chapter-nav .chapter-nav-next { justify-self: center; text-align: center; }
+}

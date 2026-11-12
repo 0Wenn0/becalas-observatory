@@ -433,8 +433,17 @@ function ChapterHero({ id, roman, Art, title, sub }) {
 function ChapterNav({ prev, next }) {
   return (
     <nav className="chapter-nav" aria-label="Capítulos">
-      <a href={`#${prev[0]}`}>← {prev[1]}</a>
-      <a href={`#${next[0]}`}>{next[1]} →</a>
+      {prev ? <a href={`#${prev[0]}`}>← {prev[1]}</a> : <span />}
+      <a href="#inicio" className="chapter-nav-home"><span aria-hidden="true">✦</span> Índice</a>
+      {next ? <a href={`#${next[0]}`} className="chapter-nav-next">{next[1]} →</a> : <span />}
+    </nav>
+  );
+}
+
+function Crumb({ roman }) {
+  return (
+    <nav className="crumb" aria-label="Ubicación">
+      <a href="#inicio">← Índice</a><span aria-hidden="true"> / </span><span aria-current="page">Capítulo {roman}</span>
     </nav>
   );
 }
@@ -629,6 +638,7 @@ function Microsite() {
         {view === 'mision' && (
           <div className="book">
             <article className="chapter section-wrap" aria-labelledby="view-mision-title">
+              <Crumb roman="I" />
               <header className="chapter-hero" style={{ viewTransitionName: 'ch-mision' }}>
                 <span className="chapter-roman" aria-hidden="true">I</span>
                 <span className="chapter-art"><EngravingTelescope /></span>
@@ -660,10 +670,7 @@ function Microsite() {
                 <p className="book-note"><span aria-hidden="true">🔒</span> No le compartas a la IA tu dirección, teléfono, CURP ni datos de otras personas. Si no quieres usar tu foto, un avatar funciona perfecto.</p>
               </div>
               <StarDivider />
-              <nav className="chapter-nav" aria-label="Capítulos">
-                <a href="#inicio">← Volver al índice</a>
-                <a href="#sesiones">Siguiente: Tres noches de observación →</a>
-              </nav>
+              <ChapterNav next={['sesiones', 'Siguiente: Tres noches de observación']} />
             </article>
           </div>
         )}
@@ -672,6 +679,7 @@ function Microsite() {
         {view === 'sesiones' && (
           <div className="book">
           <article className="chapter section-wrap" aria-labelledby="view-sesiones-title">
+            <Crumb roman="II" />
             <ChapterHero id="sesiones" roman="II" Art={EngravingMoon} title="Tres noches de observación" sub="Toca una sesión para ver qué haremos y qué traer" />
             <StarDivider />
             <div className="chapter-body">
@@ -719,6 +727,7 @@ function Microsite() {
         {view === 'herramientas' && (
           <div className="book">
           <article className="chapter chapter-wide section-wrap" aria-labelledby="view-herramientas-title">
+            <Crumb roman="III" />
             <ChapterHero id="herramientas" roman="III" Art={EngravingAstrolabe} title="Tu kit de exploradora" sub="Tus herramientas: meta, constelación y bitácora" />
             <StarDivider />
             <div className="chapter-body">
@@ -794,6 +803,7 @@ function Microsite() {
         {view === 'nosotras' && (
           <div className="book">
           <article className="chapter section-wrap" aria-labelledby="view-nosotras-title">
+            <Crumb roman="IV" />
             <ChapterHero id="nosotras" roman="IV" Art={EngravingConstellation} title="Nosotras" sub="Cómo nos cuidamos, respirar y pedir apoyo" />
             <StarDivider />
             <div className="chapter-body">
@@ -844,7 +854,7 @@ function Microsite() {
               </section>
             </div>
             <StarDivider />
-            <ChapterNav prev={['herramientas', 'Tu kit de exploradora']} next={['inicio', 'Volver al índice']} />
+            <ChapterNav prev={['herramientas', 'Tu kit de exploradora']} />
           </article>
           </div>
         )}
