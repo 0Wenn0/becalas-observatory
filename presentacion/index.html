@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bitácora de una noche de observación · Sesión 1 · Mentorías BécALAS</title>
+  <meta name="description" content="Presentación interactiva de la sesión 1 de mentoría: conocernos y soñar en grande. Un proyecto de Cognitive Observatory." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" />
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <main id="deck">
+    <!-- 0 · Prólogo -->
+    <section class="scene prologo" data-chapter="0" data-title="Prólogo: el cielo despejado"
+      data-notes="Recibir a cada una por su nombre conforme entra. Cámara encendida y sonrisa: el tono se decide en el primer minuto. Guiar la respiración en voz baja: inhala 4, sostén 4, exhala 6, tres veces. Leer la pregunta de la noche y decir: «al final de la sesión volvemos a ella».">
+      <div>
+        <p class="kicker">Bitácora · Noche 1 · Prólogo</p>
+        <h1>Esta noche,<br />el cielo está <span class="gold">despejado</span></h1>
+        <p class="lede">Antes de empezar, respiramos. Tres veces, a nuestro ritmo.</p>
+        <p class="question"><span aria-hidden="true">✦</span> La pregunta de esta noche: ¿qué estrella quieres alcanzar?</p>
+      </div>
+      <div class="breath" aria-hidden="true"><b id="breath-word">Inhala</b><span>4 · 4 · 6</span></div>
+    </section>
+
+    <!-- 1 · La guía -->
+    <section class="scene guia" data-chapter="1" data-title="La guía"
+      data-notes="Dar play al video (1:21). Al terminar, preguntar: «¿encontraron lo que le salió mal a la IA?». Dejar que ellas digan; con la flecha se revela cada error. Cerrar: equivocarse es parte del experimento; la IA propone, nosotras decidimos qué corregir.">
+      <figure class="frame">
+        <video id="wen-video" controls preload="metadata" playsinline poster="/mision-0-wen-poster.webp" aria-label="Mi Misión 0: video de presentación de Wen, con subtítulos">
+          <source src="/mision-0-wen.mp4" type="video/mp4" />
+        </video>
+        <figcaption>Mi Misión 0 · 1:21 · hecha con IA</figcaption>
+      </figure>
+      <div>
+        <p class="kicker">Capítulo II · La guía</p>
+        <p class="quote">Toda exploradora se equivoca. <span class="lilac">Yo también.</span></p>
+        <p class="hunt">Encuentra las diferencias: ¿qué le salió mal a la IA?</p>
+        <ul class="errors">
+          <li class="step">La ropa cambia de escena en escena</li>
+          <li class="step">Aparece un gato duplicado</li>
+          <li class="step">El estilo de dibujo da saltos</li>
+        </ul>
+        <p class="step moral">Equivocarse es parte del experimento: la IA propone, <b>tú decides qué corregir</b>.</p>
+      </div>
+    </section>
+
+    <!-- 2 · Las exploradoras -->
+    <section class="scene exploradoras" data-chapter="2" data-title="Las exploradoras"
+      data-notes="2 a 3 minutos por persona. Quien no hizo su Misión 0 se presenta de palabra, sin presión. Anotar en la bitácora propia una fortaleza que se note en cada presentación (sin datos personales en materiales compartidos).">
+      <div>
+        <p class="kicker">Capítulo III · Las exploradoras</p>
+        <h2>Cada una trae <span class="gold">su propia luz</span></h2>
+        <ol class="trio">
+          <li><span class="roman">I</span>Muéstranos lo que hiciste, como haya quedado</li>
+          <li><span class="roman">II</span>¿Qué descubriste de ti al hacerlo?</li>
+          <li><span class="roman">III</span>¿Qué te sorprendió de trabajar con la IA?</li>
+        </ol>
+        <p class="lede wide">Y una pregunta para todas: <b>¿qué esperas de estas mentorías… y de ti?</b></p>
+      </div>
+    </section>
+
+    <!-- 3 · El código de la tripulación -->
+    <section class="scene codigo" data-chapter="3" data-title="El código de la tripulación"
+      data-notes="Leer las reglas rápido y preguntar: ¿agregamos alguna? Si proponen una, se suma al micrositio.">
+      <div>
+        <p class="kicker">Capítulo IV · El código de la tripulación</p>
+        <h2>Cómo nos cuidamos</h2>
+        <div class="rules">
+          <article><h3>Aquí cabemos todas</h3><p>Cero discriminación, cero acoso. Cada voz cuenta.</p></article>
+          <article><h3>Lo que se dice aquí, aquí se queda</h3><p>Cuidamos lo que cada una comparte. No grabamos sin acuerdo.</p></article>
+          <article><h3>Equivocarse es parte del experimento</h3><p>Preguntar y pedir ayuda es como se aprende.</p></article>
+          <article><h3>Nos echamos porras, no competimos</h3><p>Celebramos los logros de cada una, grandes o pequeños.</p></article>
+          <article><h3>Si algo pesa, lo hablamos</h3><p>Buscamos juntas el apoyo adecuado con el equipo del programa.</p></article>
+          <article class="add"><h3>¿Agregamos alguna?</h3><p>Esta tripulación también escribe sus reglas.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · La distancia -->
+    <section class="scene distancia" data-chapter="4" data-title="La distancia"
+      data-notes="Transición de conocernos a soñar. Pausa. Pregunta abierta: ¿cuál es esa estrella que hoy se ve lejos? No hace falta responder en voz alta todavía.">
+      <p class="kicker">Capítulo V · La distancia</p>
+      <div class="gap">
+        <div class="side"><p class="label">Lo que es</p><p class="big">Hoy, aquí</p><p class="small">lo que ya tienes, lo que ya sabes</p></div>
+        <div class="arc" aria-hidden="true"><svg viewBox="0 0 600 160" preserveAspectRatio="none"><path d="M10 140 C 180 -40, 420 -40, 590 140" /></svg></div>
+        <div class="side end"><p class="label">Lo que podría ser</p><p class="big gold">Tu estrella</p><p class="small">eso que te emociona y hoy se ve lejos</p></div>
+      </div>
+      <h2 class="center">Soñar en grande,<br />con pasos pequeñitos</h2>
+    </section>
+
+    <!-- 5 · El telescopio: preguntas -->
+    <section class="scene telescopio" data-chapter="5" data-title="El telescopio: cinco preguntas"
+      data-notes="Explicar cada letra con calma. Subrayar la R reinterpretada: realista también es cuidarte, qué no vas a sacrificar.">
+      <div>
+        <p class="kicker">Capítulo VI · El telescopio</p>
+        <h2>Una estrella lejana se vuelve<br /><span class="gold">alcanzable</span> al enfocarla</h2>
+        <dl class="smart">
+          <div class="step"><dt>S</dt><dd><b>Específica</b> ¿Qué quieres lograr?</dd></div>
+          <div class="step"><dt>M</dt><dd><b>Medible</b> ¿Cómo sabrás que avanzaste?</dd></div>
+          <div class="step"><dt>A</dt><dd><b>Alcanzable</b> ¿Qué necesitas para lograrlo?</dd></div>
+          <div class="step"><dt>R</dt><dd><b>Realista</b> ¿Qué no vas a sacrificar?</dd></div>
+          <div class="step"><dt>T</dt><dd><b>Con fecha</b> ¿Para cuándo?</dd></div>
+          <div class="step first"><dt>👣</dt><dd><b>Primer pasito</b> ¿Qué puedes hacer esta semana?</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 6 · El telescopio: ejemplo -->
+    <section class="scene ejemplo" data-chapter="5" data-title="El telescopio: así se ve armada"
+      data-notes="Leer en voz alta. Preguntar: ¿qué cambiarían para que fuera suya?">
+      <div>
+        <p class="kicker">Capítulo VI · Así se ve armada</p>
+        <p class="lens">Quiero <span><sup>S</sup><em>mis primeras prácticas</em></span>, enviando <span><sup>M</sup><em>10 solicitudes</em></span>, con <span><sup>A</sup><em>mi CV listo</em></span>, sin sacrificar <span><sup>R</sup><em>mis horas de sueño</em></span>, antes del <span><sup>T</sup><em>31 de enero</em></span>.</p>
+        <p class="lede wide">Primer pasito <span aria-hidden="true">👣</span> <b>esta semana:</b> pedir que revisen mi CV.</p>
+      </div>
+    </section>
+
+    <!-- 7 · Manos a la obra -->
+    <section class="scene manos" data-chapter="6" data-title="Manos a la obra"
+      data-notes="Poner música suave. Iniciar el temporizador con el botón o la tecla T. Pasar a ayudar a quien se atore en la M (medible). Al final, quien quiera comparte una meta y el grupo ayuda a afinar el primer pasito.">
+      <div>
+        <p class="kicker">Capítulo VII · Manos a la obra</p>
+        <h2>Arma 2 o 3 metas<br />que <span class="gold">te emocionen</span></h2>
+        <p class="lede wide">En el micrositio, <b>Mis herramientas → Tu meta</b>. Se guarda solo en tu navegador.</p>
+        <p class="url">becalas-observatory.vercel.app/#meta</p>
+      </div>
+      <div class="timer">
+        <svg viewBox="0 0 220 220" aria-hidden="true"><circle class="track" cx="110" cy="110" r="100" /><circle class="fill" id="timer-ring" cx="110" cy="110" r="100" /></svg>
+        <p id="timer-text" role="timer" aria-live="off">10:00</p>
+        <button type="button" id="timer-btn">Iniciar</button>
+      </div>
+    </section>
+
+    <!-- 8 · Tu constelación -->
+    <section class="scene constelacion" data-chapter="7" data-title="Tu constelación"
+      data-notes="Revelar las cuatro estrellas una por una. Cada una elige una fortaleza que quiere poner a jugar y un área que quiere desarrollar. Si falta tiempo, queda como tarea en el micrositio.">
+      <div>
+        <p class="kicker">Capítulo VIII · Tu constelación</p>
+        <h2>Unir puntos que <span class="gold">ya estaban ahí</span></h2>
+      </div>
+      <div class="sky-map">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="lines" aria-hidden="true">
+          <path class="l l1" pathLength="1" d="M15 27 L43 58" /><path class="l l2" pathLength="1" d="M43 58 L64 21" /><path class="l l3" pathLength="1" d="M64 21 L86 69" />
+        </svg>
+        <div class="star step" style="left:15%;top:27%"><b>Intereses</b><span>¿De qué podrías platicar horas sin aburrirte?</span></div>
+        <div class="star step" style="left:43%;top:58%"><b>Fortalezas</b><span>¿Qué te dicen tus amigas que haces increíble?</span></div>
+        <div class="star step" style="left:64%;top:21%"><b>Experiencias</b><span>¿Qué decisiones te trajeron hasta aquí?</span></div>
+        <div class="star step" style="left:86%;top:69%"><b>Posibilidades</b><span>¿Qué te gustaría probar en los próximos meses?</span></div>
+      </div>
+    </section>
+
+    <!-- 9 · Epílogo -->
+    <section class="scene epilogo" data-chapter="8" data-title="Epílogo"
+      data-notes="Ronda de una palabra. Volver a la pregunta del inicio. Anunciar la sesión 2 y acordar la fecha en el grupo. Después: formulario de mentora y asistencia propia.">
+      <div>
+        <p class="kicker">Epílogo</p>
+        <h2>¿Ya sabes qué estrella<br />quieres <span class="gold">alcanzar</span>?</h2>
+        <div class="closing">
+          <article><h3>Una palabra</h3><p>¿Con qué palabra te vas esta noche?</p></article>
+          <article><h3>Tu bitácora</h3><p>¿Qué hábito pequeño te ayudaría a avanzar esta semana?</p></article>
+          <article class="next"><h3>Próxima noche</h3><p>Trazamos <b>el mapa de tu camino</b>. Fecha: la acordamos juntas en el grupo.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hud">
+    <div class="track" id="track" aria-hidden="true"></div>
+    <p class="sr-only" id="live" aria-live="polite"></p>
+    <div class="hud-right">
+      <button type="button" class="hud-btn" id="prev" aria-label="Anterior">←</button>
+      <button type="button" class="hud-btn" id="next" aria-label="Siguiente">→</button>
+      <span class="constel" aria-hidden="true"><svg viewBox="0 0 92 34"><path d="M8 24 L46 9 L84 21" /><circle cx="8" cy="24" r="5" class="on" /><circle cx="46" cy="9" r="3.5" /><circle cx="84" cy="21" r="3.5" /></svg></span>
+      <span>Noche 1 de 3</span>
+    </div>
+  </footer>
+
+  <aside class="notes" id="notes" hidden aria-label="Notas para la mentora">
+    <p class="notes-title">Notas · <span id="notes-scene"></span></p>
+    <p id="notes-text"></p>
+    <p class="notes-keys">← → avanzar · N notas · F pantalla completa · T temporizador</p>
+  </aside>
+  <p class="hint" id="hint">Usa ← → para avanzar · N para tus notas · F pantalla completa</p>
+
+  <script type="module" src="/src/presentacion/main.js"></script>
+</body>
+</html>
