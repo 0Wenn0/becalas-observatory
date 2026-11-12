@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 import { Starfield } from './Starfield.jsx';
+import { Astrolabe } from './Astrolabe.jsx';
 
 /* ───────── Contenido ───────── */
 
@@ -342,7 +343,7 @@ const anchorToView = {
 };
 const toolTabs = [
   { id: 'meta', label: 'Mi meta', icon: '✎', hint: 'Arma tu meta SMART' },
-  { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Fortalezas e intereses' },
+  { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Enciende tus estrellas y arma tu astrolabio' },
   { id: 'bitacora', label: 'Mi bitácora', icon: '☾', hint: 'Lo que descubres cada sesión' },
 ];
 
@@ -759,15 +760,10 @@ function Microsite() {
                 </section>
 
                 <section className="tool-section" aria-labelledby="tool-title-constelacion">
-                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación</h2>
+                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación <small>y tu astrolabio</small></h2>
                   <div className="tool-grid constellation-card" id="constelacion">
-                    <HowTo dark steps={['Elige un punto.', 'Lee la pregunta.', 'Contéstala en tu cabeza o en tu bitácora.']} />
-                    <div>
-                      <div className="node-selector" role="group" aria-label="Puntos de tu constelación">
-                        {nodes.map((node) => <button type="button" key={node.id} className={activeNode === node.id ? 'node-tab is-selected' : 'node-tab'} aria-pressed={activeNode === node.id} onClick={() => setActiveNode(node.id)}>{node.label}</button>)}
-                      </div>
-                      <div className="node-prompt worksheet on-dark" aria-live="polite"><span>Tu pregunta · {currentNode.label}</span><p>{currentNode.prompt}</p></div>
-                    </div>
+                    <HowTo dark steps={['Toca una estrella y lee su pregunta.', 'Escribe tu respuesta: la estrella se enciende.', 'Descarga tu astrolabio y llévalo contigo.']} />
+                    <Astrolabe goal={smart.goal ?? ''} />
                   </div>
                 </section>
 
