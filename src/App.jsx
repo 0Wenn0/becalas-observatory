@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 import { Starfield } from './Starfield.jsx';
@@ -193,6 +194,7 @@ export function App() {
     <>
       <CometCursor />
       {path === '/caso' ? <CaseStudy /> : <Microsite />}
+      <Analytics />
     </>
   );
 }
