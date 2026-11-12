@@ -10,7 +10,7 @@ const sessions = [
     id: 'metas',
     number: '01',
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
-    dateLabel: 'Por definir',
+    dateLabel: 'Jue 12 de noviembre · 20:00',
     done: false,
     name: 'Conocernos y soñar en grande',
     plain: 'Sesión 1 · Definir metas',
@@ -662,6 +662,18 @@ function Microsite() {
               <StarDivider />
               <div className="chapter-body">
                 <p className="drop-cap">Antes de conocernos en vivo, te invito a presentarte de una forma creativa: con una infografía, un video corto o un cómic hecho con ayuda de la IA. No tiene que quedar perfecto. Si algo sale raro, mejor: de eso vamos a platicar.</p>
+                <figure className="mission-example">
+                  <video
+                    controls
+                    preload="none"
+                    playsInline
+                    poster="/mision-0-wen-poster.webp"
+                    aria-describedby="mission-example-caption"
+                  >
+                    <source src="/mision-0-wen.mp4" type="video/mp4" />
+                  </video>
+                  <figcaption id="mission-example-caption"><strong>Así me presenté yo.</strong> Mi Misión 0, hecha con IA y con subtítulos (1:21). En la sesión te cuento qué le tuve que corregir.</figcaption>
+                </figure>
                 <ol className="mission-steps book-steps">
                   <li><span className="step-num" aria-hidden="true">1</span><span>Elige un formato.</span></li>
                   <li><span className="step-num" aria-hidden="true">2</span><span>Copia el prompt y cambia lo que está entre [corchetes] por tus datos.</span></li>
