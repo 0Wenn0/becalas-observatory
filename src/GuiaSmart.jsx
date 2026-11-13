@@ -7,11 +7,11 @@ const letters = [
     letter: 'S',
     name: 'Específica',
     question: '¿Qué quieres lograr, exactamente?',
-    tip: 'Nombra el qué, el dónde, con quién y el para qué. Si alguien más la lee, debería entender lo mismo que tú.',
-    extra: 'Revisa también que sea relevante: ¿esta meta te acerca a tu estrella? Si no, quizá es una meta de alguien más.',
+    tip: 'Nombra el qué, el dónde y con quién, y termínala con un “para…”: el para qué es lo que te va a sostener cuando cueste. Si alguien más la lee, debería entender lo mismo que tú.',
+    extra: 'Revisa también que sea relevante: ¿esta meta te acerca a tu estrella? No pongas metas solo por tener una; si no te importa de verdad, quizá es una meta de alguien más.',
     trap: 'Metas tipo “quiero crecer profesionalmente”: suenan bien, pero no te dicen qué hacer mañana.',
     before: 'Quiero trabajar en tecnología.',
-    after: 'Quiero conseguir mis prácticas profesionales en un área de análisis de datos.',
+    after: 'Quiero conseguir mis prácticas en un área de análisis de datos, para descubrir si quiero dedicarme a eso.',
   },
   {
     letter: 'M',
@@ -47,7 +47,7 @@ const letters = [
     name: 'Con fecha',
     question: '¿Para cuándo?',
     tip: 'Pon una fecha final y puntos de revisión cada dos semanas para ajustar el rumbo.',
-    extra: 'La fecha no es para presionarte: planear con tiempo hace que llegues al final con menos estrés y menos carreras de último minuto.',
+    extra: 'Pregúntate también si es para ahora o para más adelante, y date tiempo suficiente: aprender algo nuevo en tres semanas casi nunca es realista. La fecha no es para presionarte; planear con tiempo hace que llegues al final con menos estrés.',
     trap: '“Algún día” no es una fecha. Sin fecha, lo urgente siempre le gana a lo importante.',
     before: 'Este año.',
     after: 'Antes del 31 de enero, con revisión el 1 y el 15 de cada mes.',
@@ -56,7 +56,7 @@ const letters = [
 
 const refine = [
   ['Así me salió', 'Quiero trabajar en tecnología.'],
-  ['+ S', 'Quiero conseguir prácticas en un área de análisis de datos.'],
+  ['+ S', 'Quiero conseguir prácticas en un área de análisis de datos, para descubrir si quiero dedicarme a eso.'],
   ['+ M', '…enviando 15 solicitudes.'],
   ['+ A', '…con mi CV revisado y mi LinkedIn completo.'],
   ['+ R', '…dedicándole 4 horas a la semana, sin descuidar mis materias.'],
@@ -174,7 +174,7 @@ export function GuiaSmart() {
                 <li key={tag}><span className="refine-tag">{tag}</span><span>{text}</span></li>
               ))}
             </ol>
-            <p className="refine-final"><b>Resultado:</b> Conseguir prácticas en un área de análisis de datos, enviando 15 solicitudes, con mi CV revisado y mi LinkedIn completo, dedicándole 4 horas a la semana sin descuidar mis materias, antes del 30 de abril.</p>
+            <p className="refine-final"><b>Resultado:</b> Conseguir prácticas en un área de análisis de datos (para descubrir si quiero dedicarme a eso), enviando 15 solicitudes, con mi CV revisado y mi LinkedIn completo, dedicándole 4 horas a la semana sin descuidar mis materias, antes del 30 de abril.</p>
           </section>
 
           <section className="chapter-section" aria-labelledby="guia-planb">
@@ -184,7 +184,26 @@ export function GuiaSmart() {
               <li><b>Si</b> me rechazan una solicitud, <b>entonces</b> pido retroalimentación y envío otra esa misma semana.</li>
               <li><b>Si</b> tengo semana de exámenes, <b>entonces</b> hago solo mi pasito de 15 minutos y retomo después.</li>
               <li><b>Si</b> no sé por dónde empezar, <b>entonces</b> le escribo a Wen por el grupo.</li>
+              <li><b>Si</b> descubro que no era lo que quería, <b>entonces</b> lo cuento como aprendizaje y ajusto el rumbo. Cambiar de meta también es avanzar.</li>
             </ul>
+          </section>
+
+          <section className="chapter-section" aria-labelledby="guia-sostener">
+            <h2 id="guia-sostener" className="block-title">Para no soltarla</h2>
+            <div className="example-grid">
+              <div className="example-card">
+                <p className="example-title"><span aria-hidden="true">🎉</span> Celebra cada pasito</p>
+                <p>No esperes a la meta final. Cuéntale a alguien cada avance o compártelo en el grupo: que alguien lo celebre contigo también cuenta.</p>
+              </div>
+              <div className="example-card">
+                <p className="example-title"><span aria-hidden="true">🧭</span> Cambia el camino, no la estrella</p>
+                <p>Si una puerta se cierra, busca otra hacia el mismo lugar. ¿No hay prácticas en tu ciudad? Busca remotas, un proyecto de voluntariado o un proyecto propio.</p>
+              </div>
+              <div className="example-card">
+                <p className="example-title"><span aria-hidden="true">🔭</span> Tenla a la vista</p>
+                <p>Descarga tu astrolabio y úsalo de fondo de pantalla, o pega tu meta donde la veas diario. Lo que ves seguido se queda en tu atención.</p>
+              </div>
+            </div>
           </section>
 
           <section className="chapter-section" aria-labelledby="guia-ejemplos">
