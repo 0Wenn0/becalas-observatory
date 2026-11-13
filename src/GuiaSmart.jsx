@@ -122,8 +122,7 @@ export function GuiaSmart() {
             <h2 id="guia-por-que" className="block-title">Por qué funciona</h2>
             <p>Las metas específicas y retadoras suelen llevar a mejores resultados que el clásico “haz tu mejor esfuerzo”: le dicen a tu atención dónde enfocarse y te dejan ver tu avance (Locke y Latham, 2002).</p>
             <p>Un objetivo “clásico” responde tres preguntas: qué quiero, cómo lo voy a lograr y para qué. SMART agrega dos que suelen faltar: <strong>cómo vas a medir tu avance</strong> y <strong>para cuándo</strong>. Ahí está la diferencia entre un propósito y un plan.</p>
-            <p>En la Facultad de Química de la UNAM, un profesor empezó a pedir objetivos SMART en un taller de proyectos de octavo semestre. Observó que sus estudiantes entendían mejor cómo iban a ser evaluados, olvidaban menos detalles y llegaban más organizados y menos estresados a la entrega (Janssen, 2024). Al principio necesitaban ayuda para escribirlos; a mitad del semestre ya lo hacían solos. Igual va a pasar contigo.</p>
-            <p>SMART suele atribuirse a George T. Doran (1981), aunque se fue construyendo con aportes de muchas personas (Lawlor y Hornyak, 2012). No es magia: es una lista de preguntas para que tu meta no se quede en buena intención.</p>
+            <p>SMART no es magia: es una lista de preguntas para que tu meta no se quede en buena intención.</p>
           </section>
 
           <section className="chapter-section" aria-labelledby="guia-niveles">
@@ -227,7 +226,7 @@ export function GuiaSmart() {
             <p className="book-note"><span aria-hidden="true">🔒</span> Tu meta es tuya: solo la vemos tú y yo, y no la comparto en el grupo sin tu permiso.</p>
           </section>
 
-          <p className="guia-refs">Fuentes: Doran, G. T. (1981). There’s a S.M.A.R.T. way to write management’s goals and objectives. <i>Management Review, 70</i>(11), 35–36. · Janssen, C. H. C. (2024). La introducción de objetivos SMART en un entorno educativo. <i>Educación Química, 35</i>(2). https://doi.org/10.22201/fq.18708404e.2024.2.86489 · Lawlor, K. B. y Hornyak, J. M. (2012). Smart goals: How the application of SMART goals can contribute to achievement of student learning outcomes. <i>Developments in Business Simulation and Experiential Learning, 39</i>, 259–267. · Locke, E. A. y Latham, G. P. (2002). Building a practically useful theory of goal setting and task motivation. <i>American Psychologist, 57</i>(9), 705–717. · Gollwitzer, P. M. (1999). Implementation intentions: Strong effects of simple plans. <i>American Psychologist, 54</i>(7), 493–503.</p>
+          <p className="guia-refs">Fuentes: Locke, E. A. y Latham, G. P. (2002). Building a practically useful theory of goal setting and task motivation. <i>American Psychologist, 57</i>(9), 705–717. · Gollwitzer, P. M. (1999). Implementation intentions: Strong effects of simple plans. <i>American Psychologist, 54</i>(7), 493–503.</p>
         </div>
 
         <StarDivider />
