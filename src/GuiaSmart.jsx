@@ -7,7 +7,8 @@ const letters = [
     letter: 'S',
     name: 'Específica',
     question: '¿Qué quieres lograr, exactamente?',
-    tip: 'Nombra el qué, el dónde y el para qué. Si alguien más la lee, debería entender lo mismo que tú.',
+    tip: 'Nombra el qué, el dónde, con quién y el para qué. Si alguien más la lee, debería entender lo mismo que tú.',
+    extra: 'Revisa también que sea relevante: ¿esta meta te acerca a tu estrella? Si no, quizá es una meta de alguien más.',
     trap: 'Metas tipo “quiero crecer profesionalmente”: suenan bien, pero no te dicen qué hacer mañana.',
     before: 'Quiero trabajar en tecnología.',
     after: 'Quiero conseguir mis prácticas profesionales en un área de análisis de datos.',
@@ -25,7 +26,8 @@ const letters = [
     letter: 'A',
     name: 'Alcanzable',
     question: '¿Qué necesitas para lograrlo?',
-    tip: 'Haz inventario: habilidades, documentos, personas que te pueden orientar, tiempo y dinero. Usa las fortalezas de tu constelación.',
+    tip: 'Haz inventario de lo que ya tienes: materias, proyectos, trabajos, habilidades, personas que te pueden orientar, tiempo y dinero. Usa las fortalezas de tu constelación. Luego pregúntate: ¿qué me falta?',
+    extra: 'Una buena meta te estira un poco: retadora, pero posible. Si estás 100% segura de lograrla, quizá es muy pequeña; si solo funciona cuando todo sale perfecto, es demasiado.',
     trap: 'Si te falta algo grande (por ejemplo, un CV), eso no te descalifica: se vuelve tu primera meta.',
     before: 'Postularme a todas las vacantes que vea.',
     after: 'Tener mi CV revisado y un perfil de LinkedIn completo antes de postularme.',
@@ -35,6 +37,7 @@ const letters = [
     name: 'Realista',
     question: '¿Qué no vas a sacrificar?',
     tip: 'Considera tu escuela, tu trabajo, tu familia y tu descanso. Realista no es pequeña: es una meta que cabe en tu vida.',
+    extra: 'La A pregunta si es posible con lo que tienes o puedes conseguir; la R, si cabe en tu vida sin quemarte. Ojo: en otros lugares verás la R como “Relevante”. Aquí usamos Realista, y la relevancia la revisas en la S.',
     trap: 'Planes que solo funcionan si duermes cinco horas. Esos se caen en la segunda semana.',
     before: 'Estudiar inglés tres horas diarias.',
     after: 'Practicar inglés 30 minutos, cuatro días a la semana, sin quitarle horas al sueño.',
@@ -44,10 +47,20 @@ const letters = [
     name: 'Con fecha',
     question: '¿Para cuándo?',
     tip: 'Pon una fecha final y puntos de revisión cada dos semanas para ajustar el rumbo.',
+    extra: 'La fecha no es para presionarte: planear con tiempo hace que llegues al final con menos estrés y menos carreras de último minuto.',
     trap: '“Algún día” no es una fecha. Sin fecha, lo urgente siempre le gana a lo importante.',
     before: 'Este año.',
     after: 'Antes del 31 de enero, con revisión el 1 y el 15 de cada mes.',
   },
+];
+
+const refine = [
+  ['Así me salió', 'Quiero trabajar en tecnología.'],
+  ['+ S', 'Quiero conseguir prácticas en un área de análisis de datos.'],
+  ['+ M', '…enviando 15 solicitudes.'],
+  ['+ A', '…con mi CV revisado y mi LinkedIn completo.'],
+  ['+ R', '…dedicándole 4 horas a la semana, sin descuidar mis materias.'],
+  ['+ T', '…antes del 30 de abril.'],
 ];
 
 const examples = [
@@ -107,8 +120,10 @@ export function GuiaSmart() {
 
           <section className="chapter-section" aria-labelledby="guia-por-que">
             <h2 id="guia-por-que" className="block-title">Por qué funciona</h2>
-            <p>Las metas específicas y retadoras suelen llevar a mejores resultados que el clásico “haz tu mejor esfuerzo”: le dicen a tu atención dónde enfocarse y te dejan ver tu avance (Locke y Latham, 2002). El formato SMART lo propuso George T. Doran en 1981 para escribir objetivos claros.</p>
-            <p>SMART no es magia: es una lista de preguntas para que tu meta no se quede en buena intención.</p>
+            <p>Las metas específicas y retadoras suelen llevar a mejores resultados que el clásico “haz tu mejor esfuerzo”: le dicen a tu atención dónde enfocarse y te dejan ver tu avance (Locke y Latham, 2002).</p>
+            <p>Un objetivo “clásico” responde tres preguntas: qué quiero, cómo lo voy a lograr y para qué. SMART agrega dos que suelen faltar: <strong>cómo vas a medir tu avance</strong> y <strong>para cuándo</strong>. Ahí está la diferencia entre un propósito y un plan.</p>
+            <p>En la Facultad de Química de la UNAM, un profesor empezó a pedir objetivos SMART en un taller de proyectos de octavo semestre. Observó que sus estudiantes entendían mejor cómo iban a ser evaluados, olvidaban menos detalles y llegaban más organizados y menos estresados a la entrega (Janssen, 2024). Al principio necesitaban ayuda para escribirlos; a mitad del semestre ya lo hacían solos. Igual va a pasar contigo.</p>
+            <p>SMART suele atribuirse a George T. Doran (1981), aunque se fue construyendo con aportes de muchas personas (Lawlor y Hornyak, 2012). No es magia: es una lista de preguntas para que tu meta no se quede en buena intención.</p>
           </section>
 
           <section className="chapter-section" aria-labelledby="guia-niveles">
@@ -133,6 +148,7 @@ export function GuiaSmart() {
                   </summary>
                   <div className="letter-body">
                     <p>{l.tip}</p>
+                    {l.extra && <p>{l.extra}</p>}
                     <p><strong>Trampa común:</strong> {l.trap}</p>
                     <p className="before-after"><span className="ba-before"><b>Antes:</b> {l.before}</span><span className="ba-after"><b>Después:</b> {l.after}</span></p>
                   </div>
@@ -149,6 +165,17 @@ export function GuiaSmart() {
                 </div>
               </details>
             </div>
+          </section>
+
+          <section className="chapter-section" aria-labelledby="guia-afina">
+            <h2 id="guia-afina" className="block-title">Una meta que se afina</h2>
+            <p>No tiene que salirte SMART a la primera. Escribe tu meta como te salga y pásala por cada letra; en cada vuelta gana claridad.</p>
+            <ol className="refine-steps">
+              {refine.map(([tag, text]) => (
+                <li key={tag}><span className="refine-tag">{tag}</span><span>{text}</span></li>
+              ))}
+            </ol>
+            <p className="refine-final"><b>Resultado:</b> Conseguir prácticas en un área de análisis de datos, enviando 15 solicitudes, con mi CV revisado y mi LinkedIn completo, dedicándole 4 horas a la semana sin descuidar mis materias, antes del 30 de abril.</p>
           </section>
 
           <section className="chapter-section" aria-labelledby="guia-planb">
@@ -200,7 +227,7 @@ export function GuiaSmart() {
             <p className="book-note"><span aria-hidden="true">🔒</span> Tu meta es tuya: solo la vemos tú y yo, y no la comparto en el grupo sin tu permiso.</p>
           </section>
 
-          <p className="guia-refs">Fuentes: Doran, G. T. (1981). There’s a S.M.A.R.T. way to write management’s goals and objectives. <i>Management Review, 70</i>(11), 35–36. · Locke, E. A. y Latham, G. P. (2002). Building a practically useful theory of goal setting and task motivation. <i>American Psychologist, 57</i>(9), 705–717. · Gollwitzer, P. M. (1999). Implementation intentions: Strong effects of simple plans. <i>American Psychologist, 54</i>(7), 493–503.</p>
+          <p className="guia-refs">Fuentes: Doran, G. T. (1981). There’s a S.M.A.R.T. way to write management’s goals and objectives. <i>Management Review, 70</i>(11), 35–36. · Janssen, C. H. C. (2024). La introducción de objetivos SMART en un entorno educativo. <i>Educación Química, 35</i>(2). https://doi.org/10.22201/fq.18708404e.2024.2.86489 · Lawlor, K. B. y Hornyak, J. M. (2012). Smart goals: How the application of SMART goals can contribute to achievement of student learning outcomes. <i>Developments in Business Simulation and Experiential Learning, 39</i>, 259–267. · Locke, E. A. y Latham, G. P. (2002). Building a practically useful theory of goal setting and task motivation. <i>American Psychologist, 57</i>(9), 705–717. · Gollwitzer, P. M. (1999). Implementation intentions: Strong effects of simple plans. <i>American Psychologist, 54</i>(7), 493–503.</p>
         </div>
 
         <StarDivider />
