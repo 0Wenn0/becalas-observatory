@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
+import { GuiaSmart } from './GuiaSmart.jsx';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 import { Starfield } from './Starfield.jsx';
@@ -336,7 +337,7 @@ const views = [
 
 /* Anclas internas → vista que las contiene (y pestaña de herramienta, si aplica). */
 const anchorToView = {
-  inicio: 'inicio', proxima: 'inicio', wen: 'inicio', mision: 'mision',
+  inicio: 'inicio', proxima: 'inicio', wen: 'inicio', mision: 'mision', 'guia-smart': 'guia',
   sesiones: 'sesiones',
   herramientas: 'herramientas', meta: 'herramientas', constelacion: 'herramientas', bitacora: 'herramientas',
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
@@ -482,7 +483,7 @@ function Microsite() {
         });
         viewRef.current = target;
         const el = document.getElementById(hash);
-        const isView = views.some((v) => v.id === hash) || hash === 'mision';
+        const isView = views.some((v) => v.id === hash) || hash === 'mision' || hash === 'guia-smart';
         if (isView || !el) {
           window.scrollTo({ top: 0 });
           document.getElementById(`view-${target}-title`)?.focus({ preventScroll: true });
@@ -645,6 +646,8 @@ function Microsite() {
           </div>
         )}
 
+        {view === 'guia' && <GuiaSmart />}
+
         {view === 'mision' && (
           <div className="book">
             <article className="chapter section-wrap" aria-labelledby="view-mision-title">
@@ -758,7 +761,10 @@ function Microsite() {
                 <section className="tool-section" aria-labelledby="tool-title-meta">
                   <h2 className="tool-section-title" id="tool-title-meta"><span aria-hidden="true">✎</span> Mi meta</h2>
                   <div className="tool-grid" id="meta">
-                    <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Copia tu meta o descárgala en Word y tráela a la sesión.']} />
+                    <div>
+                      <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Descárgala en Word y mándamela por mensaje privado.']} />
+                      <p className="guia-link"><a href="#guia-smart">¿Quieres profundizar? Lee la guía SMART a fondo →</a></p>
+                    </div>
                     <div className="smart-builder worksheet">
                       <div className="worksheet-head">
                         <p className="worksheet-title"><span aria-hidden="true">✎</span> Tu meta SMART</p>
@@ -852,6 +858,7 @@ function Microsite() {
                 <h2 id="resources-title" className="block-title">Instrumentos</h2>
                 <ul className="resource-tiles">
                   <li><a href="#respira"><span className="tile-icon" aria-hidden="true">🌬️</span><span className="tile-title">Respirar</span><span className="tile-sub">Antes de un examen o entrevista</span></a></li>
+                  <li><a href="#guia-smart"><span className="tile-icon" aria-hidden="true">🔭</span><span className="tile-title">Guía SMART a fondo</span><span className="tile-sub">Tu meta profesional, paso a paso</span></a></li>
                   <li><a href="#meta"><span className="tile-icon" aria-hidden="true">🎯</span><span className="tile-title">Mi meta</span><span className="tile-sub">Pégala donde la veas diario</span></a></li>
                   <li><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🎤</span><span className="tile-title">Hablar en público</span><span className="tile-sub">Charla TED de Amy Cuddy<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
                   <li><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🪜</span><span className="tile-title">Metas grandes</span><span className="tile-sub">Divídelas en pasos<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
