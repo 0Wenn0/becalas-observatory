@@ -307,6 +307,9 @@ let index = Number.isFinite(fromHash) ? Math.max(0, Math.min(scenes.length - 1, 
 camera.position.copy(stops[index].pos);
 const look = stops[index].look.clone();
 
+const wenVideo = document.getElementById('wen-video');
+wenVideo?.addEventListener('ended', () => document.getElementById('wen-hunt')?.classList.add('is-shown'));
+
 const stepsOf = (s) => [...s.querySelectorAll('.step')];
 const shownCount = (s) => stepsOf(s).filter((el) => el.classList.contains('is-shown')).length;
 
