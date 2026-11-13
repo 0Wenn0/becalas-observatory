@@ -342,8 +342,8 @@ const anchorToView = {
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
 };
 const toolTabs = [
-  { id: 'meta', label: 'Mi meta', icon: '✎', hint: 'Arma tu meta SMART' },
   { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Enciende tus estrellas y arma tu astrolabio' },
+  { id: 'meta', label: 'Mi meta', icon: '✎', hint: 'Arma tu meta SMART' },
   { id: 'bitacora', label: 'Mi bitácora', icon: '☾', hint: 'Lo que descubres cada sesión' },
 ];
 
@@ -747,6 +747,14 @@ function Microsite() {
               </nav>
 
               <div className="tool-stack">
+                <section className="tool-section" aria-labelledby="tool-title-constelacion">
+                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación <small>y tu astrolabio</small></h2>
+                  <div className="tool-grid constellation-card" id="constelacion">
+                    <HowTo dark steps={['Toca una estrella y lee su pregunta.', 'Escribe tu respuesta: la estrella se enciende.', 'Descarga tu astrolabio y llévalo contigo.']} />
+                    <Astrolabe goal={smart.goal ?? ''} />
+                  </div>
+                </section>
+
                 <section className="tool-section" aria-labelledby="tool-title-meta">
                   <h2 className="tool-section-title" id="tool-title-meta"><span aria-hidden="true">✎</span> Mi meta</h2>
                   <div className="tool-grid" id="meta">
@@ -776,14 +784,6 @@ function Microsite() {
                         <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
                       </div>
                     </div>
-                  </div>
-                </section>
-
-                <section className="tool-section" aria-labelledby="tool-title-constelacion">
-                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación <small>y tu astrolabio</small></h2>
-                  <div className="tool-grid constellation-card" id="constelacion">
-                    <HowTo dark steps={['Toca una estrella y lee su pregunta.', 'Escribe tu respuesta: la estrella se enciende.', 'Descarga tu astrolabio y llévalo contigo.']} />
-                    <Astrolabe goal={smart.goal ?? ''} />
                   </div>
                 </section>
 
