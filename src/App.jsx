@@ -546,6 +546,16 @@ function Microsite() {
     flash(setSmartCopied, ok ? '¡Copiada! Tráela a la sesión ✨' : 'Selecciona el texto y cópialo manualmente.');
   }
 
+  async function downloadSmart() {
+    try {
+      const { downloadSmartDocx } = await import('./smartDocx.js');
+      await downloadSmartDocx(smart, smartFields);
+      flash(setSmartCopied, '¡Descargada! Búscala en tus descargas ✨');
+    } catch {
+      flash(setSmartCopied, 'No pude descargarla. Prueba con “Copiar mi meta”.');
+    }
+  }
+
   function updateCurrentLog(field, value) {
     setLog((previous) => ({ ...previous, [activeLogSession]: { ...(previous[activeLogSession] ?? {}), [field]: value } }));
   }
@@ -740,7 +750,7 @@ function Microsite() {
                 <section className="tool-section" aria-labelledby="tool-title-meta">
                   <h2 className="tool-section-title" id="tool-title-meta"><span aria-hidden="true">✎</span> Mi meta</h2>
                   <div className="tool-grid" id="meta">
-                    <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Copia tu meta y tráela a la sesión 1.']} />
+                    <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Copia tu meta o descárgala en Word y tráela a la sesión.']} />
                     <div className="smart-builder worksheet">
                       <div className="worksheet-head">
                         <p className="worksheet-title"><span aria-hidden="true">✎</span> Tu meta SMART</p>
@@ -761,6 +771,7 @@ function Microsite() {
                       </div>
                       <div className="prompt-actions">
                         <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Copiar mi meta</button>
+                        <button className="button button-dark" type="button" onClick={downloadSmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Descargar en Word</button>
                         {!smartSentence && <p className="field-prompt" id="smart-copy-hint">Se activa cuando escribas qué quieres lograr.</p>}
                         <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
                       </div>
