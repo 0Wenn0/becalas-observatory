@@ -832,3 +832,35 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
 .session-slides { margin: 20px 0 0; }
 .session-slides a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 20px; border-radius: 999px; border: 1.5px solid currentColor; font-weight: 700; text-decoration: none; color: inherit; }
 .session-slides a:hover, .session-slides a:focus-visible { background: #3B1F4A; color: #ECE4F6; }
+
+/* Kits de las Noches 2 y 3 (#kit-desarrollo, #kit-cv) */
+.kit-tiles { margin: 18px 0 0; }
+.kit-copy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 14px; }
+.kit-copy { padding: 18px; border-radius: 18px; background: #fff; border: 1px solid rgba(59, 31, 74, .14); display: flex; flex-direction: column; }
+.kit-copy .example-title { margin: 0 0 4px; }
+.kit-template { margin: 10px 0 0; padding: 14px 16px; border-radius: 12px; border: 1.5px dashed rgba(78, 53, 146, .45); background: #FBF9F6; color: var(--plum); font: 16px/1.55 var(--sans); white-space: pre-wrap; flex: 1; }
+.kit-copy .prompt-actions { margin-top: 12px; }
+.route-rows { display: grid; gap: 10px; margin: 16px 0; }
+.route-row { display: grid; grid-template-columns: minmax(0, 1fr) 170px auto; gap: 10px; align-items: center; margin: 0; padding: 12px 14px; border: 1px solid rgba(59, 31, 74, .14); border-radius: 14px; }
+.route-row legend { padding: 0 6px; font-weight: 700; color: var(--plum); font-size: 15px; }
+.route-row input[type="text"], .route-row input:not([type]), .route-row input[type="date"] { width: 100%; min-height: 44px; padding: 8px 12px; border: 2px solid #6E7787; border-radius: 10px; background: #FBF9F6; font-size: 16px; color: var(--ink); }
+.route-row input:focus { border-color: var(--lilac); outline: 3px solid rgba(107, 63, 214, .35); }
+.route-done { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; color: var(--plum); white-space: nowrap; }
+.route-done input, .kit-checklist input, .apply-q input { width: 20px; height: 20px; accent-color: var(--lilac); }
+.kit-warn { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; background: #FBEBEE; color: #7A2E42; font-size: 16px; }
+.achievement-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 8px; }
+.achievement-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 14px; background: rgba(59, 31, 74, .07); color: var(--plum); }
+.achievement-area { padding: 2px 10px; border-radius: 999px; background: var(--plum-card); color: #F3ECFB; font-size: 14px; }
+.kit-checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; color: var(--plum); }
+.kit-checklist label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; line-height: 1.4; }
+.apply-q { margin: 0 0 12px; padding: 12px 14px; border: 1px solid rgba(59, 31, 74, .14); border-radius: 14px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.apply-q legend { padding: 0 6px; font-weight: 700; color: var(--plum); }
+.apply-q label { display: inline-flex; gap: 6px; align-items: center; min-height: 44px; cursor: pointer; }
+.kit-page .goal-preview .kit-template { margin-top: 12px; }
+@media (max-width: 640px) {
+  .route-row { grid-template-columns: 1fr; }
+  .achievement-list li { grid-template-columns: 1fr; }
+}
+.kit-page .tool-grid { grid-template-columns: minmax(200px, .6fr) minmax(0, 1.8fr); }
+.route-row { grid-template-columns: minmax(0, 1fr) 160px auto; }
+@media (max-width: 860px) { .kit-page .tool-grid { grid-template-columns: 1fr; } }
