@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { GuiaSmart } from './GuiaSmart.jsx';
+import { KitDesarrollo, KitCv } from './Kit.jsx';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 import { Starfield } from './Starfield.jsx';
@@ -30,6 +31,7 @@ const sessions = [
     dateLabel: 'Por definir',
     done: false,
     slides: '/presentacion/noche-2/',
+    kit: '#kit-desarrollo',
     name: 'Tu kit de desarrollo profesional',
     plain: 'Sesión 2 · Becas, prácticas y personas',
     objective: 'Dónde buscar becas, prácticas, voluntariados, cursos y personas, con una acción hecha en cada uno.',
@@ -44,6 +46,7 @@ const sessions = [
     dateLabel: 'Por definir',
     done: false,
     slides: '/presentacion/noche-3/',
+    kit: '#kit-cv',
     name: 'Tu kit para CV y entrevistas',
     emoji: '🚀',
     plain: 'Sesión 3 · CV y entrevistas',
@@ -344,6 +347,8 @@ const anchorToView = {
   sesiones: 'sesiones',
   herramientas: 'herramientas', meta: 'herramientas', constelacion: 'herramientas', bitacora: 'herramientas',
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
+  'kit-desarrollo': 'kit2', 'donde-buscar': 'kit2', mensajes: 'kit2', ruta: 'kit2', logros: 'kit2',
+  'kit-cv': 'kit3', harvard: 'kit3', prompts: 'kit3', 'habla-claro': 'kit3', star: 'kit3', aplico: 'kit3', asistente: 'kit3',
 };
 const toolTabs = [
   { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Enciende tus estrellas y arma tu astrolabio' },
@@ -486,7 +491,7 @@ function Microsite() {
         });
         viewRef.current = target;
         const el = document.getElementById(hash);
-        const isView = views.some((v) => v.id === hash) || hash === 'mision' || hash === 'guia-smart';
+        const isView = views.some((v) => v.id === hash) || hash === 'mision' || hash === 'guia-smart' || hash === 'kit-desarrollo' || hash === 'kit-cv';
         if (isView || !el) {
           window.scrollTo({ top: 0 });
           document.getElementById(`view-${target}-title`)?.focus({ preventScroll: true });
@@ -650,6 +655,8 @@ function Microsite() {
         )}
 
         {view === 'guia' && <GuiaSmart />}
+        {view === 'kit2' && <KitDesarrollo />}
+        {view === 'kit3' && <KitCv />}
 
         {view === 'mision' && (
           <div className="book">
@@ -726,6 +733,9 @@ function Microsite() {
                             <ul className="plain-list">{session.bring.map((b) => <li key={b}>{b}</li>)}</ul>
                           </div>
                         </div>
+                        {session.kit && (
+                          <p className="session-slides"><a href={session.kit}>Abre las herramientas de esta noche <span aria-hidden="true">→</span></a></p>
+                        )}
                         {session.slides && session.done && (
                           <p className="session-slides"><a href={session.slides} target="_blank" rel="noopener">Repasa la presentación de esta noche <span aria-hidden="true">↗</span></a></p>
                         )}
@@ -754,6 +764,10 @@ function Microsite() {
               <nav className="tool-jump" aria-label="Ir a una herramienta">
                 {toolTabs.map((t) => <a key={t.id} href={`#${t.id}`} className={tool === t.id ? 'is-current' : undefined}><span aria-hidden="true">{t.icon}</span> {t.label}</a>)}
               </nav>
+              <ul className="resource-tiles kit-tiles">
+                <li><a href="#kit-desarrollo"><span className="tile-icon" aria-hidden="true">🗺️</span><span className="tile-title">Kit de la Noche 2</span><span className="tile-sub">Mensajes listos, mi ruta del semestre y mi registro de logros</span></a></li>
+                <li><a href="#kit-cv"><span className="tile-icon" aria-hidden="true">🚀</span><span className="tile-title">Kit de la Noche 3</span><span className="tile-sub">CV Harvard, prompts, mi historia STAR y ¿aplico?</span></a></li>
+              </ul>
 
               <div className="tool-stack">
                 <section className="tool-section" aria-labelledby="tool-title-constelacion">
@@ -866,6 +880,8 @@ function Microsite() {
                   <li><a href="#respira"><span className="tile-icon" aria-hidden="true">🌬️</span><span className="tile-title">Respirar</span><span className="tile-sub">Antes de un examen o entrevista</span></a></li>
                   <li><a href="#guia-smart"><span className="tile-icon" aria-hidden="true">🔭</span><span className="tile-title">Guía SMART a fondo</span><span className="tile-sub">Tu meta profesional, paso a paso</span></a></li>
                   <li><a href="#meta"><span className="tile-icon" aria-hidden="true">🎯</span><span className="tile-title">Mi meta</span><span className="tile-sub">Pégala donde la veas diario</span></a></li>
+                  <li><a href="#mensajes"><span className="tile-icon" aria-hidden="true">✉️</span><span className="tile-title">Mensajes listos</span><span className="tile-sub">Para pedir una conversación o mentoría</span></a></li>
+                  <li><a href="#prompts"><span className="tile-icon" aria-hidden="true">🤖</span><span className="tile-title">Prompts para tu CV</span><span className="tile-sub">Mejóralo con IA, sin inventar</span></a></li>
                   <li><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🎤</span><span className="tile-title">Hablar en público</span><span className="tile-sub">Charla TED de Amy Cuddy<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
                   <li><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🪜</span><span className="tile-title">Metas grandes</span><span className="tile-sub">Divídelas en pasos<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
                 </ul>
