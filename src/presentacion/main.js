@@ -277,8 +277,10 @@ let finalStage = 0;
 let flightStart = 0;
 const flight = new THREE.Vector3();
 
-// Paradas de cámara: una por escena
-const stops = [
+// Paradas de cámara: una por escena (la Noche 1 tiene su recorrido propio)
+const NIGHT = Number(document.body.dataset.night || 1);
+const sceneCount = document.querySelectorAll('.scene').length;
+const night1Stops = [
   [[0, 0, 200], [30, 0, 0]],
   [[-40, 10, 40], [-30, 0, -300]],
   [[20, -10, -120], [0, 0, -420]],
@@ -290,7 +292,14 @@ const stops = [
   [[-20, -10, -940], [0, 0, -1300]],
   [[0, 0, -1360], [0, 10, -1700]],
   [[0, 0, -1560], [0, 0, -1900]],
-].map(([p, l]) => ({ pos: new THREE.Vector3(...p), look: new THREE.Vector3(...l) }));
+];
+const generatedStops = Array.from({ length: sceneCount }, (_, i) => {
+  const z = 200 - i * (1700 / Math.max(1, sceneCount - 1));
+  const x = Math.sin(i * 1.7) * 32, y = Math.cos(i * 1.3) * 14;
+  return [[x, y, z], [x * 0.4 - 10, y * 0.3, z - 340]];
+});
+const stops = (NIGHT === 1 && sceneCount === night1Stops.length ? night1Stops : generatedStops)
+  .map(([p, l]) => ({ pos: new THREE.Vector3(...p), look: new THREE.Vector3(...l) }));
 
 /* ───────── Navegación ───────── */
 const scenes = [...document.querySelectorAll('.scene')];
@@ -300,7 +309,7 @@ const notes = document.getElementById('notes');
 const notesScene = document.getElementById('notes-scene');
 const notesText = document.getElementById('notes-text');
 const video = document.getElementById('wen-video');
-const TOTAL_CHAPTERS = 9;
+const TOTAL_CHAPTERS = Math.max(...scenes.map((s) => Number(s.dataset.chapter) || 0)) + 1;
 
 const fromHash = parseInt(location.hash.slice(1), 10);
 let index = Number.isFinite(fromHash) ? Math.max(0, Math.min(scenes.length - 1, fromHash)) : 0;
@@ -345,7 +354,7 @@ function show(i, { revealAll = false } = {}) {
   notesScene.textContent = current.dataset.title;
   notesText.textContent = current.dataset.notes;
   history.replaceState(null, '', `#${i}`);
-  if (video && i !== 1) video.pause();
+  if (video && !current.contains(video)) video.pause();
   document.querySelectorAll('.has-spot').forEach((g) => g.classList.remove('has-spot'));
   document.querySelectorAll('.card.is-spot').forEach((c) => c.classList.remove('is-spot'));
   if (!current.classList.contains('final')) hud.classList.remove('next-lit');
@@ -443,43 +452,38 @@ document.querySelectorAll('.scene').forEach((sc) => sc.querySelectorAll('.card')
   });
 }));
 
-/* ───────── Temporizador de 10 minutos ───────── */
-const TIMER_SECONDS = 600;
-const ring = document.getElementById('timer-ring');
-const timerText = document.getElementById('timer-text');
-const timerBtn = document.getElementById('timer-btn');
+/* ───────── Temporizadores (uno por escena, data-seconds) ───────── */
 const CIRC = 2 * Math.PI * 100;
-let remaining = TIMER_SECONDS;
-let ticking = null;
-
-function paintTimer() {
-  const m = Math.floor(remaining / 60);
-  const s = String(remaining % 60).padStart(2, '0');
-  timerText.textContent = `${m}:${s}`;
-  ring.style.strokeDashoffset = String(CIRC * (1 - remaining / TIMER_SECONDS));
-}
+const timers = [...document.querySelectorAll('.timer')].map((el) => {
+  const total = Number(el.dataset.seconds || 600);
+  const ringEl = el.querySelector('.fill');
+  const textEl = el.querySelector('p');
+  const btn = el.querySelector('button');
+  const t = { el, total, remaining: total, ticking: null };
+  t.paint = () => {
+    const m = Math.floor(t.remaining / 60);
+    const sec = String(t.remaining % 60).padStart(2, '0');
+    textEl.textContent = `${m}:${sec}`;
+    ringEl.style.strokeDashoffset = String(CIRC * (1 - t.remaining / t.total));
+  };
+  t.toggle = () => {
+    if (t.ticking) { clearInterval(t.ticking); t.ticking = null; btn.textContent = 'Seguir'; return; }
+    if (t.remaining === 0) t.remaining = t.total;
+    btn.textContent = 'Pausa';
+    t.ticking = setInterval(() => {
+      t.remaining = Math.max(0, t.remaining - 1);
+      t.paint();
+      if (t.remaining === 0) { clearInterval(t.ticking); t.ticking = null; btn.textContent = 'Otra vez'; textEl.textContent = '¡Listo!'; }
+    }, 1000);
+  };
+  btn.addEventListener('click', t.toggle);
+  t.paint();
+  return t;
+});
 function toggleTimer() {
-  if (ticking) {
-    clearInterval(ticking);
-    ticking = null;
-    timerBtn.textContent = 'Seguir';
-    return;
-  }
-  if (remaining === 0) remaining = TIMER_SECONDS;
-  timerBtn.textContent = 'Pausa';
-  ticking = setInterval(() => {
-    remaining = Math.max(0, remaining - 1);
-    paintTimer();
-    if (remaining === 0) {
-      clearInterval(ticking);
-      ticking = null;
-      timerBtn.textContent = 'Otra vez';
-      timerText.textContent = '¡Listo!';
-    }
-  }, 1000);
+  const t = timers.find((x) => scenes[index].contains(x.el));
+  if (t) t.toggle();
 }
-timerBtn.addEventListener('click', toggleTimer);
-paintTimer();
 
 /* ───────── Respiración 4 · 4 · 6 (14 s) ───────── */
 const breathWord = document.getElementById('breath-word');
@@ -509,7 +513,7 @@ function frame() {
   look.lerp(stops[index].look, ease);
   camera.lookAt(look);
   const [word, amount] = breathPhase(t);
-  if (word !== lastWord) { breathWord.textContent = word; lastWord = word; }
+  if (breathWord && word !== lastWord) { breathWord.textContent = word; lastWord = word; }
   if (!reduce) {
     farStars.rotation.z = t * 0.004;
     midStars.rotation.z = -t * 0.006;

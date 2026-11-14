@@ -827,3 +827,8 @@ body:has(.book) .site-footer { background: var(--plum-card); border-top-color: r
 .refine-tag { font-weight: 700; color: var(--lilac-text); }
 .refine-final { margin-top: 12px; padding: 14px 16px; border-radius: 14px; border: 1.5px dashed rgba(78, 53, 146, .45); background: #fff; }
 @media (max-width: 480px) { .refine-steps li { grid-template-columns: 1fr; gap: 2px; } }
+
+/* Enlace a la presentación de cada noche (solo noches ya realizadas) */
+.session-slides { margin: 20px 0 0; }
+.session-slides a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 20px; border-radius: 999px; border: 1.5px solid currentColor; font-weight: 700; text-decoration: none; color: inherit; }
+.session-slides a:hover, .session-slides a:focus-visible { background: #3B1F4A; color: #ECE4F6; }

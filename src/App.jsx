@@ -14,7 +14,8 @@ const sessions = [
     number: '01',
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Jue 12 de noviembre · 20:00',
-    done: false,
+    done: true,
+    slides: '/presentacion/',
     name: 'Conocernos y soñar en grande',
     plain: 'Sesión 1 · Definir metas',
     objective: 'Nos presentamos, nos reímos un poco y aterrizamos 2 o 3 metas que de verdad te emocionen (con pasos pequeñitos).',
@@ -28,11 +29,12 @@ const sessions = [
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Por definir',
     done: false,
-    name: 'El mapa de tu camino',
-    plain: 'Sesión 2 · Trayectoria académica',
-    objective: 'Miramos hacia atrás para ver todo lo que ya recorriste, y hacia adelante para sacarle jugo a la uni.',
-    bullets: ['Tu mapa: de la infancia a hoy', 'Estudiar con propósito (y sin morir en el intento)', 'Networking, mentoras y voluntariado'],
-    bring: ['Un recuerdo de la escuela que te marcó', '¿Qué querías ser de niña?'],
+    slides: '/presentacion/noche-2/',
+    name: 'Tu kit de desarrollo profesional',
+    plain: 'Sesión 2 · Becas, prácticas y personas',
+    objective: 'Dónde buscar becas, prácticas, voluntariados, cursos y personas, con una acción hecha en cada uno.',
+    bullets: ['Afinamos tu meta en una frase', 'Becas, prácticas, voluntariados y cursos gratuitos', 'Tu mensaje a una persona real y tu ruta del semestre'],
+    bring: ['Tu meta SMART de la Noche 1', 'Papel y pluma: vamos a escribir'],
     questions: ['¿Qué querías ser de niña? ¿Sigue ahí ese sueño?', '¿Qué materia o persona cambió tu rumbo?', '¿Te imaginas seguir estudiando?'],
   },
   {
@@ -41,11 +43,12 @@ const sessions = [
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Por definir',
     done: false,
-    name: 'Despegue al mundo laboral',
+    slides: '/presentacion/noche-3/',
+    name: 'Tu kit para CV y entrevistas',
     emoji: '🚀',
-    plain: 'Sesión 3 · Primer empleo',
-    objective: 'CV, LinkedIn, entrevistas y cómo no tomarte el “no” como algo personal.',
-    bullets: ['Tu CV y LinkedIn, con tus logros a la vista', 'Practicamos una entrevista (en modo amable)', 'Resiliencia: el rechazo también enseña'],
+    plain: 'Sesión 3 · CV y entrevistas',
+    objective: 'Tu CV en formato Harvard mejorado con IA, tu historia STAR y una entrevista practicada.',
+    bullets: ['Tu CV en formato Harvard y 4 prompts para mejorarlo', 'Hablar claro: conclusión primero y STAR', 'Simulacro de entrevista con retroalimentación'],
     bring: ['Tu CV (aunque esté en borrador)', 'Una vacante o lugar donde te encantaría trabajar'],
     questions: ['¿Qué logros tuyos merecen estar en tu CV?', 'Ante este reto… ¿tú qué hubieras hecho?', '¿Qué te daría más confianza en una entrevista?'],
   },
@@ -723,6 +726,9 @@ function Microsite() {
                             <ul className="plain-list">{session.bring.map((b) => <li key={b}>{b}</li>)}</ul>
                           </div>
                         </div>
+                        {session.slides && session.done && (
+                          <p className="session-slides"><a href={session.slides} target="_blank" rel="noopener">Repasa la presentación de esta noche <span aria-hidden="true">↗</span></a></p>
+                        )}
                       </div>
                     </article>
                   );
