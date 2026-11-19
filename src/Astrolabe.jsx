@@ -120,7 +120,7 @@ export function Astrolabe({ goal = '' }) {
             <label htmlFor="astro-name">Tu nombre (opcional)</label>
             <input id="astro-name" value={name} maxLength={30} onChange={(e) => setName(e.target.value)} placeholder="Así aparecerá arriba" />
           </div>
-          {!goal && <p className="astro-hint">Tip: si escribes tu meta en «Mi meta», aparece en el centro.</p>}
+          {!goal && <p className="astro-hint">Tip: cuando armes tu meta en «Mi meta» (justo abajo), aparece en el centro. Descárgalo al final.</p>}
           <button type="button" className="button button-primary" onClick={download} disabled={!ready} aria-describedby="astro-ready">Descargar mi astrolabio</button>
           <p className="astro-hint" id="astro-ready">{ready ? 'Se descarga como imagen para tu celular.' : 'Se activa cuando enciendas al menos 2 estrellas.'}</p>
           <p className="status-text" role="status" aria-live="polite">{status}</p>

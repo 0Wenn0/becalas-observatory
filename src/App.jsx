@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Analytics } from '@vercel/analytics/react';
+import { GuiaSmart } from './GuiaSmart.jsx';
+import { KitDesarrollo, KitCv } from './Kit.jsx';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
 import { CometCursor, sparkleAt, launchComet, implodeAt } from './CometCursor.jsx';
 import { Starfield } from './Starfield.jsx';
@@ -14,7 +16,8 @@ const sessions = [
     number: '01',
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Jue 12 de noviembre · 20:00',
-    done: false,
+    done: true,
+    slides: '/presentacion/',
     name: 'Conocernos y soñar en grande',
     plain: 'Sesión 1 · Definir metas',
     objective: 'Nos presentamos, nos reímos un poco y aterrizamos 2 o 3 metas que de verdad te emocionen (con pasos pequeñitos).',
@@ -28,11 +31,13 @@ const sessions = [
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Por definir',
     done: false,
-    name: 'El mapa de tu camino',
-    plain: 'Sesión 2 · Trayectoria académica',
-    objective: 'Miramos hacia atrás para ver todo lo que ya recorriste, y hacia adelante para sacarle jugo a la uni.',
-    bullets: ['Tu mapa: de la infancia a hoy', 'Estudiar con propósito (y sin morir en el intento)', 'Networking, mentoras y voluntariado'],
-    bring: ['Un recuerdo de la escuela que te marcó', '¿Qué querías ser de niña?'],
+    slides: '/presentacion/noche-2/',
+    kit: '#kit-desarrollo',
+    name: 'Tu kit de desarrollo profesional',
+    plain: 'Sesión 2 · Becas, prácticas y personas',
+    objective: 'Dónde buscar becas, prácticas, voluntariados, cursos y personas, con una acción hecha en cada uno.',
+    bullets: ['Afinamos tu meta en una frase', 'Becas, prácticas, voluntariados y cursos gratuitos', 'Tu mensaje a una persona real y tu ruta del semestre'],
+    bring: ['Tu meta SMART de la Noche 1', 'Papel y pluma: vamos a escribir'],
     questions: ['¿Qué querías ser de niña? ¿Sigue ahí ese sueño?', '¿Qué materia o persona cambió tu rumbo?', '¿Te imaginas seguir estudiando?'],
   },
   {
@@ -41,11 +46,13 @@ const sessions = [
     // Cuando se acuerde la fecha, cámbiala aquí (ej. 'Sáb 8 de noviembre · 17:00') y marca done: true al terminar.
     dateLabel: 'Por definir',
     done: false,
-    name: 'Despegue al mundo laboral',
+    slides: '/presentacion/noche-3/',
+    kit: '#kit-cv',
+    name: 'Tu kit para CV y entrevistas',
     emoji: '🚀',
-    plain: 'Sesión 3 · Primer empleo',
-    objective: 'CV, LinkedIn, entrevistas y cómo no tomarte el “no” como algo personal.',
-    bullets: ['Tu CV y LinkedIn, con tus logros a la vista', 'Practicamos una entrevista (en modo amable)', 'Resiliencia: el rechazo también enseña'],
+    plain: 'Sesión 3 · CV y entrevistas',
+    objective: 'Tu CV en formato Harvard mejorado con IA, tu historia STAR y una entrevista practicada.',
+    bullets: ['Tu CV en formato Harvard y 4 prompts para mejorarlo', 'Hablar claro: conclusión primero y STAR', 'Simulacro de entrevista con retroalimentación'],
     bring: ['Tu CV (aunque esté en borrador)', 'Una vacante o lugar donde te encantaría trabajar'],
     questions: ['¿Qué logros tuyos merecen estar en tu CV?', 'Ante este reto… ¿tú qué hubieras hecho?', '¿Qué te daría más confianza en una entrevista?'],
   },
@@ -338,14 +345,16 @@ const views = [
 
 /* Anclas internas → vista que las contiene (y pestaña de herramienta, si aplica). */
 const anchorToView = {
-  inicio: 'inicio', proxima: 'inicio', wen: 'inicio', mision: 'mision',
+  inicio: 'inicio', proxima: 'inicio', wen: 'inicio', mision: 'mision', 'guia-smart': 'guia',
   sesiones: 'sesiones',
   herramientas: 'herramientas', meta: 'herramientas', constelacion: 'herramientas', bitacora: 'herramientas',
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
+  'kit-desarrollo': 'kit2', 'donde-buscar': 'kit2', mensajes: 'kit2', ruta: 'kit2', logros: 'kit2',
+  'kit-cv': 'kit3', harvard: 'kit3', prompts: 'kit3', 'habla-claro': 'kit3', star: 'kit3', aplico: 'kit3', asistente: 'kit3',
 };
 const toolTabs = [
-  { id: 'meta', label: 'Mi meta', icon: '✎', hint: 'Arma tu meta SMART' },
   { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Enciende tus estrellas y arma tu astrolabio' },
+  { id: 'meta', label: 'Mi meta', icon: '✎', hint: 'Arma tu meta SMART' },
   { id: 'bitacora', label: 'Mi bitácora', icon: '☾', hint: 'Lo que descubres cada sesión' },
 ];
 
@@ -484,7 +493,7 @@ function Microsite() {
         });
         viewRef.current = target;
         const el = document.getElementById(hash);
-        const isView = views.some((v) => v.id === hash) || hash === 'mision';
+        const isView = views.some((v) => v.id === hash) || hash === 'mision' || hash === 'guia-smart' || hash === 'kit-desarrollo' || hash === 'kit-cv';
         if (isView || !el) {
           window.scrollTo({ top: 0 });
           document.getElementById(`view-${target}-title`)?.focus({ preventScroll: true });
@@ -546,6 +555,16 @@ function Microsite() {
   async function copySmart() {
     const ok = await copyText(smartSentence);
     flash(setSmartCopied, ok ? '¡Copiada! Tráela a la sesión ✨' : 'Selecciona el texto y cópialo manualmente.');
+  }
+
+  async function downloadSmart() {
+    try {
+      const { downloadSmartDocx } = await import('./smartDocx.js');
+      await downloadSmartDocx(smart, smartFields);
+      flash(setSmartCopied, '¡Descargada! Búscala en tus descargas ✨');
+    } catch {
+      flash(setSmartCopied, 'No pude descargarla. Prueba con “Copiar mi meta”.');
+    }
   }
 
   function updateCurrentLog(field, value) {
@@ -637,6 +656,10 @@ function Microsite() {
           </div>
         )}
 
+        {view === 'guia' && <GuiaSmart />}
+        {view === 'kit2' && <KitDesarrollo />}
+        {view === 'kit3' && <KitCv />}
+
         {view === 'mision' && (
           <div className="book">
             <article className="chapter section-wrap" aria-labelledby="view-mision-title">
@@ -712,6 +735,12 @@ function Microsite() {
                             <ul className="plain-list">{session.bring.map((b) => <li key={b}>{b}</li>)}</ul>
                           </div>
                         </div>
+                        {session.kit && (
+                          <p className="session-slides"><a href={session.kit}>Abre las herramientas de esta noche <span aria-hidden="true">→</span></a></p>
+                        )}
+                        {session.slides && session.done && (
+                          <p className="session-slides"><a href={session.slides} target="_blank" rel="noopener">Repasa la presentación de esta noche <span aria-hidden="true">↗</span></a></p>
+                        )}
                       </div>
                     </article>
                   );
@@ -737,12 +766,27 @@ function Microsite() {
               <nav className="tool-jump" aria-label="Ir a una herramienta">
                 {toolTabs.map((t) => <a key={t.id} href={`#${t.id}`} className={tool === t.id ? 'is-current' : undefined}><span aria-hidden="true">{t.icon}</span> {t.label}</a>)}
               </nav>
+              <ul className="resource-tiles kit-tiles">
+                <li><a href="#kit-desarrollo"><span className="tile-icon" aria-hidden="true">🗺️</span><span className="tile-title">Kit de la Noche 2</span><span className="tile-sub">Mensajes listos, mi ruta del semestre y mi registro de logros</span></a></li>
+                <li><a href="#kit-cv"><span className="tile-icon" aria-hidden="true">🚀</span><span className="tile-title">Kit de la Noche 3</span><span className="tile-sub">CV Harvard, prompts, mi historia STAR y ¿aplico?</span></a></li>
+              </ul>
 
               <div className="tool-stack">
+                <section className="tool-section" aria-labelledby="tool-title-constelacion">
+                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación <small>y tu astrolabio</small></h2>
+                  <div className="tool-grid constellation-card" id="constelacion">
+                    <HowTo dark steps={['Toca una estrella y lee su pregunta.', 'Escribe tu respuesta: la estrella se enciende.', 'Descarga tu astrolabio y llévalo contigo.']} />
+                    <Astrolabe goal={smart.goal ?? ''} />
+                  </div>
+                </section>
+
                 <section className="tool-section" aria-labelledby="tool-title-meta">
                   <h2 className="tool-section-title" id="tool-title-meta"><span aria-hidden="true">✎</span> Mi meta</h2>
                   <div className="tool-grid" id="meta">
-                    <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Copia tu meta y tráela a la sesión 1.']} />
+                    <div>
+                      <HowTo steps={['Escribe qué quieres lograr, como te salga.', 'Completa las demás letras; no tienen que quedar perfectas.', 'Descárgala en Word y mándamela por mensaje privado.']} />
+                      <p className="guia-link"><a href="#guia-smart">¿Quieres profundizar? Lee la guía SMART a fondo →</a></p>
+                    </div>
                     <div className="smart-builder worksheet">
                       <div className="worksheet-head">
                         <p className="worksheet-title"><span aria-hidden="true">✎</span> Tu meta SMART</p>
@@ -763,18 +807,11 @@ function Microsite() {
                       </div>
                       <div className="prompt-actions">
                         <button className="button button-primary" type="button" onClick={copySmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Copiar mi meta</button>
+                        <button className="button button-dark" type="button" onClick={downloadSmart} disabled={!smartSentence} aria-describedby="smart-copy-hint">Descargar en Word</button>
                         {!smartSentence && <p className="field-prompt" id="smart-copy-hint">Se activa cuando escribas qué quieres lograr.</p>}
                         <p className="status-text" role="status" aria-live="polite">{smartCopied}</p>
                       </div>
                     </div>
-                  </div>
-                </section>
-
-                <section className="tool-section" aria-labelledby="tool-title-constelacion">
-                  <h2 className="tool-section-title" id="tool-title-constelacion"><span aria-hidden="true">✦</span> Mi constelación <small>y tu astrolabio</small></h2>
-                  <div className="tool-grid constellation-card" id="constelacion">
-                    <HowTo dark steps={['Toca una estrella y lee su pregunta.', 'Escribe tu respuesta: la estrella se enciende.', 'Descarga tu astrolabio y llévalo contigo.']} />
-                    <Astrolabe goal={smart.goal ?? ''} />
                   </div>
                 </section>
 
@@ -843,7 +880,10 @@ function Microsite() {
                 <h2 id="resources-title" className="block-title">Instrumentos</h2>
                 <ul className="resource-tiles">
                   <li><a href="#respira"><span className="tile-icon" aria-hidden="true">🌬️</span><span className="tile-title">Respirar</span><span className="tile-sub">Antes de un examen o entrevista</span></a></li>
+                  <li><a href="#guia-smart"><span className="tile-icon" aria-hidden="true">🔭</span><span className="tile-title">Guía SMART a fondo</span><span className="tile-sub">Tu meta profesional, paso a paso</span></a></li>
                   <li><a href="#meta"><span className="tile-icon" aria-hidden="true">🎯</span><span className="tile-title">Mi meta</span><span className="tile-sub">Pégala donde la veas diario</span></a></li>
+                  <li><a href="#mensajes"><span className="tile-icon" aria-hidden="true">✉️</span><span className="tile-title">Mensajes listos</span><span className="tile-sub">Para pedir una conversación o mentoría</span></a></li>
+                  <li><a href="#prompts"><span className="tile-icon" aria-hidden="true">🤖</span><span className="tile-title">Prompts para tu CV</span><span className="tile-sub">Mejóralo con IA, sin inventar</span></a></li>
                   <li><a href="https://youtu.be/Ks-_Mh1QhMc" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🎤</span><span className="tile-title">Hablar en público</span><span className="tile-sub">Charla TED de Amy Cuddy<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
                   <li><a href="https://asana.com/es/resources/long-term-goals" target="_blank" rel="noreferrer"><span className="tile-icon" aria-hidden="true">🪜</span><span className="tile-title">Metas grandes</span><span className="tile-sub">Divídelas en pasos<span className="sr-only"> (se abre en otra pestaña)</span></span></a></li>
                 </ul>

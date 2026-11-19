@@ -8,6 +8,8 @@ export default defineConfig({
       input: {
         main: "index.html",
         presentacion: "presentacion/index.html",
+        noche2: "presentacion/noche-2/index.html",
+        noche3: "presentacion/noche-3/index.html",
       },
     },
   },
