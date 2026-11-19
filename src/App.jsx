@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { GuiaSmart } from './GuiaSmart.jsx';
 import { KitDesarrollo, KitCv } from './Kit.jsx';
 import { EngravingTelescope, EngravingMoon, EngravingAstrolabe, EngravingConstellation, CornerOrnament, StarDivider, GoldPlanet, RuleIcon } from './Chapters.jsx';
@@ -200,6 +201,7 @@ export function App() {
     <>
       <CometCursor />
       {path === '/caso' ? <CaseStudy /> : <Microsite />}
+      <Analytics />
     </>
   );
 }
