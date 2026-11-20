@@ -22,15 +22,14 @@ function useSaved(key, fallback) {
   useEffect(() => { saveLocal(key, value); }, [key, value]);
   return [value, setValue];
 }
-function downloadText(name, text) {
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+async function downloadPdf(kind, args, flash) {
+  try {
+    const mod = await import('./kitPdf.js');
+    await mod[kind](...args);
+    flash('¡Descargado en PDF! Búscalo en tus descargas ✨');
+  } catch {
+    flash('No pude crear el PDF. Prueba con «Copiar».');
+  }
 }
 
 function HowTo({ steps, note }) {
@@ -112,7 +111,7 @@ function RutaSemestre() {
   const hasContent = route.meta || routeRows.some(([id]) => rows[id].what);
   return (
     <div className="tool-grid">
-      <HowTo steps={['Escribe tu meta en una frase.', 'Anota una oportunidad de cada tipo y su fecha.', 'Marca ✓ cuando la hagas. Revisa tu ruta 15 minutos cada semana.']} note="Se guarda sola en tu navegador. Descárgala o cópiala para tenerla a la mano." />
+      <HowTo steps={['Escribe tu meta en una frase.', 'Anota una oportunidad de cada tipo y su fecha.', 'Marca ✓ cuando la hagas. Revisa tu ruta 15 minutos cada semana.']} note="Se guarda sola en tu navegador. Descárgala en PDF para imprimirla o tenerla en tu celular; si la descargas en blanco, la llenas a mano." />
       <div className="worksheet">
         <div className="worksheet-head">
           <p className="worksheet-title"><span aria-hidden="true">✎</span> Mi ruta del semestre</p>
@@ -140,7 +139,7 @@ function RutaSemestre() {
         </div>
         <div className="prompt-actions">
           <button className="button button-primary" type="button" disabled={!hasContent} onClick={async () => flash((await copyText(text)) ? '¡Copiada!' : 'No pude copiarla.')}>Copiar mi ruta</button>
-          <button className="button button-dark" type="button" disabled={!hasContent} onClick={() => { downloadText('mi-ruta-del-semestre.txt', text); flash('¡Descargada! Búscala en tus descargas.'); }}>Descargar</button>
+          <button className="button button-dark" type="button" onClick={() => downloadPdf('downloadRutaPdf', [{ ...route, rows }, routeRows], flash)}>{hasContent ? 'Descargar en PDF' : 'Descargar en blanco (PDF)'}</button>
           <p className="status-text" role="status" aria-live="polite">{msg}</p>
         </div>
       </div>
@@ -184,7 +183,8 @@ function RegistroLogros() {
         {warn.length > 0 && <p className="kit-warn" role="status">Ojo: «{warn.join('», «')}» te hace ver más pequeña. ¿Lo puedes decir sin esa palabra?</p>}
         <div className="prompt-actions">
           <button className="button button-primary" type="button" onClick={add} disabled={!draft.what.trim()}>Guardar logro</button>
-          <button className="button button-dark" type="button" disabled={!list.length} onClick={async () => flash((await copyText(text)) ? '¡Copiado tu registro!' : 'No pude copiarlo.')}>Copiar todo</button>
+          <button className="button button-dark" type="button" disabled={!list.length} onClick={() => downloadPdf('downloadLogrosPdf', [list], flash)}>Descargar en PDF</button>
+          <button className="quiet-button" type="button" disabled={!list.length} onClick={async () => flash((await copyText(text)) ? '¡Copiado tu registro!' : 'No pude copiarlo.')}>Copiar todo</button>
           <p className="status-text" role="status" aria-live="polite">{msg}</p>
         </div>
         {list.length > 0 && (
@@ -351,6 +351,7 @@ function StarBuilder() {
         </div>
         <div className="prompt-actions">
           <button className="button button-primary" type="button" disabled={!story} onClick={async () => flash((await copyText(`${story}\n\n${cheat}`)) ? '¡Copiada!' : 'No pude copiarla.')}>Copiar mi historia</button>
+          <button className="button button-dark" type="button" disabled={!story} onClick={() => downloadPdf('downloadStarPdf', [star, starFields, cheat], flash)}>Descargar en PDF</button>
           <p className="status-text" role="status" aria-live="polite">{msg}</p>
         </div>
       </div>
