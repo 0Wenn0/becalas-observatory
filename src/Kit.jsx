@@ -392,8 +392,19 @@ export function KitCv() {
         <PageHead crumb="Kit de la Noche 3" Art={EngravingConstellation} kicker="Noche 3 · Herramientas" title="Tu kit para CV y entrevistas" sub="Formato Harvard, prompts, tu historia STAR y cuándo aplicar" id="view-kit3-title" />
         <div className="chapter-body">
           <nav className="tool-jump" aria-label="Ir a una herramienta">
-            <a href="#harvard">CV Harvard</a><a href="#prompts">Prompts</a><a href="#habla-claro">Habla claro</a><a href="#star">Mi STAR</a><a href="#aplico">¿Aplico?</a><a href="#asistente">Asistente</a>
+            <a href="#identidad">Tu frase y LinkedIn</a><a href="#harvard">CV Harvard</a><a href="#prompts">Prompts</a><a href="#habla-claro">Habla claro</a><a href="#star">Mi STAR</a><a href="#aplico">¿Aplico?</a><a href="#asistente">Asistente</a>
           </nav>
+
+          <section className="chapter-section" id="identidad" aria-labelledby="kit3-identidad">
+            <h2 id="kit3-identidad" className="block-title">Tu identidad en una frase y tu LinkedIn</h2>
+            <p><strong>Soy [carrera y etapa] que [lo que haces bien o te mueve] y busco [tu siguiente paso].</strong> Esa frase es el perfil de tu CV, tu titular de LinkedIn y la primera oración de «Háblame de ti». Sin «solo» ni «apenas».</p>
+            <div className="example-grid">
+              <div className="example-card"><p className="example-title">1 · Foto y URL</p><p>Foto clara y URL personalizada (linkedin.com/in/tunombre). Ponla en tu CV.</p></div>
+              <div className="example-card"><p className="example-title">2 · Titular</p><p>Tu frase, en corto: «Estudiante de Química · Control de calidad · Laboratorio».</p></div>
+              <div className="example-card"><p className="example-title">3 · Acerca de</p><p>Tres líneas: quién eres, un logro con dato y qué buscas.</p></div>
+              <div className="example-card"><p className="example-title">4 · Certificaciones y logros</p><p>Agrega el curso de tu ruta y comparte tus logros: también cuentan.</p></div>
+            </div>
+          </section>
 
           <section className="chapter-section" id="harvard" aria-labelledby="kit3-harvard">
             <h2 id="kit3-harvard" className="block-title">Tu CV en formato Harvard</h2>
@@ -442,7 +453,7 @@ export function KitCv() {
             <h2 id="kit3-asistente" className="block-title">Tu asistente de CV</h2>
             <div className="example-grid">
               <div className="example-card"><p className="example-title"><span aria-hidden="true">✨</span> Qué hace</p><p>Una skill de Gemini que revisa tu CV en formato Harvard, convierte experiencias en logros, prepara historias STAR y practica entrevistas contigo. No inventa datos ni te pide información personal.</p></div>
-              <div className="example-card"><p className="example-title"><span aria-hidden="true">📩</span> Cómo la recibes</p><p>Te la comparto por correo. Abre el correo → <b>Open</b> → <b>Add skill</b>. Después, en un chat de Gemini escribe <b>/</b> y elígela. Necesitas cuenta de Google y 18 años o más; si no, usa los 4 prompts de arriba.</p></div>
+              <div className="example-card"><p className="example-title"><span aria-hidden="true">📩</span> Cómo la recibes</p><p>Te la comparto por correo después de la Noche 3, y es tuya para siempre. Abre el correo → <b>Open</b> → <b>Add skill</b>. Después, en un chat de Gemini escribe <b>/</b> y elígela. Necesitas cuenta de Google y 18 años o más; si no, usa los 4 prompts de arriba.</p></div>
             </div>
           </section>
         </div>

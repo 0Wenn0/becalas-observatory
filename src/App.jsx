@@ -350,7 +350,7 @@ const anchorToView = {
   herramientas: 'herramientas', meta: 'herramientas', constelacion: 'herramientas', bitacora: 'herramientas',
   nosotras: 'nosotras', respira: 'nosotras', acuerdos: 'nosotras', recursos: 'nosotras', apoyo: 'nosotras',
   'kit-desarrollo': 'kit2', 'donde-buscar': 'kit2', mensajes: 'kit2', ruta: 'kit2', logros: 'kit2',
-  'kit-cv': 'kit3', harvard: 'kit3', prompts: 'kit3', 'habla-claro': 'kit3', star: 'kit3', aplico: 'kit3', asistente: 'kit3',
+  'kit-cv': 'kit3', identidad: 'kit3', harvard: 'kit3', prompts: 'kit3', 'habla-claro': 'kit3', star: 'kit3', aplico: 'kit3', asistente: 'kit3',
 };
 const toolTabs = [
   { id: 'constelacion', label: 'Mi constelación', icon: '✦', hint: 'Enciende tus estrellas y arma tu astrolabio' },
